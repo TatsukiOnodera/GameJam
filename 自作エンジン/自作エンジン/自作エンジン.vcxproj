@@ -181,7 +181,6 @@
     <ClCompile Include="Audio\Audio.cpp" />
     <ClCompile Include="Base\FrameWork.cpp" />
     <ClCompile Include="Base\OnoGame.cpp" />
-    <ClCompile Include="Bullet.cpp" />
     <ClCompile Include="Camera\Camera.cpp" />
     <ClCompile Include="Collision\Collision.cpp" />
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
@@ -191,12 +190,10 @@
     <ClCompile Include="Effect\ParticleManager.cpp" />
     <ClCompile Include="Effect\PostEffect.cpp" />
     <ClCompile Include="EndScene.cpp" />
-    <ClCompile Include="Enemy.cpp" />
     <ClCompile Include="Input\Input.cpp" />
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Player.cpp" />
     <ClCompile Include="Scene\GamePlayScene.cpp" />
     <ClCompile Include="Scene\SceneFactory.cpp" />
     <ClCompile Include="Scene\SceneManager.cpp" />
@@ -214,7 +211,6 @@
     <ClInclude Include="Audio\Audio.h" />
     <ClInclude Include="Base\FrameWork.h" />
     <ClInclude Include="Base\OnoGame.h" />
-    <ClInclude Include="Bullet.h" />
     <ClInclude Include="Camera\Camera.h" />
     <ClInclude Include="Collision\BaseCollider.h" />
     <ClInclude Include="Collision\Collision.h" />
@@ -227,15 +223,12 @@
     <ClInclude Include="Effect\ParticleManager.h" />
     <ClInclude Include="Effect\PostEffect.h" />
     <ClInclude Include="EndScene.h" />
-    <ClInclude Include="Enemy.h" />
     <ClInclude Include="Input\Input.h" />
     <ClInclude Include="Input\InputList.h" />
     <ClInclude Include="lib\SafeDelete.h" />
     <ClInclude Include="Light\Light.h" />
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
-    <ClInclude Include="Measurement.h" />
-    <ClInclude Include="Player.h" />
     <ClInclude Include="Scene\AbstractSceneFactory.h" />
     <ClInclude Include="Scene\BaseScene.h" />
     <ClInclude Include="Scene\GamePlayScene.h" />
