@@ -294,22 +294,3 @@ const float GamePlayScene::Length(XMFLOAT3 pos1, XMFLOAT3 pos2)
 
 	return sqrtf(len.x * len.x + len.y * len.y + len.z * len.z);
 }
-
-//for (int i = 0; i < 30; i++)
-	//{
-	//	const float rnd_pos = 10.0f;
-	//	XMFLOAT3 pos = {};
-	//	pos.x = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-	//	pos.y = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-	//	pos.z = (float)rand() / RAND_MAX * rnd_pos - rnd_pos / 2.0f;
-
-	//	const float rnd_vel = 1.0f;
-	//	XMFLOAT3 vel = {};
-	//	vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-	//	vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-	//	vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-	//	XMFLOAT3 acc = {};
-	//	//’Ç‰Á
-	//	particle->Add(120, pos, vel, acc, 5.0f, 0.0f);
-	//}
