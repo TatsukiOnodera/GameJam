@@ -47,16 +47,25 @@ private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 	// パーティクル
-	std::unique_ptr<ParticleManager> particle = nullptr;
+	//std::unique_ptr<ParticleManager> particle = nullptr;
 	// スプライト
-
+	// プレイヤー
+	std::unique_ptr<Sprite> player = nullptr;
+	// ブロック
+	std::vector<std::unique_ptr<Sprite>> block;
 	// OBJオブジェクト
 
 	// FBXオブジェクト
 
 
 private: // メンバ変数
-	
+	// プレイヤー
+	// 速さ
+	float playerS;
+	// ジャンプの速さ
+	float playerJS;
+	// ジャンプフラグ
+	bool isPJ;
 
 public: // メンバ関数
 	~GamePlayScene() override;

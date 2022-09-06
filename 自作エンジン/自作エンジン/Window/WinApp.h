@@ -5,8 +5,8 @@ class WinApp
 {
 public: //定数
 	// ウィンドウサイズ
-	static const int window_width = 1280;  // 横幅
-	static const int window_height = 720;  // 縦幅
+	static const int window_width = 1000;  // 横幅
+	static const int window_height = 800;  // 縦幅
 	static const wchar_t window_title[];  // ウィンドウタイトル
 
 private: //メンバ変数

@@ -87,18 +87,6 @@
     <ClCompile Include="EndScene.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClCompile>
-    <ClCompile Include="3D\FbxLoader.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModelMesh.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxObject3d.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
@@ -107,12 +95,6 @@
     </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Base</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Model.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\Object3d.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
     </ClCompile>
     <ClCompile Include="DirectXCommon\PipelineManager.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\DirectXCommon</Filter>
@@ -143,6 +125,24 @@
     </ClCompile>
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\WinApp</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FbxLoader.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FbxModel.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FbxModelMesh.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\FbxObject3d.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\Model.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="3D\Object3d.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -179,18 +179,6 @@
     <ClInclude Include="Scene\TitleScene.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClInclude>
-    <ClInclude Include="3D\FbxLoader.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModelMesh.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxObject3d.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClInclude>
     <ClInclude Include="Input\InputList.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Input</Filter>
     </ClInclude>
@@ -202,12 +190,6 @@
     </ClInclude>
     <ClInclude Include="Scene\BaseScene.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Others</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Object3d.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\Model.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D</Filter>
     </ClInclude>
     <ClInclude Include="DirectXCommon\PipelineManager.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\DirectXCommon</Filter>
@@ -250,6 +232,24 @@
     </ClInclude>
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\WinApp</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxLoader.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxModel.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxModelMesh.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\FbxObject3d.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Object3d.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="3D\Model.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -368,6 +368,12 @@
     </Filter>
     <Filter Include="ソースファイル&amp;ヘッダーファイル\WinApp">
       <UniqueIdentifier>{fd7ed1fe-709e-4daf-9ab1-e39ea10d4f5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル&amp;ヘッダーファイル\Object\3D\FBX">
+      <UniqueIdentifier>{fd866620-c2b5-492b-b4ed-8ab164ed4d4c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ">
+      <UniqueIdentifier>{d294f54a-4431-423d-8a5d-539cfd7ff2ac}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

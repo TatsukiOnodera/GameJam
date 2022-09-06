@@ -21,6 +21,7 @@ void GamePlayScene::Initialize()
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
+	Sprite::LoadTexture(1, L"Resources/Player.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -32,10 +33,10 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
-	particle.reset(ParticleManager::Create("Default/effect1.png"));
+	//particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-	
+	player.reset(Sprite::Create(1, { 0.0f, 0.0f }, {0.5f, 0.5f}));
 
 	// OBJオブジェクト
 
@@ -52,14 +53,39 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	
+	playerS = 2;
+	playerJS = 2;
+	isPJ = false;
+
+	player->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
+	player->SetColor({ 1, 0.6f, 0.9f, 1 });
 }
 
 void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
 	
+	// プレイヤー
+	{
+		// ジャンプ
+		if (input->TriggerKey(DIK_SPACE))
+		{
+			isPJ = true;
+		}
 
+		// 移動
+		XMFLOAT2 pos = player->GetPostion();
+		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
+		{
+			pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
+		}
+		if (isPJ == true)
+		{
+			pos.y -= playerJS;
+			isPJ = false;
+		}
+		player->SetPosition(pos);
+	}
 
 #pragma endregion
 
@@ -79,7 +105,7 @@ void GamePlayScene::Draw()
 	// 各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	DrawEffect(cmdList);
+	//DrawEffect(cmdList);
 	DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
@@ -114,7 +140,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// スプライト描画
 	Sprite::PreDraw(cmdList);
 
-
+	player->Draw();
 
 	Sprite::PostDraw();
 }
@@ -134,7 +160,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	// パーティクル描画
 	ParticleManager::PreDraw(cmdList);
 
-	particle->Draw();
+	//particle->Draw();
 
 	ParticleManager::PostDraw();
 }
