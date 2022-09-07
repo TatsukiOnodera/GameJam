@@ -43,6 +43,18 @@ private: // メモリ置き場
 	// デバッグテキスト
 	DebugText debugText;
 
+private: //サブクラス
+	struct BLOCK
+	{
+		std::unique_ptr<Object3d> block = nullptr;
+		bool map = false;
+		BLOCK(Object3d *obj, bool map)
+		{
+			this->block.reset(obj);
+			this->map = map;
+		}
+	};
+
 private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
@@ -50,9 +62,9 @@ private: // インスタンス
 	//std::unique_ptr<ParticleManager> particle = nullptr;
 	// スプライト
 	// プレイヤー
-	std::unique_ptr<Sprite> player = nullptr;
+	std::unique_ptr<Object3d> player = nullptr;
 	// ブロック
-	std::vector<std::unique_ptr<Sprite>> block;
+	std::unique_ptr<BLOCK> block[8][13] = {};
 	// OBJオブジェクト
 
 	// FBXオブジェクト

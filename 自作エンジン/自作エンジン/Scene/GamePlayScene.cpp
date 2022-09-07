@@ -21,7 +21,6 @@ void GamePlayScene::Initialize()
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
-	Sprite::LoadTexture(1, L"Resources/Player.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -36,7 +35,14 @@ void GamePlayScene::Initialize()
 	//particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-	player.reset(Sprite::Create(1, { 0.0f, 0.0f }, {0.5f, 0.5f}));
+	player.reset(Object3d::Create("Player"));
+	for (int y = 0; y < 8; y++)
+	{
+		for (int x = 0; x < 13; x++)
+		{
+			block[y][x].reset(new BLOCK(Object3d::Create("Block"), false));
+		}
+	}
 
 	// OBJオブジェクト
 
@@ -53,12 +59,34 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	playerS = 2;
-	playerJS = 2;
+	for (int y = 0; y < 8; y++)
+	{
+		for (int x = 0; x < 13; x++)
+		{
+			if (y == 0)
+			{
+				block[y][x]->map = true;
+			}
+			else
+			{
+				block[y][x]->map = false;
+			}
+			block[y][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (y - 4) , 0 });
+			block[y][x]->block->SetRotation({ -90, 0, 0 });
+			block[y][x]->block->SetScale({ 4.5f, 1, 4.5f });
+			block[y][x]->block->SetColor({ 0.6f, 1, 0.7f, 1 });
+			block[y][x]->block->Update();
+		}
+	}
+
+	playerS = 0.1f;
 	isPJ = false;
 
-	player->SetPosition({ WinApp::window_width / 2, 660 });
+	player->SetPosition({ 0, 4.5f * (-5), 0 });
+	player->SetRotation({ -90, 0, 0 });
+	player->SetScale({ 4.5f, 1, 4.5f });
 	player->SetColor({ 1, 0.6f, 0.9f, 1 });
+	player->Update();
 }
 
 void GamePlayScene::Update()
@@ -70,24 +98,40 @@ void GamePlayScene::Update()
 		// ジャンプ
 		if (input->TriggerKey(DIK_SPACE) && isPJ == false)
 		{
+			playerJS = 0.05f;
 			isPJ = true;
 		}
 
 		// 移動
-		XMFLOAT2 pos = player->GetPostion();
+		XMFLOAT3 pos = player->GetPosition();
 		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 		{
 			pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
-		}
-		if (input->PushKey(DIK_S) || input->PushKey(DIK_W))
-		{
-			pos.y += (input->PushKey(DIK_S) - input->PushKey(DIK_W)) * playerS;
+			if (27 < pos.x)
+			{
+				pos.x = 27;
+			}
+			else if (pos.x < -27)
+			{
+				pos.x = -27;
+			}
 		}
 		// ジャンプ
 		if (isPJ == true)
 		{
-			pos.y -= playerJS;
-			isPJ = false;
+			pos.y += playerJS; 
+			playerJS *= 2;
+			if (-20.25f < pos.y)
+			{
+				pos.y = -20.25f;
+				playerJS = 0.05f;
+				playerJS = -playerJS;
+			}
+			else if (pos.y < -22.5f)
+			{
+				pos.y = -22.5f;
+				isPJ = false;
+			}
 		}
 		player->SetPosition(pos);
 	}
@@ -131,7 +175,17 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
-	
+	for (int y = 0; y < 8; y++)
+	{
+		for (int x = 0; x < 13; x++)
+		{
+			if (block[y][x]->map == true)
+			{
+				block[y][x]->block->Draw();
+			}
+		}
+	}
+	player->Draw();
 
 	Object3d::PostDraw();
 
@@ -145,7 +199,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	player->Draw();
+
 
 	Sprite::PostDraw();
 }
