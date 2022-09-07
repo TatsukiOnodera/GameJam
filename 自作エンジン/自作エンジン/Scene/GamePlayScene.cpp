@@ -68,7 +68,7 @@ void GamePlayScene::Update()
 	// プレイヤー
 	{
 		// ジャンプ
-		if (input->TriggerKey(DIK_SPACE))
+		if (input->TriggerKey(DIK_SPACE) && isPJ == false)
 		{
 			isPJ = true;
 		}
@@ -79,6 +79,7 @@ void GamePlayScene::Update()
 		{
 			pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
 		}
+		// ジャンプ
 		if (isPJ == true)
 		{
 			pos.y -= playerJS;
