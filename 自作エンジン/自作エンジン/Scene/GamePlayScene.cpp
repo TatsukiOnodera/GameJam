@@ -32,7 +32,7 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
-	//particle.reset(ParticleManager::Create("Default/effect1.png"));
+	smoke.reset(ParticleManager::Create("smoke.png"));
 
 	// スプライト
 	player.reset(Object3d::Create("Player"));
@@ -134,6 +134,7 @@ void GamePlayScene::Update()
 			}
 		}
 		player->SetPosition(pos);
+		smoke->Add(5,pos, { 0,0,0 }, { 0,0,0 }, 1.0f, 2.0f);
 	}
 
 #pragma endregion
@@ -154,7 +155,7 @@ void GamePlayScene::Draw()
 	// 各描画
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
-	//DrawEffect(cmdList);
+	DrawEffect(cmdList);
 	DrawUI(cmdList);
 	DrawDebugText(cmdList);
 }
@@ -220,6 +221,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	ParticleManager::PreDraw(cmdList);
 
 	//particle->Draw();
+	smoke->Draw();
 
 	ParticleManager::PostDraw();
 }

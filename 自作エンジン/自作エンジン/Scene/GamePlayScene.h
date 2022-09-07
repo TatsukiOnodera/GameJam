@@ -63,6 +63,8 @@ private: // インスタンス
 	// スプライト
 	// プレイヤー
 	std::unique_ptr<Object3d> player = nullptr;
+	//プレイヤーの移動パーティクル
+	std::unique_ptr<ParticleManager> smoke;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
 	// OBJオブジェクト
