@@ -85,7 +85,7 @@ void GamePlayScene::InitializeVariable()
 	player->SetPosition({ 0, 4.5f * (-5), 0 });
 	player->SetRotation({ -90, 0, 0 });
 	player->SetScale({ 4.5f, 1, 4.5f });
-	player->SetColor({ 1, 0.45f, 1, 1 });
+	player->SetColor({ 1, 1, 1, 1 });
 	player->Update();
 }
 
@@ -126,6 +126,15 @@ void GamePlayScene::Update()
 				pos.y = -20.25f;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
+				int x = static_cast<int>((pos.x + 2.25f) / 2.25f * 2) + 4;
+				for (int y = 6; 0 <= y; y--)
+				{
+					if (block[y][x]->map == true && block[y + 1][x]->map == false && y < 7)
+					{
+						block[y + 1][x]->map = true;
+						break;
+					}
+				}
 			}
 			else if (pos.y < -22.5f)
 			{
