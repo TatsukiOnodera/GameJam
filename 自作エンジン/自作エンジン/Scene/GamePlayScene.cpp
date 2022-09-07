@@ -40,7 +40,7 @@ void GamePlayScene::Initialize()
 	{
 		for (int x = 0; x < 13; x++)
 		{
-			block[y][x].reset(new BLOCK(Object3d::Create("Block"), false));
+			block[y][x].reset(new BLOCK(Object3d::Create("Block"), false, 15));
 		}
 	}
 
@@ -74,7 +74,7 @@ void GamePlayScene::InitializeVariable()
 			block[y][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (y - 4) , 0 });
 			block[y][x]->block->SetRotation({ -90, 0, 0 });
 			block[y][x]->block->SetScale({ 4.5f, 1, 4.5f });
-			block[y][x]->block->SetColor({ 0.6f, 1, 0.7f, 1 });
+			block[y][x]->block->SetColor({ 0.4f, 1, 0.5f, 1 });
 			block[y][x]->block->Update();
 		}
 	}
@@ -85,7 +85,7 @@ void GamePlayScene::InitializeVariable()
 	player->SetPosition({ 0, 4.5f * (-5), 0 });
 	player->SetRotation({ -90, 0, 0 });
 	player->SetScale({ 4.5f, 1, 4.5f });
-	player->SetColor({ 1, 0.6f, 0.9f, 1 });
+	player->SetColor({ 1, 0.45f, 1, 1 });
 	player->Update();
 }
 
@@ -134,6 +134,32 @@ void GamePlayScene::Update()
 			}
 		}
 		player->SetPosition(pos);
+	}
+
+	// ブロック
+	{
+		// HP更新
+		for (int y = 0; y < 8; y++)
+		{
+			for (int x = 0; x < 13; x++)
+			{
+				if (block[y][x]->map == true)
+				{
+					if (block[y][x]->HP <= 5)
+					{
+						block[y][x]->block->SetColor({ 1, 0.5f, 0.4f, 1 });
+					}
+					else if (block[y][x]->HP <= 10)
+					{
+						block[y][x]->block->SetColor({ 1, 1, 0.45f, 1 });
+					}
+					else
+					{
+						block[y][x]->block->SetColor({ 0.4f, 1, 0.5f, 1 });
+					}
+				}
+			}
+		}
 	}
 
 #pragma endregion

@@ -48,10 +48,12 @@ private: //サブクラス
 	{
 		std::unique_ptr<Object3d> block = nullptr;
 		bool map = false;
-		BLOCK(Object3d *obj, bool map)
+		int HP = 0;
+		BLOCK(Object3d *obj, bool map, int HP)
 		{
 			this->block.reset(obj);
 			this->map = map;
+			this->HP = HP;
 		}
 	};
 
