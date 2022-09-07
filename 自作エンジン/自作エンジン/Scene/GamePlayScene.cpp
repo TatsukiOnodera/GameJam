@@ -145,7 +145,12 @@ void GamePlayScene::Update()
 			{
 				if (block[y][x]->map == true)
 				{
-					if (block[y][x]->HP <= 5)
+					if (block[y][x]->HP <= 0)
+					{
+						block[y][x]->map = false;
+						block[y][x]->HP = 15;
+					}
+					else if (block[y][x]->HP <= 5)
 					{
 						block[y][x]->block->SetColor({ 1, 0.5f, 0.4f, 1 });
 					}
