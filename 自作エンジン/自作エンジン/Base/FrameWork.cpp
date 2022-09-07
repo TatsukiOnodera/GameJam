@@ -75,10 +75,10 @@ void FrameWork::Initialize()
 	}
 
 	//FBXオブジェクト静的初期化
-	if (!FbxObject3d::StaticInitialize(dx_cmd->GetDev()))
+	/*if (!FbxObject3d::StaticInitialize(dx_cmd->GetDev()))
 	{
 		assert(0);
-	}
+	}*/
 
 	/*postEffect.reset(new PostEffect);
 	postEffect->Initialize();*/

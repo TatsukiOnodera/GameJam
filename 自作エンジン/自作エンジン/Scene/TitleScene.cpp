@@ -85,19 +85,19 @@ void TitleScene::DrawObject(ID3D12GraphicsCommandList* cmdList)
 
 	Object3d::PostDraw();
 
+	//FBXオブジェクト
+	/*FbxObject3d::PreDraw(cmdList);
+
+
+
+	FbxObject3d::PostDraw();*/
+
 	//スプライト描画
 	Sprite::PreDraw(cmdList);
 
 	
 
 	Sprite::PostDraw();
-
-	//FBXオブジェクト
-	FbxObject3d::PreDraw(cmdList);
-
-	
-
-	FbxObject3d::PostDraw();
 }
 
 void TitleScene::DrawUI(ID3D12GraphicsCommandList* cmdList)

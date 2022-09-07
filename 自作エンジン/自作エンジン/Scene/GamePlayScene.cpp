@@ -3,7 +3,7 @@
 
 #include <SafeDelete.h>
 #include <cassert>
-#include <fbxsdk.h>
+//#include <fbxsdk.h>
 
 using namespace DirectX;
 
@@ -79,6 +79,10 @@ void GamePlayScene::Update()
 		{
 			pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
 		}
+		if (input->PushKey(DIK_S) || input->PushKey(DIK_W))
+		{
+			pos.y += (input->PushKey(DIK_S) - input->PushKey(DIK_W)) * playerS;
+		}
 		// ジャンプ
 		if (isPJ == true)
 		{
@@ -116,7 +120,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 	// 前景スプライト描画
 	Sprite::PreDraw(cmdList);
 
-	
+
 
 	Sprite::PostDraw();
 	dx_cmd->ClearDepth();
@@ -132,11 +136,11 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	Object3d::PostDraw();
 
 	// FBXオブジェクト
-	FbxObject3d::PreDraw(cmdList);
+	/*FbxObject3d::PreDraw(cmdList);
 
 	
 
-	FbxObject3d::PostDraw();
+	FbxObject3d::PostDraw();*/
 
 	// スプライト描画
 	Sprite::PreDraw(cmdList);

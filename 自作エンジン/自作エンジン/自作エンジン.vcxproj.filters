@@ -84,9 +84,6 @@
     <ClCompile Include="Scene\TitleScene.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClCompile>
-    <ClCompile Include="EndScene.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Input\Input.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Input</Filter>
     </ClCompile>
@@ -126,23 +123,14 @@
     <ClCompile Include="Window\WinApp.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\WinApp</Filter>
     </ClCompile>
-    <ClCompile Include="3D\FbxLoader.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModel.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxModelMesh.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClCompile>
-    <ClCompile Include="3D\FbxObject3d.cpp">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClCompile>
     <ClCompile Include="3D\Model.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClCompile>
     <ClCompile Include="3D\Object3d.cpp">
       <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene\EndScene.cpp">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,9 +157,6 @@
     </ClInclude>
     <ClInclude Include="DirectXCommon\DirectXCommon.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\DirectXCommon</Filter>
-    </ClInclude>
-    <ClInclude Include="EndScene.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClInclude>
     <ClInclude Include="Scene\GamePlayScene.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
@@ -233,23 +218,14 @@
     <ClInclude Include="Window\WinApp.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\WinApp</Filter>
     </ClInclude>
-    <ClInclude Include="3D\FbxLoader.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModel.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxModelMesh.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClInclude>
-    <ClInclude Include="3D\FbxObject3d.h">
-      <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\FBX</Filter>
-    </ClInclude>
     <ClInclude Include="3D\Object3d.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
     </ClInclude>
     <ClInclude Include="3D\Model.h">
       <Filter>ソースファイル&amp;ヘッダーファイル\Object\3D\OBJ</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene\EndScene.h">
+      <Filter>ソースファイル&amp;ヘッダーファイル\Scene\Game</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

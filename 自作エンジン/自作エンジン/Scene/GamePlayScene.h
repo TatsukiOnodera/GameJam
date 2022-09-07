@@ -10,8 +10,8 @@
 #include "DirectXCommon.h"
 #include "BaseScene.h"
 #include "Light.h"
-#include "FbxLoader.h"
-#include "FbxObject3d.h"
+//#include "FbxLoader.h"
+//#include "FbxObject3d.h"
 
 #include <Windows.h>
 #include <DirectXMath.h>
