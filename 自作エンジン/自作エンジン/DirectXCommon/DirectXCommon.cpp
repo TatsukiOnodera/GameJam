@@ -94,9 +94,9 @@ void DirectXCommon::PreDraw()
 	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 
 	//ビューポート領域の設定
-	cmdList->RSSetViewports(1, &CD3DX12_VIEWPORT(0.0f, 0.0f, win->window_width, win->window_height));
+	cmdList->RSSetViewports(1, &CD3DX12_VIEWPORT(0.0f, 0.0f, WinApp::window_width, WinApp::window_height));
 	//シザー矩形の設定
-	cmdList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, win->window_width, win->window_height));
+	cmdList->RSSetScissorRects(1, &CD3DX12_RECT(0, 0, WinApp::window_width, WinApp::window_height));
 }
 
 void DirectXCommon::PostDraw()
@@ -236,8 +236,8 @@ bool DirectXCommon::CreateDoubleBuffer()
 	ComPtr<IDXGISwapChain1> swapchain1;
 
 	DXGI_SWAP_CHAIN_DESC1 swapchainDesc{};
-	swapchainDesc.Width = 1280;
-	swapchainDesc.Height = 720;
+	swapchainDesc.Width = WinApp::window_width;
+	swapchainDesc.Height = WinApp::window_height;
 	swapchainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;  // 色情報の書式
 	swapchainDesc.SampleDesc.Count = 1; // マルチサンプルしない
 	swapchainDesc.BufferUsage = DXGI_USAGE_BACK_BUFFER; // バックバッファ用
@@ -318,8 +318,8 @@ bool DirectXCommon::CreateDepthBuffer()
 	//深度バッファリソース設定
 	CD3DX12_RESOURCE_DESC depthResDesc = CD3DX12_RESOURCE_DESC::Tex2D(
 		DXGI_FORMAT_D32_FLOAT,
-		win->window_width,
-		win->window_height,
+		WinApp::window_width,
+		WinApp::window_height,
 		1, 0,
 		1, 0,
 		D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL);

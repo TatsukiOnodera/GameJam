@@ -57,7 +57,7 @@ void GamePlayScene::InitializeVariable()
 	playerJS = 2;
 	isPJ = false;
 
-	player->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
+	player->SetPosition({ WinApp::window_width / 2, 660 });
 	player->SetColor({ 1, 0.6f, 0.9f, 1 });
 }
 
