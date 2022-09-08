@@ -48,11 +48,11 @@ private: //サブクラス
 	{
 		std::unique_ptr<Object3d> block = nullptr;
 		bool map = false;
-		int HP = 0;
-		BLOCK(Object3d *obj, bool map, int HP)
+		int HP = 15;
+		bool buff = false;
+		BLOCK(Object3d *obj, int HP = 15)
 		{
 			this->block.reset(obj);
-			this->map = map;
 			this->HP = HP;
 		}
 	};
@@ -67,6 +67,8 @@ private: // インスタンス
 	std::unique_ptr<Object3d> player = nullptr;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
+	// ボール
+	std::unique_ptr<Object3d> ball = nullptr;
 	// OBJオブジェクト
 
 	// FBXオブジェクト
@@ -80,6 +82,28 @@ private: // メンバ変数
 	float playerJS;
 	// ジャンプフラグ
 	bool isPJ;
+
+	// ボール
+	// 速さ
+	float ballS;
+	// 回転
+	float ballR;
+	// ジャンプの速さ
+	float ballJS;
+	// ジャンプの加速度
+	float ballJA;
+	// ジャンプフラグ
+	bool isBJ;
+	//	重力落下速度
+	float ballG;
+	// 重力
+	float gravity = 0.1f;
+
+	// コンボ
+	// タイマー
+	int comboTimer;
+	// コンボの猶予時間
+	int comboLimit;
 
 public: // メンバ関数
 	~GamePlayScene() override;
