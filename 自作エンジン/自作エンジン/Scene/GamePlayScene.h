@@ -104,6 +104,8 @@ private: // メンバ変数
 	int comboTimer;
 	// コンボの猶予時間
 	int comboLimit;
+	// コンボカウンター
+	int comboNum;
 
 public: // メンバ関数
 	~GamePlayScene() override;
@@ -152,4 +154,6 @@ public: // メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	bool CheckCollision(XMFLOAT3& posA, float radiusA, XMFLOAT3 posB, float radiusB);
 };

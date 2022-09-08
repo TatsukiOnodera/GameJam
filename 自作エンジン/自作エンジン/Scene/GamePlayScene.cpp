@@ -80,7 +80,7 @@ void GamePlayScene::InitializeVariable()
 		}
 	}
 
-	playerS = 0.1f;
+	playerS = 0.15f;
 	playerJS = 0;
 	isPJ = false;
 
@@ -93,6 +93,7 @@ void GamePlayScene::InitializeVariable()
 
 	comboTimer = 0;
 	comboLimit = 60;
+	comboNum = 0;
 
 	player->SetPosition({ 0, 4.5f * (-5), 0 });
 	player->SetRotation({ -90, 0, 0 });
@@ -101,7 +102,7 @@ void GamePlayScene::InitializeVariable()
 
 	ball->SetPosition({ 0, 5, 0 });
 	ball->SetRotation({ -90, 0, 0 });
-	ball->SetScale({ 4.5f, 1, 4.5f });
+	ball->SetScale({ 2.25f, 1, 2.25f });
 	ball->Update();
 }
 
@@ -141,13 +142,13 @@ void GamePlayScene::Update()
 			// 加速
 			playerJS *= 2;
 			//ブロックにぶつかったか
-			if (-20.25f < pPos.y)
+			if (-22.5f + 0.5f * player->GetScale().x < pPos.y)
 			{
-				pPos.y = -20.25f;
+				pPos.y = -22.5f + 0.5f * player->GetScale().x;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
 				// Xが今どこの横列か
-				int x = static_cast<int>((pPos.x + 29.25f) / 4.5f);
+				int x = static_cast<int>((pPos.x + 29.25f) / block[0][0]->block->GetScale().x);
 				//一つ上に空きがあるか
 				for (int y = 6; 0 <= y; y--)
 				{
@@ -157,7 +158,7 @@ void GamePlayScene::Update()
 						break;
 					}
 				}
-				if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / 4.5f) == x)
+				if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x)
 				{
 					isBJ = true;
 					ballJS = 4.5f;
@@ -178,15 +179,15 @@ void GamePlayScene::Update()
 		// 移動
 		XMFLOAT3 bPos = ball->GetPosition();
 		bPos.x += ballS;
-		if (27 < bPos.x)
+		if (28.275f < bPos.x)
 		{
-			bPos.x = 27;
+			bPos.x = 28.275f;
 			ballS = -ballS;
 			ballR = -ballR;
 		}
-		else if (bPos.x < -27)
+		else if (bPos.x < -28.275f)
 		{
-			bPos.x = -27;
+			bPos.x = -28.275f;
 			ballS = -ballS;
 			ballR = -ballR;
 		}
@@ -209,9 +210,8 @@ void GamePlayScene::Update()
 			{
 				if (block[y][x]->map == true)
 				{
-					if (bPos.y - 2.25f < block[y][x]->block->GetPosition().y + 2.25f)
+					if (CheckCollision(bPos, 0.5f * ball->GetScale().x, block[y][x]->block->GetPosition(), 0.5f * block[y][x]->block->GetScale().x))
 					{
-						bPos.y = block[y][x]->block->GetPosition().y + 4.5f;
 						ballG = gravity;
 						isBJ = false;
 					}
@@ -286,14 +286,10 @@ void GamePlayScene::Update()
 					block[y][x]->map = false;
 					block[y][x]->HP = 15;
 				}
-				// コンボが成立するか
-				if (comboTimer > 0)
-				{
-					// コンボ時
-
-				}
-				//タイマーを1にする
+				// タイマーを1にする
 				comboTimer = 1;
+				// コンボカウンター
+				comboNum++;
 			}
 		}
 
@@ -302,11 +298,17 @@ void GamePlayScene::Update()
 		{
 			// コンボの猶予時間
 			comboTimer++;
+			if (comboTimer > 20)
+			{
+				// コンボ時
+				debugText.Print("COMBO", 10, 10, comboNum);
+			}
 			// 猶予を過ぎたか
 			if (comboTimer > comboLimit)
 			{
 				// リセット
 				comboTimer = 0;
+				comboNum = 0;
 			}
 		}
 	}
@@ -404,4 +406,9 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
 	// デバッグテキスト描画
 	debugText.Draw(cmdList);
+}
+
+bool GamePlayScene::CheckCollision(XMFLOAT3& posA, float radiusA, XMFLOAT3 posB, float radiusB)
+{
+	
 }
