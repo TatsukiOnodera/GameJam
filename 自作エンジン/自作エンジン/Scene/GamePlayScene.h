@@ -57,20 +57,53 @@ private: //サブクラス
 		}
 	};
 
+	struct ENEMY
+	{
+		std::unique_ptr<Object3d> enemy = nullptr;
+		bool alive = false;
+		float enemyS = 0;
+		float enemyR = 0;
+		float enemyG = 0;
+		ENEMY(Object3d* obj)
+		{
+			this->enemy.reset(obj);
+		}
+	};
+
+	struct ENEMYSPAWNER
+	{
+		std::unique_ptr<Object3d> spawner = nullptr;
+		bool active = false;
+		ENEMYSPAWNER(Object3d* obj)
+		{
+			this->spawner.reset(obj);
+		}
+	};
+
 private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 	// パーティクル
 	//std::unique_ptr<ParticleManager> particle = nullptr;
 	// スプライト
+	
+	// OBJオブジェクト
 	// プレイヤー
 	std::unique_ptr<Object3d> player = nullptr;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
 	// ボール
 	std::unique_ptr<Object3d> ball = nullptr;
-	// OBJオブジェクト
-
+	// エネミー
+	std::unique_ptr<ENEMY> enemy[13] = {};
+	// エネミースポナー
+	std::unique_ptr<ENEMYSPAWNER> enemySpawner[13] = {};
+	// フレーム
+	std::unique_ptr<Object3d> frame = nullptr;
+	// ニードル
+	std::unique_ptr<Object3d> needle[13] = {};
+	// ハート
+	std::unique_ptr<Object3d> heart[3] = {};
 	// FBXオブジェクト
 
 
@@ -106,6 +139,18 @@ private: // メンバ変数
 	int comboLimit;
 	// コンボカウンター
 	int comboNum;
+
+	// スポーン
+	// タイマー
+	int spawTimer;
+	// 拡大率
+	float spawnerScale;
+	// 加速度
+	float spawnerSA;
+
+	// ハート
+	// ハートカウンター
+	int heartCounter;
 
 public: // メンバ関数
 	~GamePlayScene() override;
@@ -154,4 +199,6 @@ public: // メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	const float LenAB(XMFLOAT3 posA, XMFLOAT3 posB);
 };
