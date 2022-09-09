@@ -28,6 +28,7 @@ public: // サブクラス
 	{
 		XMFLOAT3 pos; // xyz座標
 		float scale; //スケール
+		XMFLOAT4 color; // 色(RGBA)
 	};
 
 	// 定数バッファ用データ構造体
@@ -58,6 +59,10 @@ public: // サブクラス
 		float s_scale = 1.0f;
 		//最終地
 		float e_scale = 0.0f;
+		//色
+		XMFLOAT4 color = { 1,1,1,1 };
+		XMFLOAT4 s_color = {};
+		XMFLOAT4 e_color = {};
 	};
 
 private: // 定数
@@ -178,5 +183,5 @@ public: // メンバ関数
 	/// <summary>
 	/// パーティクルの追加
 	/// </summary>
-	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale);
+	void Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale,XMFLOAT4 start_color = {1,1,1,1},XMFLOAT4 end_color = {0,0,0,0});
 };

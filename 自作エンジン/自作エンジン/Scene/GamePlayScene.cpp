@@ -1,5 +1,6 @@
 #include "GamePlayScene.h"
 #include "SceneManager.h"
+#include <time.h>
 
 #include <SafeDelete.h>
 #include <cassert>
@@ -104,9 +105,14 @@ void GamePlayScene::Update()
 
 		// ˆÚ“®
 		XMFLOAT3 pos = player->GetPosition();
+		XMFLOAT3 particlePos = player->GetPosition();
+		XMFLOAT3 velocity = { 0,0,0 };
+		XMFLOAT3 accel = { 0,0,0 };
 		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 		{
 			pos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
+			/*this->position.x = ((float)rand() / RAND_MAX * md_pos - md_pos / 2.0f) + position.x;
+			this->position.y = ((float)rand() / RAND_MAX * md_pos - md_pos / 2.0f) + position.y;*/
 			if (27 < pos.x)
 			{
 				pos.x = 27;
@@ -114,6 +120,16 @@ void GamePlayScene::Update()
 			else if (pos.x < -27)
 			{
 				pos.x = -27;
+			}
+
+			for (int i = 0; i < 1; i++) {
+				//srand(time(NULL));
+				particlePos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.x;
+				particlePos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.y;
+				velocity.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
+				accel.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.01f;
+				accel.y = (float)rand() / RAND_MAX * 0.15f;
+				smoke->Add(6, { particlePos.x,particlePos.y - 1.5f,particlePos.z - 1.0f }, velocity, accel, 0.5f, 2.0f);
 			}
 		}
 		// ƒWƒƒƒ“ƒv
@@ -134,7 +150,6 @@ void GamePlayScene::Update()
 			}
 		}
 		player->SetPosition(pos);
-		smoke->Add(5,pos, { 0,0,0 }, { 0,0,0 }, 1.0f, 2.0f);
 	}
 
 #pragma endregion

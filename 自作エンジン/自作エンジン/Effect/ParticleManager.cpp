@@ -188,6 +188,11 @@ bool ParticleManager::InitializeGraphicsPipeline()
 			D3D12_APPEND_ALIGNED_ELEMENT,
 			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
 		},
+		{ // 色
+			"COLOR", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0,
+			D3D12_APPEND_ALIGNED_ELEMENT,
+			D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0
+		},
 	};
 
 	// グラフィックスパイプラインの流れを設定
@@ -521,6 +526,10 @@ void ParticleManager::Update()
 
 		it->scale = (it->e_scale - it->s_scale) / f;
 		it->scale += it->s_scale;
+
+		it->color.x = it->s_color.x + (it->e_color.x - it->s_color.x) / f;
+		it->color.y = it->s_color.y + (it->e_color.y - it->s_color.y) / f;
+		it->color.z = it->s_color.z + (it->e_color.z - it->s_color.z) / f;
 	}
 
 	//頂点バッファへデータ転送
@@ -530,6 +539,7 @@ void ParticleManager::Update()
 		for (std::forward_list<Particle>::iterator it = m_partices.begin(); it != m_partices.end(); it++) {
 			vertMap->pos = it->position;
 			vertMap->scale = it->scale;
+			vertMap->color = it->color;
 			vertMap++;
 		}
 		vertBuff->Unmap(0, nullptr);
@@ -569,7 +579,7 @@ void ParticleManager::Draw()
 	}
 }
 
-void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale)
+void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOAT3 accel, float start_scale, float end_scale,XMFLOAT4 start_color,XMFLOAT4 end_color)
 {
 	//リストに要素を追加
 	m_partices.emplace_front();
@@ -582,4 +592,6 @@ void ParticleManager::Add(int life, XMFLOAT3 position, XMFLOAT3 velocity, XMFLOA
 	p.num_frame = life;
 	p.s_scale = start_scale;
 	p.e_scale = end_scale;
+	p.s_color = start_color;
+	p.e_color = end_color;
 }
