@@ -154,6 +154,4 @@ public: // メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
-
-	bool CheckCollision(XMFLOAT3& posA, float radiusA, XMFLOAT3 posB, float radiusB);
 };

@@ -87,7 +87,7 @@ void GamePlayScene::InitializeVariable()
 	ballS = 0.2f;
 	ballR = -5;
 	ballJS = 0;
-	ballJA = -0.45f;
+	ballJA = -0.1f;
 	ballG = 0.5f;
 	isBJ = false;
 
@@ -97,7 +97,7 @@ void GamePlayScene::InitializeVariable()
 
 	player->SetPosition({ 0, 4.5f * (-5), 0 });
 	player->SetRotation({ -90, 0, 0 });
-	player->SetScale({ 4.5f, 1, 4.5f });
+	player->SetScale({ 2.25f, 1, 2.25f });
 	player->Update();
 
 	ball->SetPosition({ 0, 5, 0 });
@@ -161,7 +161,11 @@ void GamePlayScene::Update()
 				if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x)
 				{
 					isBJ = true;
-					ballJS = 4.5f;
+					ballJS = 2.0f;
+					XMFLOAT3 bPos = ball->GetPosition();
+					bPos.y += 4.5f;
+					ball->SetPosition(bPos);
+					ball->Update();
 				}
 			}
 			//床についたか
@@ -210,13 +214,46 @@ void GamePlayScene::Update()
 			{
 				if (block[y][x]->map == true)
 				{
-					if (CheckCollision(bPos, 0.5f * ball->GetScale().x, block[y][x]->block->GetPosition(), 0.5f * block[y][x]->block->GetScale().x))
+					// 縦
+					if (y < 7 && block[y + 1][x]->map == false)
 					{
-						ballG = gravity;
-						isBJ = false;
+						if (block[y][x]->block->GetPosition().x - 0.5f * block[y][x]->block->GetScale().x <= bPos.x && bPos.x <= block[y][x]->block->GetPosition().x + 0.5f * block[y][x]->block->GetScale().x)
+						{
+							if (bPos.y - 0.5f * ball->GetScale().x < block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x)
+							{
+								bPos.y = block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x + 0.5f * ball->GetScale().x;
+								ballG = gravity;
+								isBJ = false;
+							}
+						}
+					}
+					// 横
+					if (fabsf(bPos.x - block[y][x]->block->GetPosition().x) < 0.5f * ball->GetScale().x + 0.5f * block[y][x]->block->GetScale().x)
+					{
+						if (block[y][x]->block->GetPosition().y - 0.5f * block[y][x]->block->GetScale().x < bPos.y && bPos.y < block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x)
+						{
+							if (bPos.x - block[y][x]->block->GetPosition().x < 0)
+							{
+								bPos.x = block[y][x]->block->GetPosition().x - 0.5f * ball->GetScale().x - 0.5f * block[y][x]->block->GetScale().x;
+								ballS = -ballS;
+								ballR = -ballR;
+							}
+							else
+							{
+								bPos.x = block[y][x]->block->GetPosition().x + 0.5f * ball->GetScale().x + 0.5f * block[y][x]->block->GetScale().x;
+								ballS = -ballS;
+								ballR = -ballR;
+							}
+						}
 					}
 				}
 			}
+		}
+		if (bPos.y < -14.625f)
+		{
+			bPos.y = -14.625f;
+			ballG = gravity;
+			isBJ = false;
 		}
 		ball->SetPosition(bPos);
 		// 回転
@@ -406,9 +443,4 @@ void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
 	// デバッグテキスト描画
 	debugText.Draw(cmdList);
-}
-
-bool GamePlayScene::CheckCollision(XMFLOAT3& posA, float radiusA, XMFLOAT3 posB, float radiusB)
-{
-	
 }
