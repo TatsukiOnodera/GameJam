@@ -33,7 +33,8 @@ void GamePlayScene::Initialize()
 	debugText.Initialize(fontNumber);
 
 	// パーティクル
-	smoke.reset(ParticleManager::Create("smoke.png"));
+	playerWalkEffect.reset(ParticleManager::Create("star.png"));
+	playerJumpEffect.reset(ParticleManager::Create("stareffect_02.png"));
 
 	// スプライト
 	player.reset(Object3d::Create("Player"));
@@ -122,15 +123,16 @@ void GamePlayScene::Update()
 				pos.x = -27;
 			}
 
-			for (int i = 0; i < 1; i++) {
-				//srand(time(NULL));
+			playerWalkEffectTimer--;
+			if (playerWalkEffectTimer <= 0) {
 				particlePos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.x;
 				particlePos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.y;
-				velocity.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.5f;
-				accel.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.01f;
-				accel.y = (float)rand() / RAND_MAX * 0.15f;
-				smoke->Add(6, { particlePos.x,particlePos.y - 1.5f,particlePos.z - 1.0f }, velocity, accel, 0.5f, 2.0f);
-			}
+				velocity.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.2f;
+				accel.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.001f;
+				accel.y = (float)rand() / RAND_MAX * 0.005f;
+				playerWalkEffect->Add(30, { particlePos.x,particlePos.y - 1.5f,particlePos.z - 1.0f }, velocity, accel, 0.5f, 3.5f,{1,1,1,1},{0.5,0.5,0.5,0.3});
+				playerWalkEffectTimer = 10;
+			}			
 		}
 		// ジャンプ
 		if (isPJ == true)
@@ -142,6 +144,8 @@ void GamePlayScene::Update()
 				pos.y = -20.25f;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
+				accel.y = -0.005f;
+				playerJumpEffect->Add(30, { particlePos.x,particlePos.y-0.5f,particlePos.z - 1.0f }, { 0,0,0 }, accel, 4.0f, 6.0f, { 1,1,1,1 }, { 1,1,1,1 });
 			}
 			else if (pos.y < -22.5f)
 			{
@@ -236,7 +240,8 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	ParticleManager::PreDraw(cmdList);
 
 	//particle->Draw();
-	smoke->Draw();
+	playerWalkEffect->Draw();
+	playerJumpEffect->Draw();
 
 	ParticleManager::PostDraw();
 }

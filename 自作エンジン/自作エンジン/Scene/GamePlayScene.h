@@ -59,12 +59,11 @@ private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
 	// パーティクル
-	//std::unique_ptr<ParticleManager> particle = nullptr;
+	std::unique_ptr<ParticleManager> playerWalkEffect;
+	std::unique_ptr<ParticleManager> playerJumpEffect;
 	// スプライト
 	// プレイヤー
 	std::unique_ptr<Object3d> player = nullptr;
-	//プレイヤーの移動パーティクル
-	std::unique_ptr<ParticleManager> smoke;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
 	// OBJオブジェクト
@@ -80,6 +79,8 @@ private: // メンバ変数
 	float playerJS;
 	// ジャンプフラグ
 	bool isPJ;
+
+	int playerWalkEffectTimer = 10;
 
 public: // メンバ関数
 	~GamePlayScene() override;
