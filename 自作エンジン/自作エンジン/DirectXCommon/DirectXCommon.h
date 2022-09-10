@@ -13,10 +13,13 @@
 
 class DirectXCommon
 {
-public:
+public: // エイリアス
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
 
-private:
+public: // 静的メンバ関数
+	static DirectXCommon* GetInstance();
+
+private: // メンバ関数
 	ComPtr<IDXGIFactory6> dxgiFactory;
 	ComPtr<ID3D12Device> dev;
 	ComPtr<IDXGISwapChain4> swapchain;
@@ -34,16 +37,13 @@ private:
 
 	WinApp* win;
 
-public: //静的メンバ関数
-	static DirectXCommon* GetInstance();
-
-public: //メンバ関数
-	//コンストラクタ
+public: // メンバ関数
+	// コンストラクタ
 	DirectXCommon();
-	//デストラクタ
+	// デストラクタ
 	~DirectXCommon();
 
-	//アクセッサ
+	// アクセッサ
 	ID3D12Device *GetDev() { return dev.Get(); }
 	ID3D12GraphicsCommandList* GetCmdList() { return cmdList.Get(); }
 

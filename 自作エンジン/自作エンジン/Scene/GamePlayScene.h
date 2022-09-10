@@ -48,10 +48,35 @@ private: //サブクラス
 	{
 		std::unique_ptr<Object3d> block = nullptr;
 		bool map = false;
-		BLOCK(Object3d *obj, bool map)
+		int HP = 15;
+		bool buff = false;
+		BLOCK(Object3d *obj, int HP = 15)
 		{
 			this->block.reset(obj);
-			this->map = map;
+			this->HP = HP;
+		}
+	};
+
+	struct ENEMY
+	{
+		std::unique_ptr<Object3d> enemy = nullptr;
+		bool alive = false;
+		float enemyS = 0;
+		float enemyR = 0;
+		float enemyG = 0;
+		ENEMY(Object3d* obj)
+		{
+			this->enemy.reset(obj);
+		}
+	};
+
+	struct ENEMYSPAWNER
+	{
+		std::unique_ptr<Object3d> spawner = nullptr;
+		bool active = false;
+		ENEMYSPAWNER(Object3d* obj)
+		{
+			this->spawner.reset(obj);
 		}
 	};
 
@@ -62,12 +87,24 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> playerWalkEffect;
 	std::unique_ptr<ParticleManager> playerJumpEffect;
 	// スプライト
+	
+	// OBJオブジェクト
 	// プレイヤー
 	std::unique_ptr<Object3d> player = nullptr;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
-	// OBJオブジェクト
-
+	// ボール
+	std::unique_ptr<Object3d> ball = nullptr;
+	// エネミー
+	std::unique_ptr<ENEMY> enemy[13] = {};
+	// エネミースポナー
+	std::unique_ptr<ENEMYSPAWNER> enemySpawner[13] = {};
+	// フレーム
+	std::unique_ptr<Object3d> frame = nullptr;
+	// ニードル
+	std::unique_ptr<Object3d> needle[13] = {};
+	// ハート
+	std::unique_ptr<Object3d> heart[3] = {};
 	// FBXオブジェクト
 
 
@@ -81,6 +118,41 @@ private: // メンバ変数
 	bool isPJ;
 
 	int playerWalkEffectTimer = 10;
+	// ボール
+	// 速さ
+	float ballS;
+	// 回転
+	float ballR;
+	// ジャンプの速さ
+	float ballJS;
+	// ジャンプの加速度
+	float ballJA;
+	// ジャンプフラグ
+	bool isBJ;
+	//	重力落下速度
+	float ballG;
+	// 重力
+	float gravity = 0.1f;
+
+	// コンボ
+	// タイマー
+	int comboTimer;
+	// コンボの猶予時間
+	int comboLimit;
+	// コンボカウンター
+	int comboNum;
+
+	// スポーン
+	// タイマー
+	int spawTimer;
+	// 拡大率
+	float spawnerScale;
+	// 加速度
+	float spawnerSA;
+
+	// ハート
+	// ハートカウンター
+	int heartCounter;
 
 public: // メンバ関数
 	~GamePlayScene() override;
@@ -129,4 +201,6 @@ public: // メンバ関数
 	/// デバッグテキスト描画
 	/// </summary>
 	void DrawDebugText(ID3D12GraphicsCommandList* cmdList);
+
+	const float LenAB(XMFLOAT3 posA, XMFLOAT3 posB);
 };
