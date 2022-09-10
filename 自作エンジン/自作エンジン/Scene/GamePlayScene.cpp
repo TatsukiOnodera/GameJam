@@ -36,6 +36,10 @@ void GamePlayScene::Initialize()
 	// パーティクル
 	playerWalkEffect.reset(ParticleManager::Create("star.png"));
 	playerJumpEffect.reset(ParticleManager::Create("stareffect_02.png"));
+	ballJumpEffect.reset(ParticleManager::Create("star.png"));
+	ballBounceEffect.reset(ParticleManager::Create("stareffect_01.png"));
+	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
+	enemySpawnEffect.reset(ParticleManager::Create("enemyspowneffect.png"));
 
 	// スプライト
 	player.reset(Object3d::Create("Player"));
@@ -273,9 +277,11 @@ void GamePlayScene::Update()
 
 		// 移動
 		XMFLOAT3 pPos = player->GetPosition();
-		XMFLOAT3 particlePos = player->GetPosition();
+		XMFLOAT3 walkParticlePos = player->GetPosition();
+		XMFLOAT3 jumpParticlePos = player->GetPosition();
 		XMFLOAT3 velocity = { 0,0,0 };
-		XMFLOAT3 accel = { 0,0,0 };
+		XMFLOAT3 walkParticleAccel = { 0,0,0 };
+		XMFLOAT3 jumpParticleAccel = { 0,0,0 };
 		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 		{
 			pPos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
@@ -289,14 +295,16 @@ void GamePlayScene::Update()
 			}
 
 			playerWalkEffectTimer--;
-			if (playerWalkEffectTimer <= 0) {
-				particlePos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.x;
-				particlePos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pos.y;
+
+			if (playerWalkEffectTimer <= 0 && !isPJ) {
+				walkParticlePos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pPos.x;
+				walkParticlePos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + pPos.y;
 				velocity.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.2f;
-				accel.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.001f;
-				accel.y = (float)rand() / RAND_MAX * 0.005f;
-				playerWalkEffect->Add(30, { particlePos.x,particlePos.y - 1.5f,particlePos.z - 1.0f }, velocity, accel, 0.5f, 3.5f,{1,1,1,1},{0.5,0.5,0.5,0.3});
+				walkParticleAccel.x -= (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * 0.001f;
+				walkParticleAccel.y = (float)rand() / RAND_MAX * 0.005f;
+				playerWalkEffect->Add(30, { walkParticlePos.x, walkParticlePos.y - 1.5f, walkParticlePos.z - 1.0f }, velocity, walkParticleAccel, 0.5f, 3.5f,{1,1,1,1},{0.5,0.5,0.5,0.3});
 				playerWalkEffectTimer = 10;
+				playerWalkEffect->Update();
 			}			
 		}
 
@@ -313,8 +321,8 @@ void GamePlayScene::Update()
 				pPos.y = -22.0f + 0.5f * player->GetScale().x;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
-				accel.y = -0.005f;
-				playerJumpEffect->Add(30, { particlePos.x,particlePos.y-0.5f,particlePos.z - 1.0f }, { 0,0,0 }, accel, 4.0f, 6.0f, { 1,1,1,1 }, { 1,1,1,1 });
+				jumpParticleAccel.y = -0.005f;
+				playerJumpEffect->Add(30, { jumpParticlePos.x,jumpParticlePos.y-0.5f,jumpParticlePos.z - 1.0f }, { 0,0,0 }, jumpParticleAccel, 4.0f, 6.0f, { 1,1,1,1 }, { 1,1,1,1 });
 				// Xが今どこの横列か
 				int x = static_cast<int>((pPos.x + 29.25f) / block[0][0]->block->GetScale().x);
 				//一つ上に空きがあるか
@@ -364,12 +372,14 @@ void GamePlayScene::Update()
 			bPos.x = 28.275f;
 			ballS = -ballS;
 			ballR = -ballR;
+			ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 		}
 		else if (bPos.x < -28.275f)
 		{
 			bPos.x = -28.275f;
 			ballS = -ballS;
 			ballR = -ballR;
+			ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 		}
 		// 重力
 		if (isBJ == false)
@@ -380,6 +390,7 @@ void GamePlayScene::Update()
 		// ジャンプ
 		else
 		{
+			ballJumpEffect->Add(30, bPos, { 0,0,0 }, { 0,0,0 }, 1.0f, 3.0f);
 			bPos.y += ballJS;
 			ballJS += ballJA;
 		}
@@ -546,12 +557,14 @@ void GamePlayScene::Update()
 						ePos.x = 28.275f;
 						enemy[i]->enemyS = -enemy[i]->enemyS;
 						enemy[i]->enemyR = -enemy[i]->enemyR;
+						enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 					}
 					else if (ePos.x < -28.275f)
 					{
 						ePos.x = -28.275f;
 						enemy[i]->enemyS = -enemy[i]->enemyS;
 						enemy[i]->enemyR = -enemy[i]->enemyR;
+						enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 					}
 					// 重力
 					ePos.y -= enemy[i]->enemyG;
@@ -586,6 +599,7 @@ void GamePlayScene::Update()
 											block[y][x]->HP--;
 											enemy[i]->enemyS = -enemy[i]->enemyS;
 											enemy[i]->enemyR = -enemy[i]->enemyR;
+											enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 										}
 										else
 										{
@@ -593,6 +607,7 @@ void GamePlayScene::Update()
 											block[y][x]->HP--;
 											enemy[i]->enemyS = -enemy[i]->enemyS;
 											enemy[i]->enemyR = -enemy[i]->enemyR;
+											enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 										}
 									}
 								}
@@ -725,10 +740,15 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
 	// パーティクル描画
 	ParticleManager::PreDraw(cmdList);
-
 	//particle->Draw();
-	playerWalkEffect->Draw();
+	if (!isPJ) {
+		playerWalkEffect->Draw();
+	}
 	playerJumpEffect->Draw();
+	ballJumpEffect->Draw();
+	ballBounceEffect->Draw();
+	enemyBounceEffect->Draw();
+	enemySpawnEffect->Draw();
 
 	ParticleManager::PostDraw();
 }

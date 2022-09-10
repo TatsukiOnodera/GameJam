@@ -86,6 +86,10 @@ private: // インスタンス
 	// パーティクル
 	std::unique_ptr<ParticleManager> playerWalkEffect;
 	std::unique_ptr<ParticleManager> playerJumpEffect;
+	std::unique_ptr<ParticleManager> ballJumpEffect;
+	std::unique_ptr<ParticleManager> ballBounceEffect;
+	std::unique_ptr<ParticleManager> enemyBounceEffect;
+	std::unique_ptr<ParticleManager> enemySpawnEffect;
 	// スプライト
 	
 	// OBJオブジェクト
