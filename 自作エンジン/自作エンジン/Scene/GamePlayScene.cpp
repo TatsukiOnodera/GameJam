@@ -194,10 +194,23 @@ void GamePlayScene::Update()
 					// 0‚È‚çˆê—ñŒJ‚è‰º‚°
 					if (block[y][x]->HP <= 0)
 					{
-						block[y][x]->map = block[y + 1][x]->map;
-						block[y][x]->HP = block[y + 1][x]->HP;
-						block[y + 1][x]->map = false;
-						block[y + 1][x]->HP = 15;
+						for (int h = 1; h < 8; h++)
+						{
+							XMFLOAT3 bPos = block[h + 1][x]->block->GetPosition();
+							bPos.y -= 0.45f;
+							block[h + 1][x]->block->SetPosition(bPos);
+							if (4.5f < 4.5f * (h - 3) - bPos.y && h < 7)
+							{
+								block[y][x]->HP = 15;
+								block[h][x]->map = block[h + 1][x]->map;
+								block[h + 1][x]->map = false;
+								block[h][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (h - 4) , 0 });
+								if (h == 6)
+								{
+									block[7][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (7 - 4) , 0 });
+								}
+							}
+						}
 					}
 					// 5ˆÈ‰º‚Å
 					else if (block[y][x]->HP <= 5)
@@ -288,8 +301,7 @@ void GamePlayScene::Update()
 			if (27 < pPos.x)
 			{
 				pPos.x = 27;
-			}
-			else if (pPos.x < -27)
+			} else if (pPos.x < -27)
 			{
 				pPos.x = -27;
 			}
@@ -312,7 +324,7 @@ void GamePlayScene::Update()
 		if (isPJ == true)
 		{
 			// ‰ÁŽZ
-			pPos.y += playerJS; 
+			pPos.y += playerJS;
 			// ‰Á‘¬
 			playerJS *= 2;
 			//ƒuƒƒbƒN‚É‚Ô‚Â‚©‚Á‚½‚©
@@ -328,26 +340,26 @@ void GamePlayScene::Update()
 				//ˆê‚Âã‚É‹ó‚«‚ª‚ ‚é‚©
 				for (int y = 6; 0 <= y; y--)
 				{
-					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false)
+					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false && block[1][x]->HP > 0)
 					{
 						block[y + 1][x]->map = true;
+						if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x)
+						{
+							isBJ = true;
+							ballJS = 2.0f;
+							XMFLOAT3 bPos = ball->GetPosition();
+							bPos.y += 4.5f;
+							ball->SetPosition(bPos);
+							ball->Update();
+						}
+						for (int i = 0; i < 13; i++)
+						{
+							if (isBJ == false && static_cast<int>((enemy[i]->enemy->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x && enemy[i]->alive == true)
+							{
+								enemy[i]->alive = false;
+							}
+						}
 						break;
-					}
-				}
-				if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x)
-				{
-					isBJ = true;
-					ballJS = 2.0f;
-					XMFLOAT3 bPos = ball->GetPosition();
-					bPos.y += 4.5f;
-					ball->SetPosition(bPos);
-					ball->Update();
-				}
-				for (int i = 0; i < 13; i++)
-				{
-					if (isBJ == false && static_cast<int>((enemy[i]->enemy->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x && enemy[i]->alive == true)
-					{
-						enemy[i]->alive = false;
 					}
 				}
 			}
