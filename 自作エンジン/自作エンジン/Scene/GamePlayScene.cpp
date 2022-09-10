@@ -4,6 +4,7 @@
 #include <SafeDelete.h>
 #include <cassert>
 #include <time.h>
+#include <stdlib.h>
 //#include <fbxsdk.h>
 
 using namespace DirectX;
@@ -36,9 +37,38 @@ void GamePlayScene::Initialize()
 	//particle.reset(ParticleManager::Create("Default/effect1.png"));
 
 	// スプライト
-	player.reset(Object3d::Create("Player"));
+	player.reset(Object3d::Create("PlayerStay"));
 	ball.reset(Object3d::Create("BallMove_01"));
 	frame.reset(Object3d::Create("GameFrame"));
+	frame->SetPosition({ 0, 0, 0 });
+	frame->SetRotation({ -90, 0, 0 });
+	frame->SetScale({ 10 * 7.23, 1, 8 * 7.23 });
+	frame->Update();
+	title.reset(Object3d::Create("TitleText"));
+	title->SetPosition({ 0, 8, 0 });
+	title->SetRotation({ -90, 0, 0 });
+	title->SetScale({ 30, 1, 30 });
+	title->Update();
+	titleButton.reset(Object3d::Create("Button_01"));
+	titleButton->SetPosition({ 0, -9, 0 });
+	titleButton->SetRotation({ -90, 0, 0 });
+	titleButton->SetScale({ 20, 1, 20 });
+	titleButton->Update();
+	end.reset(Object3d::Create("Text_02"));
+	end->SetPosition({ -10, -2, 0 });
+	end->SetRotation({ -90, 0, 0 });
+	end->SetScale({ 0, 1, 0 });
+	end->Update();
+	endButton.reset(Object3d::Create("Button_02"));
+	endButton->SetPosition({ 0, -10, 0 });
+	endButton->SetRotation({ -90, 0, 0 });
+	endButton->SetScale({ 0, 1, 0 });
+	endButton->Update();
+	gameover.reset(Object3d::Create("GameoverText"));
+	gameover->SetPosition({ 0, 8, 0 });
+	gameover->SetRotation({ -90, 0, 0 });
+	gameover->SetScale({ 0, 1, 0 });
+	gameover->Update();
 	for (auto& m : enemy)
 	{
 		m.reset(new ENEMY(Object3d::Create("EnemyStay")));
@@ -47,19 +77,75 @@ void GamePlayScene::Initialize()
 	{
 		m.reset(new ENEMYSPAWNER(Object3d::Create("EnemySpawner")));
 	}
-	for (auto& m : needle)
+	for (int x = 0; x < 13; x++)
 	{
-		m.reset(Object3d::Create("Needle"));
+		needle[x].reset(Object3d::Create("Needle"));
+		needle[x]->SetPosition({ 5.2f * (x - 6), 15.35f, 0 });
+		needle[x]->SetRotation({ -90, 0, 0 });
+		needle[x]->SetScale({ 5.2f, 1, 5.2f });
+		needle[x]->Update();
 	}
-	for (auto& m : heart)
+	for (int x = 0; x < 3; x++)
 	{
-		m.reset(Object3d::Create("Heart"));
+		heart[x].reset(Object3d::Create("Heart"));
+		heart[x]->SetPosition({ x * 2.5f + 4.5f * (x - 1) - 22.5f, 24.25f, 0 });
+		heart[x]->SetRotation({ -90, 0, 0 });
+		heart[x]->SetScale({ 4.5f, 1, 4.5f });
+		heart[x]->Update();
 	}
 	for (int y = 0; y < 8; y++)
 	{
 		for (int x = 0; x < 13; x++)
 		{
 			block[y][x].reset(new BLOCK(Object3d::Create("Block")));
+			if (y == 0)
+			{
+				block[y][x]->map = true;
+			}
+			else if (y == 1)
+			{
+				if (x == 1 || x == 2 || x == 4 || x == 8 || x == 10 || x == 11)
+				{
+					block[y][x]->map = true;
+				}
+			}
+			else if (y == 2)
+			{
+				if (x == 1 || x == 2 || x == 10 || x == 11)
+				{
+					block[y][x]->map = true;
+				}
+			}
+			else if (y == 3)
+			{
+				if (x == 1 ||  x == 11)
+				{
+					block[y][x]->map = true;
+				}
+			}
+			else if (y == 4)
+			{
+				if (x == 1 ||  x == 11)
+				{
+					block[y][x]->map = true;
+				}
+			}
+			else if (y == 5)
+			{
+				if (x == 11)
+				{
+					block[y][x]->map = true;
+				}
+			}
+			else
+			{
+				block[y][x]->map = false;
+			}
+			block[y][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (y - 4) , 0 });
+			block[y][x]->block->SetRotation({ -90, 0, 0 });
+			block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
+			block[y][x]->block->SetColor({ 0.4f, 1, 0.5f, 1 });
+			block[y][x]->block->Update();
 		}
 	}
 
@@ -81,36 +167,21 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	for (int y = 0; y < 8; y++)
-	{
-		for (int x = 0; x < 13; x++)
-		{
-			if (y == 0)
-			{
-				block[y][x]->map = true;
-			}
-			else
-			{
-				block[y][x]->map = false;
-			}
-			block[y][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (y - 4) , 0 });
-			block[y][x]->block->SetRotation({ -90, 0, 0 });
-			block[y][x]->block->SetScale({ 4.5f, 1, 4.5f });
-			block[y][x]->block->SetColor({ 0.4f, 1, 0.5f, 1 });
-			block[y][x]->block->Update();
-		}
-	}
+	score = 0;
+
+	stage = TITLE;
 
 	playerS = 0.15f;
 	playerJS = 0;
 	isPJ = false;
 
-	ballS = 0.2f;
+	ballS = 0;
 	ballR = -5;
 	ballJS = 0;
 	ballJA = -0.1f;
 	ballG = 0.5f;
 	isBJ = false;
+	isAliveB = true;
 
 	comboTimer = 0;
 	comboLimit = 60;
@@ -118,53 +189,38 @@ void GamePlayScene::InitializeVariable()
 
 	heartCounter = 3;
 
+	titleTimer = 0;
+
+	endTimer = 0;
+
+	buttonTimer = 0;
+
 	spawTimer = 1;
 	spawnerScale = 0;
 	spawnerSA = 0.05;
 
-	player->SetPosition({ 0, 4.5f * (-5), 0 });
+	player->SetPosition({ 0, 5.2f * (-4.9f), 0 });
 	player->SetRotation({ -90, 0, 0 });
 	player->SetScale({ 2.25f, 1, 2.25f });
 	player->Update();
 
-	ball->SetPosition({ 0, 5, 0 });
+	ball->SetPosition({ 0, 5.2f * 2, 0 });
 	ball->SetRotation({ -90, 0, 0 });
 	ball->SetScale({ 2.25f, 1, 2.25f });
 	ball->Update();
 
-	frame->SetPosition({ 0, 0, 0 });
-	frame->SetRotation({ -90, 0, 0 });
-	frame->SetScale({ 10 * 7.23, 1, 8 * 7.23 });
-	frame->Update();
-
 	for (int x = 0; x < 13; x++)
 	{
-		needle[x]->SetPosition({4.5f * (x - 6), 14.5f, 0});
-		needle[x]->SetRotation({ -90, 0, 0 });
-		needle[x]->SetScale({ 4.5f, 1, 4.5f });
-		needle[x]->Update();
-	}
-
-	for (int x = 0; x < heartCounter; x++)
-	{
-		heart[x]->SetPosition({ x * 2.5f + 4.5f * (x - 1) - 22.5f, 24.25f, 0});
-		heart[x]->SetRotation({ -90, 0, 0 });
-		heart[x]->SetScale({ 4.5f, 1, 4.5f });
-		heart[x]->Update();
-	}
-
-	for (int x = 0; x < 13; x++)
-	{
-		enemy[x]->enemy->SetPosition({ 4.5f * (x - 6), 13.5f, 0});
+		enemy[x]->enemy->SetPosition({ 0, 0, 0});
 		enemy[x]->enemy->SetRotation({ -90, 0, 0 });
 		enemy[x]->enemy->SetScale({ 0, 1, 0 });
 		enemy[x]->enemy->Update();
-		enemy[x]->enemyS = 0.2f;
+		enemy[x]->enemyS = 0;
 		enemy[x]->enemyR = -5;
 		enemy[x]->enemyG = 0.5f;
 		enemy[x]->alive = false;
 
-		enemySpawner[x]->spawner->SetPosition({ 4.5f * (x - 6), 13.5f, 0 });
+		enemySpawner[x]->spawner->SetPosition({ 5.2f * (x - 6), 13.5f, 0 });
 		enemySpawner[x]->spawner->SetRotation({ -90, 0, 0 });
 		enemySpawner[x]->spawner->SetScale({ 0, 1, 0 });
 		enemySpawner[x]->spawner->Update();
@@ -176,7 +232,63 @@ void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
 	
+	// タイトル
+	if (stage == TITLE)
+	{
+		// 既定の大きさでなければ
+		if (title->GetScale().x < 30 && titleButton->GetScale().x < 20)
+		{
+			XMFLOAT3 tScale = title->GetScale();
+			XMFLOAT3 bScale = titleButton->GetScale();
+			tScale.x += 0.75f;
+			tScale.z += 0.75f;
+			bScale.x += 0.5f;
+			bScale.z += 0.5f;
+			if (tScale.x >= 30)
+			{
+				tScale.x = 30.0f;
+				tScale.z = 30.0f;
+			}
+			if (bScale.x >= 20)
+			{
+				bScale.x = 20.0f;
+				bScale.z = 20.0f;
+			}
+			title->SetScale(tScale);
+			titleButton->SetScale(bScale);
+		}
+		// 大きさならタイマーを刻む
+		else
+		{
+			titleTimer++;
+		}
+		// 一定時間たつと
+		if (titleTimer > 60)
+		{
+			titleTimer = 0;
+			XMFLOAT3 tScale = title->GetScale();
+			XMFLOAT3 bScale = {};
+			if (tScale.x < 30.25f)
+			{
+				tScale.x = 30.5f;
+				tScale.z = 30.5f;
+				bScale.x = 20.5f;
+				bScale.z = 20.5f;
+			} 
+			else
+			{
+				tScale.x = 30.0f;
+				tScale.z = 30.0f;
+				bScale.x = 20.0f;
+				bScale.z = 20.0f;
+			}
+			title->SetScale(tScale);
+			titleButton->SetScale(bScale);
+		}
+	}
+
 	// ブロック
+	if (stage == TITLE || stage == GAME)
 	{
 		// HP更新
 		for (int y = 0; y < 8; y++)
@@ -185,6 +297,10 @@ void GamePlayScene::Update()
 			{
 				if (block[y][x]->map == true)
 				{
+					if (stage == TITLE)
+					{
+						block[y][x]->HP = 15;
+					}
 					// 0なら一列繰り下げ
 					if (block[y][x]->HP <= 0)
 					{
@@ -193,15 +309,15 @@ void GamePlayScene::Update()
 							XMFLOAT3 bPos = block[h + 1][x]->block->GetPosition();
 							bPos.y -= 0.45f;
 							block[h + 1][x]->block->SetPosition(bPos);
-							if (4.5f < 4.5f * (h - 3) - bPos.y && h < 7)
+							if (5.2f < 5.2f * (h - 3) - bPos.y && h < 7)
 							{
 								block[y][x]->HP = 15;
 								block[h][x]->map = block[h + 1][x]->map;
 								block[h + 1][x]->map = false;
-								block[h][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (h - 4) , 0 });
+								block[h][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (h - 4) , 0 });
 								if (h == 6)
 								{
-									block[7][x]->block->SetPosition({ 4.5f * (x - 6), 4.5f * (7 - 4) , 0 });
+									block[7][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (7 - 4) , 0 });
 								}
 							}
 						}
@@ -246,19 +362,43 @@ void GamePlayScene::Update()
 					block[y][x]->map = false;
 					block[y][x]->HP = 15;
 				}
-				// タイマーを1にする
-				comboTimer = 1;
-				// コンボカウンター
-				comboNum++;
+				if (stage == GAME)
+				{
+					// タイマーを1にする
+					comboTimer = 1;
+					// コンボカウンター
+					comboNum++;
+				}
+				else if (stage == TITLE)
+				{
+					title->SetScale({ 0, 1, 0 });
+					titleButton->SetScale({ 0, 1, 0 });
+					stage = GAME;
+					for (int y = 0; y < 8; y++)
+					{
+						for (int x = 0; x < 13; x++)
+						{
+							if (y == 0)
+							{
+								block[y][x]->map = true;
+							}
+							else
+							{
+								block[y][x]->map = false;
+							}
+						}
+					}
+					break;
+				}
 			}
 		}
 
 		// コンボ処理
-		if (comboTimer > 0)
+		if (comboTimer > 0 && stage == GAME)
 		{
 			// コンボの猶予時間
 			comboTimer++;
-			if (comboTimer > 20)
+			if (comboTimer > 60)
 			{
 				// コンボ時
 				debugText.Print("COMBO", 10, 10, comboNum);
@@ -274,6 +414,7 @@ void GamePlayScene::Update()
 	}
 
 	// プレイヤー
+	if (stage == TITLE || stage == GAME)
 	{
 		// ジャンプ
 		if (input->TriggerKey(DIK_SPACE) && isPJ == false)
@@ -287,12 +428,13 @@ void GamePlayScene::Update()
 		if (input->PushKey(DIK_D) || input->PushKey(DIK_A))
 		{
 			pPos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
-			if (27 < pPos.x)
+			if (31.2f < pPos.x)
 			{
-				pPos.x = 27;
-			} else if (pPos.x < -27)
+				pPos.x = 31.2f;
+			}
+			else if (pPos.x < -31.2f)
 			{
-				pPos.x = -27;
+				pPos.x = -31.2f;
 			}
 		}
 
@@ -304,20 +446,20 @@ void GamePlayScene::Update()
 			// 加速
 			playerJS *= 2;
 			//ブロックにぶつかったか
-			if (-22.0f + 0.5f * player->GetScale().x < pPos.y)
+			if (-23.4f < pPos.y + 0.5f * player->GetScale().x - 0.7f)
 			{
-				pPos.y = -22.0f + 0.5f * player->GetScale().x;
+				pPos.y = -23.4f - 0.5f * player->GetScale().x + 0.7f;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
 				// Xが今どこの横列か
-				int x = static_cast<int>((pPos.x + 29.25f) / block[0][0]->block->GetScale().x);
+				int x = static_cast<int>((pPos.x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x);
 				//一つ上に空きがあるか
 				for (int y = 6; 0 <= y; y--)
 				{
 					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false && block[1][x]->HP > 0)
 					{
 						block[y + 1][x]->map = true;
-						if (isBJ == false && static_cast<int>((ball->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x)
+						if (isBJ == false && static_cast<int>((ball->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x)
 						{
 							isBJ = true;
 							ballJS = 2.0f;
@@ -328,7 +470,7 @@ void GamePlayScene::Update()
 						}
 						for (int i = 0; i < 13; i++)
 						{
-							if (isBJ == false && static_cast<int>((enemy[i]->enemy->GetPosition().x + 29.25f) / block[0][0]->block->GetScale().x) == x && enemy[i]->alive == true)
+							if (isBJ == false && static_cast<int>((enemy[i]->enemy->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && enemy[i]->alive == true)
 							{
 								enemy[i]->alive = false;
 							}
@@ -338,9 +480,9 @@ void GamePlayScene::Update()
 				}
 			}
 			//床についたか
-			else if (pPos.y < -22.5f)
+			else if (pPos.y < -25.48f)
 			{
-				pPos.y = -22.5f;
+				pPos.y = -25.48f;
 				isPJ = false;
 			}
 		}
@@ -349,19 +491,20 @@ void GamePlayScene::Update()
 	}
 
 	// ボール
+	if (stage == GAME)
 	{
 		// 移動
 		XMFLOAT3 bPos = ball->GetPosition();
 		bPos.x += ballS;
-		if (28.275f < bPos.x)
+		if (32.75f < bPos.x)
 		{
-			bPos.x = 28.275f;
+			bPos.x = 32.75f;
 			ballS = -ballS;
 			ballR = -ballR;
 		}
-		else if (bPos.x < -28.275f)
+		else if (bPos.x < -32.75f)
 		{
-			bPos.x = -28.275f;
+			bPos.x = -32.75f;
 			ballS = -ballS;
 			ballR = -ballR;
 		}
@@ -394,6 +537,11 @@ void GamePlayScene::Update()
 								bPos.y = block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x + 0.5f * ball->GetScale().x;
 								ballG = gravity;
 								isBJ = false;
+								// 速度決定
+								if (ballS == 0)
+								{
+									ballS = 0.2f;
+								}
 							}
 						}
 					}
@@ -407,8 +555,8 @@ void GamePlayScene::Update()
 								bPos.x = block[y][x]->block->GetPosition().x - 0.5f * ball->GetScale().x - 0.5f * block[y][x]->block->GetScale().x;
 								if (isBJ == false)
 								{
-									ballS = -ballS;
-									ballR = -ballR;
+									ballS = -abs(ballS);
+									ballR = abs(ballR);
 								}
 							}
 							else
@@ -416,20 +564,14 @@ void GamePlayScene::Update()
 								bPos.x = block[y][x]->block->GetPosition().x + 0.5f * ball->GetScale().x + 0.5f * block[y][x]->block->GetScale().x;
 								if (isBJ == false)
 								{
-									ballS = -ballS;
-									ballR = -ballR;
+									ballS = abs(ballS);
+									ballR = -abs(ballR);
 								}
 							}
 						}
 					}
 				}
 			}
-		}
-		if (bPos.y < -14.625f)
-		{
-			bPos.y = -14.625f;
-			ballG = gravity;
-			isBJ = false;
 		}
 		ball->SetPosition(bPos);
 		// 回転
@@ -443,6 +585,7 @@ void GamePlayScene::Update()
 	}
 
 	// エネミー
+	if (stage == GAME)
 	{
 		// スポーンタイマー
 		if (spawTimer > 0)
@@ -491,7 +634,7 @@ void GamePlayScene::Update()
 				if (scale.x > 2.25f && enemy[i]->alive == false)
 				{
 					enemy[i]->alive = true;
-					enemy[i]->enemy->SetPosition({ 4.5f * (i - 6), 13.5f, 0 });
+					enemy[i]->enemy->SetPosition({ 5.2f * (i - 6), 13.5f, 0 });
 					enemy[i]->enemy->SetScale({ 0, 1, 0 });
 					enemy[i]->enemy->Update();
 					enemy[i]->enemyG = 0.5f;
@@ -535,17 +678,17 @@ void GamePlayScene::Update()
 					// 移動
 					XMFLOAT3 ePos = enemy[i]->enemy->GetPosition();
 					ePos.x += enemy[i]->enemyS;
-					if (28.275f < ePos.x)
+					if (32.75f < ePos.x)
 					{
-						ePos.x = 28.275f;
-						enemy[i]->enemyS = -enemy[i]->enemyS;
-						enemy[i]->enemyR = -enemy[i]->enemyR;
+						ePos.x = 32.75f;
+						enemy[i]->enemyS = -abs(enemy[i]->enemyS);
+						enemy[i]->enemyR = abs(enemy[i]->enemyR);
 					}
-					else if (ePos.x < -28.275f)
+					else if (ePos.x < -32.75f)
 					{
-						ePos.x = -28.275f;
-						enemy[i]->enemyS = -enemy[i]->enemyS;
-						enemy[i]->enemyR = -enemy[i]->enemyR;
+						ePos.x = -32.75f;
+						enemy[i]->enemyS = abs(enemy[i]->enemyS);
+						enemy[i]->enemyR = -abs(enemy[i]->enemyR);
 					}
 					// 重力
 					ePos.y -= enemy[i]->enemyG;
@@ -566,6 +709,11 @@ void GamePlayScene::Update()
 										{
 											ePos.y = block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x + 0.5f * ball->GetScale().x;
 											enemy[i]->enemyG = gravity;
+											// 速度決定
+											if (enemy[i]->enemyS == 0)
+											{
+												enemy[i]->enemyS = 0.2f;
+											}
 										}
 									}
 								}
@@ -593,11 +741,6 @@ void GamePlayScene::Update()
 							}
 						}
 					}
-					if (ePos.y < -14.625f)
-					{
-						ePos.y = -14.625f;
-						enemy[i]->enemyG = gravity;
-					}
 					enemy[i]->enemy->SetPosition(ePos);
 					// 回転
 					XMFLOAT3 eRot = enemy[i]->enemy->GetRotation();
@@ -607,10 +750,94 @@ void GamePlayScene::Update()
 						eRot.z = 0;
 					}
 					enemy[i]->enemy->SetRotation(eRot);
+					// プレイヤーのボールとの当たり判定
 					if (LenAB(ball->GetPosition(), ePos) < ball->GetScale().x * 0.5f + 0.5f * enemy[i]->enemy->GetScale().x)
 					{
-						enemy[i]->alive = false;
+						heartCounter--;
+						if (heartCounter <= 0)
+						{
+							heartCounter = 0;
+							stage = END;
+						}
+						else
+						{
+							enemy[i]->alive = false;
+						}
 					}
+				}
+			}
+		}
+	}
+
+	// リザルト
+	if (stage == END)
+	{
+		// 終わった瞬間一瞬止まる
+		if (isAliveB == true)
+		{
+			endTimer++;
+			if (endTimer > 60)
+			{
+				isAliveB = false;
+				for (int i = 0; i < 13; i++)
+				{
+					enemy[i]->alive = false;
+				}
+			}
+		}
+		else
+		{
+			// 一定の大きさに満たなければ
+			if (end->GetScale().x < 20 && endButton->GetScale().x < 25 && gameover->GetScale().x < 30)
+			{
+				XMFLOAT3 a = end->GetScale();
+				XMFLOAT3 b = endButton->GetScale();
+				XMFLOAT3 c = gameover->GetScale();
+				a.x += 0.5f;
+				a.z += 0.5f;
+				b.x += 0.625f;
+				b.z += 0.625f;
+				c.x += 0.75f;
+				c.z += 0.75f;
+				if (a.x >= 20)
+				{
+					a.x = 20;
+					a.z = 20;
+					b.x = 25;
+					b.z = 25;
+					c.x = 30;
+					c.z = 30;
+				}
+				end->SetScale(a);
+				endButton->SetScale(b);
+				gameover->SetScale(c);
+			}
+			else
+			{
+				// タイマー
+				buttonTimer++;
+				// 一定の時間すぎると
+				if (buttonTimer > 60)
+				{
+					buttonTimer = 0;
+					XMFLOAT3 bScale = endButton->GetScale();
+					if (bScale.x < 25.25f)
+					{
+						bScale.x = 25.5f;
+						bScale.z = 25.5f;
+					}
+					else
+					{
+						bScale.x = 25.0f;
+						bScale.z = 25.0f;
+					}
+					endButton->SetScale(bScale);
+				}
+
+				// TITLEに戻る
+				if (input->TriggerKey(DIK_SPACE))
+				{
+					InitializeVariable();
 				}
 			}
 		}
@@ -680,12 +907,32 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 			enemy[i]->enemy->Draw();
 		}
 	}
+	if (stage == GAME || stage == END)
+	{
+		if (isAliveB == true)
+		{
+			ball->Draw();
+		}
+	}
 	player->Draw();
-	ball->Draw();
 	frame->Draw();
 	for (int i = 0; i < heartCounter; i++)
 	{
 		heart[i]->Draw();
+	}
+	if (stage == TITLE)
+	{
+		title->Draw();
+		titleButton->Draw();
+	}
+	else if (stage == END)
+	{
+		if (isAliveB == false)
+		{
+			gameover->Draw();
+			end->Draw();
+			endButton->Draw();
+		}
 	}
 
 	Object3d::PostDraw();
