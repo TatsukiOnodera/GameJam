@@ -64,7 +64,7 @@ private: //サブクラス
 		float enemyS = 0;
 		float enemyR = 0;
 		float enemyG = 0;
-		bool isLanding = false;
+		bool isEnemyLanding = false;
 		ENEMYSTAY(Object3d* obj)
 		{
 			this->enemyStay.reset(obj);
@@ -107,9 +107,15 @@ private: //サブクラス
 		}
 	};
 
+	enum STAGE
+	{
+		TITLE, GAME, END
+	};
+
 private: // インスタンス
 	// ライト
 	std::unique_ptr<Light> light = nullptr;
+
 	// パーティクル
 	std::unique_ptr<ParticleManager> playerWalkEffect;
 	std::unique_ptr<ParticleManager> playerJumpEffect;
@@ -118,6 +124,7 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> enemyBounceEffect;
 	std::unique_ptr<ParticleManager> enemySpawnEffect;
 	// スプライト
+
 	
 	// OBJオブジェクト
 	// プレイヤー
@@ -146,6 +153,16 @@ private: // インスタンス
 	std::unique_ptr<Object3d> needle[13] = {};
 	// ハート
 	std::unique_ptr<Object3d> heart[3] = {};
+	// タイトル
+	std::unique_ptr<Object3d> title = nullptr;
+	// タイトルボタン
+	std::unique_ptr<Object3d> titleButton = nullptr;
+	// リザルト
+	std::unique_ptr<Object3d> end = nullptr;
+	// リザルトボタン
+	std::unique_ptr<Object3d> endButton = nullptr;
+	// ゲームオーバー
+	std::unique_ptr<Object3d> gameover = nullptr;
 	// FBXオブジェクト
 
 
@@ -174,6 +191,8 @@ private: // メンバ変数
 	float ballG;
 	// 重力
 	float gravity = 0.1f;
+	// フラグ
+	float isAliveB;
 
 	// コンボ
 	// タイマー
@@ -194,6 +213,22 @@ private: // メンバ変数
 	// ハート
 	// ハートカウンター
 	int heartCounter;
+
+	// スコア
+	int score;
+
+	// ステージ
+	int stage;
+
+	// タイトル
+	// ロゴタイマー
+	int titleTimer;
+
+	// リザルト
+	// 終わるまでのラグタイマー
+	int endTimer;
+	// ボタンのタイマー
+	int buttonTimer;
 
 	bool switchingMove = true;
 	int moveCount = 0;
