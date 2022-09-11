@@ -328,7 +328,7 @@ void GamePlayScene::InitializeVariable()
 	playerMove03->Update();
 
 	playerMove04->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerMove04->SetRotation({ -90, 0, 0 });
+	playerMove04->SetRotation({ -95, 0, 0 });
 	playerMove04->SetScale({ 2.25f, 1, 2.25f });
 	playerMove04->Update();
 
@@ -351,22 +351,6 @@ void GamePlayScene::InitializeVariable()
 	ball04->SetRotation({ -90, 0, 0 });
 	ball04->SetScale({ 2.25f, 1, 2.25f });
 	ball04->Update();
-
-	for (int x = 0; x < 13; x++)
-	{
-		needle[x]->SetPosition({ 4.5f * (x - 6), 14.5f, 0 });
-		needle[x]->SetRotation({ -90, 0, 0 });
-		needle[x]->SetScale({ 4.5f, 1, 4.5f });
-		needle[x]->Update();
-	}
-
-	for (int x = 0; x < heartCounter; x++)
-	{
-		heart[x]->SetPosition({ x * 2.5f + 4.5f * (x - 1) - 22.5f, 24.25f, 0 });
-		heart[x]->SetRotation({ -90, 0, 0 });
-		heart[x]->SetScale({ 4.5f, 1, 4.5f });
-		heart[x]->Update();
-	}
 
 	for (int x = 0; x < 13; x++)
 	{
