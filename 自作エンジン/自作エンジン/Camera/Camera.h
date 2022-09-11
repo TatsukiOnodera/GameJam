@@ -54,6 +54,14 @@ private: // メンバ変数
 	//	 更新したか
 	bool m_isDirty = false;
 
+	//シェイクフラグ
+	bool shakeFlag = false;
+	XMFLOAT3 saveEye = { 0.0f, 0.0f, -50.0f };
+	XMFLOAT3 saveTarget = { 0.0f, 0.0f, 0.0f };
+	int shakeTimer = 0;
+	int attenuation = 0;
+	int shakeCount = 0;
+
 public: // メンバ関数
 	/// <summary>
 	/// コンストラクタ
@@ -205,4 +213,9 @@ public: //アクセッサ
 	/// </summary>
 	/// <returns>成否</returns>
 	bool GetDirty() { return m_isDirty; };
+
+	//カメラシェイク
+	void SetShakeFlag(bool _shakeFlag, int count) { shakeFlag = _shakeFlag; shakeCount = count; }
+
+	void CameraShake();
 };

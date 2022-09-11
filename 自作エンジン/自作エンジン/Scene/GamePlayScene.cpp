@@ -458,6 +458,8 @@ void GamePlayScene::Update()
 				{
 					block[y][x]->map = false;
 					block[y][x]->HP = 15;
+					ballDeadEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
+					camera->SetShakeFlag(true, 10);
 				}
 				if (stage == GAME)
 				{
@@ -1070,7 +1072,7 @@ void GamePlayScene::Update()
 #pragma endregion
 
 #pragma region カメラとライトの更新
-
+	camera->CameraShake();
 	light->Update();
 	camera->Update();
 
@@ -1241,6 +1243,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	playerJumpEffect->Draw();
 	ballJumpEffect->Draw();
 	ballBounceEffect->Draw();
+	ballDeadEffect->Draw();
 	enemyBounceEffect->Draw();
 	enemySpawnEffect->Draw();
 

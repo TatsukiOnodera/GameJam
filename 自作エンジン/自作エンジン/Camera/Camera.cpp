@@ -270,3 +270,39 @@ void Camera::InitializeAngle()
 	m_angleY = 0.0f;
 	m_angleZ = 0.0f;
 }
+
+void Camera::CameraShake()
+{
+	if (!shakeFlag)
+	{
+		shakeTimer = 0;
+		SetEye(saveEye);
+		SetTarget(saveTarget);
+	}
+	if (shakeFlag)
+	{
+		XMFLOAT3 shake = { 0.0f, 0.0f, 0.0f };
+		XMFLOAT3 shakeEye = { 0.0f, 0.0f, 0.0f };
+		XMFLOAT3 shakeTarget = { 0.0f, 0.0f, 0.0f };
+
+		SetEye(saveEye);
+		SetTarget(saveTarget);
+
+		shakeTimer++;
+		if (shakeTimer > 0)
+		{
+			shake.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f);
+			shake.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f);
+			shakeEye = { shake.x + m_eye.x,shake.y + m_eye.y,shake.z + m_eye.z };
+			shakeTarget = { shake.x + m_target.x, shake.y + m_target.y, shake.z + m_target.z };
+		}
+		
+		if (shakeCount<=shakeTimer)
+		{
+			shakeFlag = false;
+		}
+
+		SetEye(shakeEye);
+		SetTarget(shakeTarget);
+	}
+}
