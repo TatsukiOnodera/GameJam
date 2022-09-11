@@ -517,6 +517,8 @@ void GamePlayScene::Update()
 		}
 
 		// 一列そろったか
+		bool deleteB = false;
+		int w = 0;
 		for (int x = 0; x < 13; x++)
 		{
 			if (addB == true)
@@ -535,52 +537,65 @@ void GamePlayScene::Update()
 			// 一列そろっていたら
 			if (isComplete == true)
 			{
+				
 				// すべて消す
 				for (int y = 1; y < 8; y++)
 				{
-					block[y][x]->map = false;
-					block[y][x]->HP = 15;
-					ballDeadEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
-					camera->SetShakeFlag(true, 10);
-				}
-				if (stage == GAME)
-				{
-					isActiveCT = true;
-					// タイマーを1にする
-					comboTimer = 1;
-					// コンボカウンター
-					comboNum++;
-					score += 100 * comboNum * comboNum;
-					// テキストの座標
-					textNum = comboNum - 1;
-					if (comboNum > 5)
+					XMFLOAT3 bScale = block[y][x]->block->GetScale();
+					bScale.x -= 0.52f;
+					//bScale.x -= 5.2f;
+					bScale.z = bScale.x;
+					block[y][x]->block->SetScale(bScale);
+					if (bScale.x <= 0)
 					{
-						textNum = 5;
+						block[y][x]->map = false;
+						block[y][x]->HP = 15;
+						block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
+						ballDeadEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
+						deleteB = true;
+						w = x;
 					}
-					comboText[textNum]->SetPosition({ 5.2f * (x - 6), 5.2f * (6 - 4), 0 });
-					comboText[textNum]->Update();
-					effectTimer = 0;
 				}
-				else if (stage == TITLE)
+			}
+		}
+		if (deleteB == true)
+		{
+			camera->SetShakeFlag(true, 10);
+			if (stage == GAME)
+			{
+				isActiveCT = true;
+				// タイマーを1にする
+				comboTimer = 1;
+				// コンボカウンター
+				comboNum++;
+				score += 100 * comboNum * comboNum;
+				// テキストの座標
+				textNum = comboNum - 1;
+				if (comboNum > 5)
 				{
-					title->SetScale({ 0, 1, 0 });
-					titleButton->SetScale({ 0, 1, 0 });
-					stage = GAME;
-					for (int y = 0; y < 8; y++)
+					textNum = 5;
+				}
+				comboText[textNum]->SetPosition({ 5.2f * (w - 6), 5.2f * (6 - 4), 0 });
+				comboText[textNum]->Update();
+				effectTimer = 0;
+			}
+			else if (stage == TITLE)
+			{
+				title->SetScale({ 0, 1, 0 });
+				titleButton->SetScale({ 0, 1, 0 });
+				stage = GAME;
+				for (int y = 0; y < 8; y++)
+				{
+					for (int x = 0; x < 13; x++)
 					{
-						for (int x = 0; x < 13; x++)
+						if (y == 0)
 						{
-							if (y == 0)
-							{
-								block[y][x]->map = true;
-							}
-							else
-							{
-								block[y][x]->map = false;
-							}
+							block[y][x]->map = true;
+						} else
+						{
+							block[y][x]->map = false;
 						}
 					}
-					break;
 				}
 			}
 		}
