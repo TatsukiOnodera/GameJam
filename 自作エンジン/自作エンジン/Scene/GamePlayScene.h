@@ -262,6 +262,9 @@ private: // ƒƒ“ƒo•Ï”
 	bool isBlink = false;
 	int blinkCount = 0;
 
+	bool endToTitle;
+	bool titleToGame;
+
 public: // ƒƒ“ƒoŠÖ”
 	~GamePlayScene() override;
 

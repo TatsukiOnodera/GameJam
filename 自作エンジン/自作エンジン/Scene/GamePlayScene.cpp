@@ -210,7 +210,7 @@ void GamePlayScene::Initialize()
 			scoreNum[n][x]->Update();
 			scoreNum[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (4.0f * x) + 21, 24.3f, 0});
 			scoreNum[n][x]->SetRotation({ -90, 0, 0 });
-			scoreNumEND[n][x]->SetScale({ 5.5f * 1.5f, 1, 5.5f * 1.5f });
+			scoreNumEND[n][x]->SetScale({ 0, 1, 0 });
 			scoreNumEND[n][x]->Update();
 			scoreNumEND[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (0.5f * x) - 5, -5.2f, 0});
 			scoreNumEND[n][x]->SetRotation({ -90, 0, 0 });
@@ -297,10 +297,15 @@ void GamePlayScene::InitializeVariable()
 	endTimer = 0;
 
 	buttonTimer = 0;
+	effectTimer = 0;
+	buttonA = 1;
 
 	spawTimer = 1;
 	spawnerScale = 0;
 	spawnerSA = 0.05;
+
+	endToTitle = false;
+	titleToGame = false;
 
 	playerStay->SetPosition({ 0, 5.2f * (-4.9f), 0 });
 	playerStay->SetRotation({ -95, 0, 0 });
@@ -416,7 +421,7 @@ void GamePlayScene::Update()
 	if (stage == TITLE)
 	{
 		// 既定の大きさでなければ
-		if (title->GetScale().x < 30 * 1.7f && titleButton->GetScale().x < 20)
+		if (title->GetScale().x < 30 * 1.7f && titleButton->GetScale().x < 20 && titleToGame == false)
 		{
 			XMFLOAT3 tScale = title->GetScale();
 			XMFLOAT3 bScale = titleButton->GetScale();
@@ -440,24 +445,54 @@ void GamePlayScene::Update()
 		// 大きさならタイマーを刻む
 		else
 		{
-			// イージング
-			XMFLOAT3 bScale = titleButton->GetScale();
-			float t = powf((float)titleTimer / 40, 2);
-			bScale.x = 20.0f * (1.0f - t) + 23.0f * t;
-			bScale.z = bScale.x;
-			titleButton->SetScale(bScale);
-
-			// タイマー
-			titleTimer += titleA;
-
-			// 一定の時間すぎると
-			if (titleTimer >= 60)
+			if (titleToGame == false)
 			{
-				titleA = -abs(titleA);
+				// イージング
+				XMFLOAT3 bScale = titleButton->GetScale();
+				float t = powf((float)titleTimer / 40, 2);
+				bScale.x = 20.0f * (1.0f - t) + 23.0f * t;
+				bScale.z = bScale.x;
+				titleButton->SetScale(bScale);
+
+				// タイマー
+				titleTimer += titleA;
+
+				// 一定の時間すぎると
+				if (titleTimer >= 60)
+				{
+					titleA = -abs(titleA);
+				}
+				else if (titleTimer <= 0)
+				{
+					titleA = abs(titleA);
+				}
 			}
-			else if (titleTimer <= 0)
+			else
 			{
-				titleA = abs(titleA);
+				XMFLOAT3 tScale = title->GetScale();
+				XMFLOAT3 bScale = titleButton->GetScale();
+				tScale.x -= 0.75f * 1.7f;
+				tScale.z -= 0.75f * 1.7f;
+				bScale.x -= 0.5f;
+				bScale.z -= 0.5f;
+				if (tScale.x <= 0)
+				{
+					tScale.x = 0;
+					tScale.z = 0;
+				}
+				if (bScale.x <= 0)
+				{
+					bScale.x = 0;
+					bScale.z = 0;
+				}
+				if (tScale.x == 0 && bScale.x == 0)
+				{
+					stage = GAME;
+				}
+				title->SetScale(tScale);
+				title->Update();
+				titleButton->SetScale(bScale);
+				titleButton->Update();
 			}
 		}
 	}
@@ -537,7 +572,7 @@ void GamePlayScene::Update()
 			// 一列そろっていたら
 			if (isComplete == true)
 			{
-				
+				camera->SetShakeFlag(true, 10);
 				// すべて消す
 				for (int y = 1; y < 8; y++)
 				{
@@ -560,7 +595,6 @@ void GamePlayScene::Update()
 		}
 		if (deleteB == true)
 		{
-			camera->SetShakeFlag(true, 10);
 			if (stage == GAME)
 			{
 				isActiveCT = true;
@@ -581,9 +615,7 @@ void GamePlayScene::Update()
 			}
 			else if (stage == TITLE)
 			{
-				title->SetScale({ 0, 1, 0 });
-				titleButton->SetScale({ 0, 1, 0 });
-				stage = GAME;
+				titleToGame = true;
 				for (int y = 0; y < 8; y++)
 				{
 					for (int x = 0; x < 13; x++)
@@ -1183,7 +1215,7 @@ void GamePlayScene::Update()
 		else
 		{
 			// 一定の大きさに満たなければ
-			if (end->GetScale().x < 20 * 1.5f && endButton->GetScale().x < 25 && gameover->GetScale().x < 30 * 1.7f)
+			if (end->GetScale().x < 20 * 1.5f && endButton->GetScale().x < 25 && gameover->GetScale().x < 30 * 1.7f && endToTitle == false)
 			{
 				XMFLOAT3 a = end->GetScale();
 				XMFLOAT3 b = endButton->GetScale();
@@ -1206,33 +1238,93 @@ void GamePlayScene::Update()
 				end->SetScale(a);
 				endButton->SetScale(b);
 				gameover->SetScale(c);
+				for (int y = 0; y < 10; y++)
+				{
+					for (int x = 0; x < 6; x++)
+					{
+						XMFLOAT3 d = scoreNumEND[y][x]->GetScale();
+						d.x += 0.1375f * 1.5f;
+						d.z = d.x;
+						scoreNumEND[y][x]->SetScale(d);
+					}
+				}
 			}
 			else
 			{
-				// イージング
-				XMFLOAT3 bScale = endButton->GetScale();
-				float t = powf((float)buttonTimer / 40, 2);
-				bScale.x = 25.0f * (1.0f - t) + 28.0f * t;
-				bScale.z = bScale.x;
-				endButton->SetScale(bScale);
-
-				// タイマー
-				buttonTimer += buttonA;
-
-				// 一定の時間すぎると
-				if (buttonTimer >= 60)
+				if (endToTitle == false)
 				{
-					buttonA = -abs(buttonA);
+					// イージング
+					XMFLOAT3 bScale = endButton->GetScale();
+					float t = powf((float)buttonTimer / 40, 2);
+					bScale.x = 25.0f * (1.0f - t) + 28.0f * t;
+					bScale.z = bScale.x;
+					endButton->SetScale(bScale);
+					endButton->Update();
+
+					// タイマー
+					buttonTimer += buttonA;
+
+					// 一定の時間すぎると
+					if (buttonTimer >= 60)
+					{
+						buttonA = -abs(buttonA);
+					}
+					else if (buttonTimer <= 0)
+					{
+						buttonA = abs(buttonA);
+					}
 				}
-				else if (buttonTimer <= 0)
+				else
 				{
-					buttonA = abs(buttonA);
+					XMFLOAT3 a = end->GetScale();
+					XMFLOAT3 b = endButton->GetScale();
+					XMFLOAT3 c = gameover->GetScale();
+					a.x -= 0.5f * 1.5f;
+					a.z -= 0.5f * 1.5f;
+					b.x -= 0.7f;
+					b.z -= 0.7f;
+					if (b.x <= 0)
+					{
+						b.x = 0;
+						b.z = b.x;
+					}
+					c.x -= 0.75f * 1.7f;
+					c.z -= 0.75f * 1.7f;
+					if (a.x <= 0)
+					{
+						InitializeVariable();
+						a.x = 0;
+						a.z = a.x;
+						c.x = 0;
+						c.z = c.x;
+					}
+					end->SetScale(a);
+					endButton->SetScale(b);
+					gameover->SetScale(c);
+					for (int y = 0; y < 10; y++)
+					{
+						for (int x = 0; x < 6; x++)
+						{
+							XMFLOAT3 d = scoreNumEND[y][x]->GetScale();
+							d.x -= 0.1375f * 1.5f;
+							if (d.x <= 0)
+							{
+								d.x = 0;
+							}
+							d.z = d.x;
+							scoreNumEND[y][x]->SetScale(d);
+							scoreNumEND[y][x]->Update();
+						}
+					}
+					end->Update();
+					endButton->Update();
+					gameover->Update();
 				}
 
 				// TITLEに戻る
-				if (input->TriggerKey(DIK_SPACE))
+				if (input->TriggerKey(DIK_SPACE) && endToTitle == false)
 				{
-					InitializeVariable();
+					endToTitle = true;
 				}
 			}
 		}
