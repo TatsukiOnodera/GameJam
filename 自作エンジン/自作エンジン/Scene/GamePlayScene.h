@@ -57,16 +57,43 @@ private: //サブクラス
 		}
 	};
 
-	struct ENEMY
+	struct ENEMYSTAY
 	{
-		std::unique_ptr<Object3d> enemy = nullptr;
+		std::unique_ptr<Object3d> enemyStay = nullptr;
 		bool alive = false;
 		float enemyS = 0;
 		float enemyR = 0;
 		float enemyG = 0;
-		ENEMY(Object3d* obj)
+		bool isLanding = false;
+		ENEMYSTAY(Object3d* obj)
 		{
-			this->enemy.reset(obj);
+			this->enemyStay.reset(obj);
+		}
+	};
+
+	struct ENEMY01
+	{
+		std::unique_ptr<Object3d> enemy01 = nullptr;
+		bool alive = false;
+		float enemyS = 0;
+		float enemyR = 0;
+		float enemyG = 0;
+		ENEMY01(Object3d* obj)
+		{
+			this->enemy01.reset(obj);
+		}
+	};
+
+	struct ENEMY02
+	{
+		std::unique_ptr<Object3d> enemy02 = nullptr;
+		bool alive = false;
+		float enemyS = 0;
+		float enemyR = 0;
+		float enemyG = 0;
+		ENEMY02(Object3d* obj)
+		{
+			this->enemy02.reset(obj);
 		}
 	};
 
@@ -94,13 +121,23 @@ private: // インスタンス
 	
 	// OBJオブジェクト
 	// プレイヤー
-	std::unique_ptr<Object3d> player = nullptr;
+	std::unique_ptr<Object3d> playerStay = nullptr;
+	std::unique_ptr<Object3d> playerJump = nullptr;
+	std::unique_ptr<Object3d> playerMove01 = nullptr;
+	std::unique_ptr<Object3d> playerMove02 = nullptr;
+	std::unique_ptr<Object3d> playerMove03 = nullptr;
+	std::unique_ptr<Object3d> playerMove04 = nullptr;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
 	// ボール
-	std::unique_ptr<Object3d> ball = nullptr;
+	std::unique_ptr<Object3d> ball01 = nullptr;
+	std::unique_ptr<Object3d> ball02 = nullptr;
+	std::unique_ptr<Object3d> ball03 = nullptr;
+	std::unique_ptr<Object3d> ball04 = nullptr;
 	// エネミー
-	std::unique_ptr<ENEMY> enemy[13] = {};
+	std::unique_ptr<ENEMYSTAY> enemyStay[13] = {};
+	std::unique_ptr<ENEMY01> enemy01[13] = {};
+	std::unique_ptr<ENEMY02> enemy02[13] = {};
 	// エネミースポナー
 	std::unique_ptr<ENEMYSPAWNER> enemySpawner[13] = {};
 	// フレーム
@@ -157,6 +194,11 @@ private: // メンバ変数
 	// ハート
 	// ハートカウンター
 	int heartCounter;
+
+	bool switchingMove = true;
+	int moveCount = 0;
+	bool isBlink = false;
+	int blinkCount = 0;
 
 public: // メンバ関数
 	~GamePlayScene() override;
