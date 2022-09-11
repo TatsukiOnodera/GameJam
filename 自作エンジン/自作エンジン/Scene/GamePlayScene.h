@@ -49,7 +49,6 @@ private: //サブクラス
 		std::unique_ptr<Object3d> block = nullptr;
 		bool map = false;
 		int HP = 15;
-		bool buff = false;
 		BLOCK(Object3d *obj, int HP = 15)
 		{
 			this->block.reset(obj);
@@ -122,6 +121,15 @@ private: // インスタンス
 	std::unique_ptr<Object3d> endButton = nullptr;
 	// ゲームオーバー
 	std::unique_ptr<Object3d> gameover = nullptr;
+	// HP 
+	std::unique_ptr<Object3d> HP = nullptr;
+	// スコア文字
+	std::unique_ptr<Object3d> scoreList = nullptr;
+	// スコア
+	std::unique_ptr<Object3d> scoreNum[10][6] = {};
+	std::unique_ptr<Object3d> scoreNumEND[10][6] = {};
+	// コンボ
+	std::unique_ptr<Object3d> comboText[6] = {};
 	// FBXオブジェクト
 
 
@@ -133,6 +141,14 @@ private: // メンバ変数
 	float playerJS;
 	// ジャンプフラグ
 	bool isPJ;
+	// ブロック追加
+	bool addB;
+	// 横列のどれか
+	int addX;
+	// イージングタイマー
+	int blockTimer;
+	// 加速度
+	int timerA;
 
 	// ボール
 	// 速さ
@@ -159,6 +175,9 @@ private: // メンバ変数
 	int comboLimit;
 	// コンボカウンター
 	int comboNum;
+	// テキスト
+	bool isActiveCT;
+	int effectTimer;
 
 	// スポーン
 	// タイマー
@@ -181,12 +200,16 @@ private: // メンバ変数
 	// タイトル
 	// ロゴタイマー
 	int titleTimer;
+	// ロゴの加速度
+	int titleA;
 
 	// リザルト
 	// 終わるまでのラグタイマー
 	int endTimer;
 	// ボタンのタイマー
 	int buttonTimer;
+	// ボタンタイマーの加速度
+	int buttonA;
 
 public: // メンバ関数
 	~GamePlayScene() override;
