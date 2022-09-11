@@ -217,6 +217,7 @@ void GamePlayScene::Initialize()
 		backGround[i]->Update();
 		backGround[i]->SetPosition({ i * backGround[i]->GetScale().x - backGround[i]->GetScale().x * 0.5f, -2, 0});
 		backGround[i]->SetRotation({ -90, 0, 0});
+		backGround[i]->SetColor({ 1, 1, 1, 0.7f });
 		backGround[i]->Update();
 	}
 
@@ -238,7 +239,7 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
-	score = 745;
+	score = 0;
 
 	stage = TITLE;
 
@@ -246,7 +247,7 @@ void GamePlayScene::InitializeVariable()
 
 	addX = 0;
 
-	playerS = 0.15f;
+	playerS = 0.18f;
 	playerJS = 0;
 	isPJ = false;
 
@@ -451,6 +452,7 @@ void GamePlayScene::Update()
 					comboTimer = 1;
 					// コンボカウンター
 					comboNum++;
+					score += 100 * comboNum * comboNum;
 					// テキストの座標
 					textNum = comboNum - 1;
 					if (comboNum > 5)
@@ -606,7 +608,7 @@ void GamePlayScene::Update()
 						{
 							block[y + 1][x]->map = true;
 							isBJ = true;
-							ballJS = 2.0f;
+							ballJS = 1.5f;
 							XMFLOAT3 bPos = ball->GetPosition();
 							bPos.y += 4.5f;
 							ball->SetPosition(bPos);
