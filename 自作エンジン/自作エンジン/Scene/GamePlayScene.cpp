@@ -38,8 +38,9 @@ void GamePlayScene::Initialize()
 	playerJumpEffect.reset(ParticleManager::Create("stareffect_02.png"));
 	ballJumpEffect.reset(ParticleManager::Create("star.png"));
 	ballBounceEffect.reset(ParticleManager::Create("stareffect_01.png"));
+	ballDeadEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
-	enemySpawnEffect.reset(ParticleManager::Create("enemyspowneffect.png"));
+	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 
 	// スプライト
 	playerStay.reset(Object3d::Create("PlayerStay"));
@@ -296,6 +297,7 @@ void GamePlayScene::InitializeVariable()
 		enemyStay[x]->enemyR = -5;
 		enemyStay[x]->enemyG = 0.5f;
 		enemyStay[x]->alive = false;
+		enemyStay[x]->isEnemyLanding = false;
 
 		enemy01[x]->enemy01->SetPosition({ 0, 0, 0 });
 		enemy01[x]->enemy01->SetRotation({ -90, 0, 0 });
@@ -625,7 +627,11 @@ void GamePlayScene::Update()
 						{
 							if (isBJ == false && static_cast<int>((enemy01[i]->enemy01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && enemy01[i]->alive == true)
 							{
+								enemySpawnEffect->Add(60, enemy01[i]->enemy01->GetPosition(), { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+								enemyStay[i]->alive = false;
+								enemyStay[i]->isEnemyLanding = false;
 								enemy01[i]->alive = false;
+								enemy02[i]->alive = false;
 							}
 						}
 						break;
@@ -727,6 +733,7 @@ void GamePlayScene::Update()
 								{
 									ballS = -abs(ballS);
 									ballR = abs(ballR);
+									ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 								}
 							}
 							else
@@ -736,6 +743,7 @@ void GamePlayScene::Update()
 								{
 									ballS = abs(ballS);
 									ballR = -abs(ballR);
+									ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 								}
 							}
 						}
@@ -844,6 +852,7 @@ void GamePlayScene::Update()
 					scale.z = 0;
 					spawnerSA = -spawnerSA;
 					enemySpawner[i]->active = false;
+					enemySpawnEffect->Add(60, enemyStay[i]->enemyStay->GetPosition(), { 0,0,0 }, { 0,0,0 }, 3.0f, 10.0f);
 				}
 				enemySpawner[i]->spawner->SetScale(scale);
 			}
@@ -964,7 +973,9 @@ void GamePlayScene::Update()
 						}
 						else
 						{
+							enemySpawnEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 							enemyStay[i]->alive = false;
+							enemyStay[i]->isEnemyLanding = false;
 							enemy01[i]->alive = false;
 							enemy02[i]->alive = false;
 						}
@@ -981,9 +992,15 @@ void GamePlayScene::Update()
 		if (isAliveB == true)
 		{
 			endTimer++;
+			XMFLOAT3 bPos = ball01->GetPosition();
+			XMFLOAT3 bDeadPos = ball01->GetPosition();
+			bPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bPos.x;
+			bPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bPos.y;
+			ballBounceEffect->Add(30, { bPos.x, bPos.y, bPos.z }, { 0,0,0 }, { 0,0,0 }, 0.5f, 3.5f, { 1,1,1,1 }, { 0.5,0.5,0.5,0.3 });
 			if (endTimer > 60)
 			{
 				isAliveB = false;
+				ballDeadEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, { 0,0,0 }, { 0,0,0 }, 1.0f, 5.0f);
 				for (int i = 0; i < 13; i++)
 				{
 					enemyStay[i]->alive = false;
@@ -1222,7 +1239,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 		playerWalkEffect->Draw();
 	}
 	playerJumpEffect->Draw();
-	//ballJumpEffect->Draw();
+	ballJumpEffect->Draw();
 	ballBounceEffect->Draw();
 	enemyBounceEffect->Draw();
 	enemySpawnEffect->Draw();
