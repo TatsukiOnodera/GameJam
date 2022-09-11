@@ -210,6 +210,15 @@ void GamePlayScene::Initialize()
 		comboText[i]->SetRotation({-90, 0, 0});
 		comboText[i]->Update();
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		backGround[i].reset(Object3d::Create("Background"));
+		backGround[i]->SetScale({ 50, 1, 50 });
+		backGround[i]->Update();
+		backGround[i]->SetPosition({ i * backGround[i]->GetScale().x - backGround[i]->GetScale().x * 0.5f, -2, 0});
+		backGround[i]->SetRotation({ -90, 0, 0});
+		backGround[i]->Update();
+	}
 
 	// OBJオブジェクト
 
@@ -1047,6 +1056,10 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// OBJオブジェクト描画
 	Object3d::PreDraw(cmdList);
 
+	for (int i = 0; i < 2; i++)
+	{
+		backGround[i]->Draw();
+	}
 	for (int y = 7; y >= 0; y--)
 	{
 		for (int x = 0; x < 13; x++)
