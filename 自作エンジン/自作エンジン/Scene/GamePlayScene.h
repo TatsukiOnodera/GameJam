@@ -130,6 +130,8 @@ private: // インスタンス
 	std::unique_ptr<Object3d> scoreNumEND[10][6] = {};
 	// コンボ
 	std::unique_ptr<Object3d> comboText[6] = {};
+	// 背景
+	std::unique_ptr<Object3d> backGround[2] = {};
 	// FBXオブジェクト
 
 
@@ -178,6 +180,7 @@ private: // メンバ変数
 	// テキスト
 	bool isActiveCT;
 	int effectTimer;
+	int textNum;
 
 	// スポーン
 	// タイマー

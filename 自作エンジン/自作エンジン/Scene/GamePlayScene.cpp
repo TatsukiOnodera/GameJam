@@ -207,6 +207,7 @@ void GamePlayScene::Initialize()
 	for (int i = 0; i < 6; i++)
 	{
 		comboText[i]->SetScale({0, 1, 0});
+		comboText[i]->SetRotation({-90, 0, 0});
 		comboText[i]->Update();
 	}
 
@@ -256,6 +257,8 @@ void GamePlayScene::InitializeVariable()
 	comboLimit = 60;
 	comboNum = 0;
 	isActiveCT = false;
+
+	textNum = 0;
 
 	heartCounter = 3;
 
@@ -440,8 +443,13 @@ void GamePlayScene::Update()
 					// コンボカウンター
 					comboNum++;
 					// テキストの座標
-					comboText[comboNum - 1]->SetPosition({ 5.2f * (x - 6), 5.2f * (6 - 4), 0 });
-					comboText[comboNum - 1]->Update();
+					textNum = comboNum - 1;
+					if (comboNum > 5)
+					{
+						textNum = 5;
+					}
+					comboText[textNum]->SetPosition({ 5.2f * (x - 6), 5.2f * (6 - 4), 0 });
+					comboText[textNum]->Update();
 					effectTimer = 0;
 				}
 				else if (stage == TITLE)
@@ -482,19 +490,43 @@ void GamePlayScene::Update()
 			}
 		}
 
+		// コンボテキスト
 		if (isActiveCT == true)
 		{
-			// 拡縮
-			if (effectTimer < 60)
+			XMFLOAT3 pos = comboText[textNum]->GetPosition();
+			if (pos.y < 5.2f * (7 - 4))
 			{
-				effectTimer++;
+				pos.y += 5.2f / 60.0f;
+				if (pos.y >= 5.2f * (7 - 4))
+				{
+					pos.y = 5.2f * (7 - 4);
+				}
+				comboText[textNum]->SetPosition(pos);
+				
+				// 拡縮
+				if (effectTimer < 60)
+				{
+					effectTimer++;
+				}
+				XMFLOAT3 cScale = { 0, 1, 0 };
+				float t = ((float)effectTimer / 60) * (2 - (float)effectTimer / 60);
+				cScale.x = 10.0f * (1.0f - t) + 15.0f * t;
+				cScale.z = cScale.x;
+				comboText[textNum]->SetScale(cScale);
 			}
-
-			XMFLOAT3 cScale = comboText[comboNum - 1]->GetScale();
-			float t = ((float)effectTimer / 60) * (2 - (float)effectTimer / 60);
-			cScale.x = 10.0f * (1.0f - t) + 15.0f * t;
-			cScale.z = cScale.x;
-			comboText[comboNum - 1]->SetScale(cScale);
+			else
+			{
+				XMFLOAT3 cScale = comboText[textNum]->GetScale();
+				cScale.x -= 0.52f;
+				cScale.z = cScale.x;
+				if (cScale.x <= 0.0f)
+				{
+					cScale.x = 0;
+					cScale.z = cScale.x;
+					isActiveCT = false;
+				}
+				comboText[textNum]->SetScale(cScale);
+			}
 		}
 	}
 
@@ -1051,7 +1083,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	frame->Draw();
 	if (isActiveCT == true)
 	{
-		comboText[comboNum - 1]->Draw();
+		comboText[textNum]->Draw();
 	}
 	for (int i = 0; i < heartCounter; i++)
 	{
