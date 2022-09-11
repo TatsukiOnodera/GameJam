@@ -442,7 +442,6 @@ void GamePlayScene::Update()
 					// テキストの座標
 					comboText[comboNum - 1]->SetPosition({ 5.2f * (x - 6), 5.2f * (6 - 4), 0 });
 					comboText[comboNum - 1]->Update();
-					comboText[comboNum - 1]->Update();
 					effectTimer = 0;
 				}
 				else if (stage == TITLE)
@@ -491,7 +490,7 @@ void GamePlayScene::Update()
 				effectTimer++;
 			}
 
-			XMFLOAT3 cScale = {0, 1, 0};
+			XMFLOAT3 cScale = comboText[comboNum - 1]->GetScale();
 			float t = ((float)effectTimer / 60) * (2 - (float)effectTimer / 60);
 			cScale.x = 10.0f * (1.0f - t) + 15.0f * t;
 			cScale.z = cScale.x;
