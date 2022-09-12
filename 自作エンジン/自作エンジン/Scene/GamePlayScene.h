@@ -261,6 +261,7 @@ private: // ƒƒ“ƒo•Ï”
 	int moveCount = 0;
 	bool isBlink = false;
 	int blinkCount = 0;
+	int restoreCameraTimer = 0;
 
 public: // ƒƒ“ƒoŠÖ”
 	~GamePlayScene() override;

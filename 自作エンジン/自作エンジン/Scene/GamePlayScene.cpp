@@ -208,11 +208,11 @@ void GamePlayScene::Initialize()
 		{
 			scoreNum[n][x]->SetScale({ 4 * 1.5f, 1, 4 * 1.5f });
 			scoreNum[n][x]->Update();
-			scoreNum[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (4.0f * x) + 21, 24.3f, 0});
+			scoreNum[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (4.0f * x) + 21, 24.3f, 0 });
 			scoreNum[n][x]->SetRotation({ -90, 0, 0 });
 			scoreNumEND[n][x]->SetScale({ 5.5f * 1.5f, 1, 5.5f * 1.5f });
 			scoreNumEND[n][x]->Update();
-			scoreNumEND[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (0.5f * x) - 5, -5.2f, 0});
+			scoreNumEND[n][x]->SetPosition({ x * scoreNum[n][x]->GetScale().x - (0.5f * x) - 5, -5.2f, 0 });
 			scoreNumEND[n][x]->SetRotation({ -90, 0, 0 });
 		}
 	}
@@ -224,8 +224,8 @@ void GamePlayScene::Initialize()
 	comboText[5].reset(Object3d::Create("Combo_05"));
 	for (int i = 0; i < 6; i++)
 	{
-		comboText[i]->SetScale({0, 1, 0});
-		comboText[i]->SetRotation({-90, 0, 0});
+		comboText[i]->SetScale({ 0, 1, 0 });
+		comboText[i]->SetRotation({ -90, 0, 0 });
 		comboText[i]->Update();
 	}
 	for (int i = 0; i < 2; i++)
@@ -233,8 +233,8 @@ void GamePlayScene::Initialize()
 		backGround[i].reset(Object3d::Create("Background"));
 		backGround[i]->SetScale({ 50, 1, 50 });
 		backGround[i]->Update();
-		backGround[i]->SetPosition({ i * backGround[i]->GetScale().x - backGround[i]->GetScale().x * 0.5f, -2, 0});
-		backGround[i]->SetRotation({ -90, 0, 0});
+		backGround[i]->SetPosition({ i * backGround[i]->GetScale().x - backGround[i]->GetScale().x * 0.5f, -2, 0 });
+		backGround[i]->SetRotation({ -90, 0, 0 });
 		backGround[i]->SetColor({ 1, 1, 1, 0.7f });
 		backGround[i]->Update();
 	}
@@ -611,7 +611,7 @@ void GamePlayScene::Update()
 					pos.y = 5.2f * (7 - 4);
 				}
 				comboText[textNum]->SetPosition(pos);
-				
+
 				// 拡縮
 				if (effectTimer < 60)
 				{
@@ -974,21 +974,21 @@ void GamePlayScene::Update()
 				if (scale.x > 2.25f && enemy01[i]->alive == false)
 				{
 					enemyStay[i]->alive = true;
-					enemyStay[i]->enemyStay->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0});
+					enemyStay[i]->enemyStay->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0 });
 					enemyStay[i]->enemyStay->SetRotation({ -90, 0, 0 });
 					enemyStay[i]->enemyStay->SetScale({ 0, 1, 0 });
 					enemyStay[i]->enemyStay->Update();
 					enemyStay[i]->enemyG = 0.5f;
 
 					enemy01[i]->alive = true;
-					enemy01[i]->enemy01->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0});
+					enemy01[i]->enemy01->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0 });
 					enemy01[i]->enemy01->SetRotation({ -90, 0, 0 });
 					enemy01[i]->enemy01->SetScale({ 0, 1, 0 });
 					enemy01[i]->enemy01->Update();
 					enemy01[i]->enemyG = 0.5f;
 
 					enemy02[i]->alive = true;
-					enemy02[i]->enemy02->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0});
+					enemy02[i]->enemy02->SetPosition({ 5.2f * (i - 6), 5.2f * (7 - 4), 0 });
 					enemy02[i]->enemy02->SetRotation({ -90, 0, 0 });
 					enemy02[i]->enemy02->SetScale({ 0, 1, 0 });
 					enemy02[i]->enemy02->Update();
@@ -1121,7 +1121,8 @@ void GamePlayScene::Update()
 					// プレイヤーのボールとの当たり判定
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
-						heartCounter--;
+						//heartCounter--;
+						heartCounter = 0;
 						if (heartCounter <= 0)
 						{
 							heartCounter = 0;
@@ -1153,6 +1154,20 @@ void GamePlayScene::Update()
 			bPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bPos.x;
 			bPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bPos.y;
 			ballBounceEffect->Add(30, { bPos.x, bPos.y, bPos.z }, { 0,0,0 }, { 0,0,0 }, 0.5f, 3.5f, { 1,1,1,1 }, { 0.5,0.5,0.5,0.3 });
+			if (endTimer < 60) {
+				float elapsedTimeRate = static_cast<float>(endTimer) / 60.0f;
+				XMFLOAT3 defaultEyePos = camera->GetDefaultEye();
+				XMFLOAT3 defaultTargetPos = camera->GetDefaultTarget();
+				camera->SetEye({
+					static_cast<float>((bDeadPos.x - defaultEyePos.x) * (1 - pow(1 - elapsedTimeRate,4)) + defaultEyePos.x),
+					static_cast<float>((bDeadPos.y - defaultEyePos.y) * (1 - pow(1 - elapsedTimeRate,4)) + defaultEyePos.y),
+					static_cast<float>((-10 - defaultEyePos.z) * (1 - pow(1 - elapsedTimeRate,4)) + defaultEyePos.z) });
+				camera->SetTarget({
+					static_cast<float>((bDeadPos.x - defaultTargetPos.x) * (1 - pow(1 - elapsedTimeRate,4)) + defaultTargetPos.x),
+					static_cast<float>((bDeadPos.y - defaultTargetPos.y) * (1 - pow(1 - elapsedTimeRate,4)) + defaultTargetPos.x),
+					0 });
+			}
+
 			if (endTimer > 60)
 			{
 				isAliveB = false;
@@ -1167,6 +1182,21 @@ void GamePlayScene::Update()
 		}
 		else
 		{
+			if (restoreCameraTimer < 10) {
+				restoreCameraTimer++;
+				float elapsedTimeRate = static_cast<float>(restoreCameraTimer) / 10.0f;
+				XMFLOAT3 defaultEyePos = camera->GetDefaultEye();
+				XMFLOAT3 defaultTargetPos = camera->GetDefaultTarget();
+				XMFLOAT3 bDeadPos = ball01->GetPosition();
+				camera->SetEye({
+					static_cast<float>((defaultEyePos.x - bDeadPos.x) * (1 - pow(1 - elapsedTimeRate,3)) + bDeadPos.x),
+					static_cast<float>((defaultEyePos.y - bDeadPos.y) * (1 - pow(1 - elapsedTimeRate,3)) + bDeadPos.y),
+					static_cast<float>((defaultEyePos.z - -10) * (1 - pow(1 - elapsedTimeRate,3)) + -10) });
+				camera->SetTarget({
+					static_cast<float>((defaultTargetPos.x - bDeadPos.x) * (1 - pow(1 - elapsedTimeRate,3)) + bDeadPos.x),
+					static_cast<float>((defaultTargetPos.y - bDeadPos.y) * (1 - pow(1 - elapsedTimeRate,3)) + bDeadPos.y),
+					0 });
+			}
 			// 一定の大きさに満たなければ
 			if (end->GetScale().x < 20 * 1.5f && endButton->GetScale().x < 25 && gameover->GetScale().x < 30 * 1.7f)
 			{
@@ -1226,7 +1256,9 @@ void GamePlayScene::Update()
 #pragma endregion
 
 #pragma region カメラとライトの更新
-	camera->CameraShake();
+	if (stage == TITLE || stage == GAME) {
+		camera->CameraShake();
+	}
 	light->Update();
 	camera->Update();
 

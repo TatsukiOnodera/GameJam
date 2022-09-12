@@ -56,8 +56,8 @@ private: // メンバ変数
 
 	//シェイクフラグ
 	bool shakeFlag = false;
-	XMFLOAT3 saveEye = { 0.0f, 0.0f, -50.0f };
-	XMFLOAT3 saveTarget = { 0.0f, 0.0f, 0.0f };
+	XMFLOAT3 defaultEye = { 0.0f, 0.0f, -50.0f };
+	XMFLOAT3 defaultTarget = { 0.0f, 0.0f, 0.0f };
 	int shakeTimer = 0;
 	int attenuation = 0;
 	int shakeCount = 0;
@@ -130,6 +130,8 @@ public: //アクセッサ
 	/// <returns>カメラ座標</returns>
 	XMFLOAT3 GetEye() { return m_eye; }
 
+	XMFLOAT3 GetDefaultEye() { return defaultEye; }
+
 	/// <summary>
 	/// カメラ座標セット
 	/// </summary>
@@ -141,6 +143,8 @@ public: //アクセッサ
 	/// </summary>
 	/// <returns>頂点座標</returns>
 	XMFLOAT3 GetTarget() { return m_target; }
+
+	XMFLOAT3 GetDefaultTarget() { return defaultTarget; }
 
 	/// <summary>
 	/// 焦点座標セット

@@ -276,8 +276,8 @@ void Camera::CameraShake()
 	if (!shakeFlag)
 	{
 		shakeTimer = 0;
-		SetEye(saveEye);
-		SetTarget(saveTarget);
+		SetEye(defaultEye);
+		SetTarget(defaultTarget);
 	}
 	if (shakeFlag)
 	{
@@ -285,8 +285,8 @@ void Camera::CameraShake()
 		XMFLOAT3 shakeEye = { 0.0f, 0.0f, 0.0f };
 		XMFLOAT3 shakeTarget = { 0.0f, 0.0f, 0.0f };
 
-		SetEye(saveEye);
-		SetTarget(saveTarget);
+		SetEye(defaultEye);
+		SetTarget(defaultTarget);
 
 		shakeTimer++;
 		if (shakeTimer > 0)
