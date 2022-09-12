@@ -306,6 +306,7 @@ void GamePlayScene::InitializeVariable()
 
 	endToTitle = false;
 	titleToGame = false;
+	restoreCameraTimer = 0;
 
 	playerStay->SetPosition({ 0, 5.2f * (-4.9f), 0 });
 	playerStay->SetRotation({ -95, 0, 0 });
