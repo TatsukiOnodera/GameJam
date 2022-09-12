@@ -38,7 +38,7 @@ void GamePlayScene::Initialize()
 	playerJumpEffect.reset(ParticleManager::Create("stareffect_02.png"));
 	ballJumpEffect.reset(ParticleManager::Create("star.png"));
 	ballBounceEffect.reset(ParticleManager::Create("stareffect_01.png"));
-	ballDeadEffect.reset(ParticleManager::Create("balldeadeffect.png"));
+	deleteBlockEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
 	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 
@@ -587,7 +587,7 @@ void GamePlayScene::Update()
 						block[y][x]->map = false;
 						block[y][x]->HP = 15;
 						block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
-						ballDeadEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
+						deleteBlockEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
 						deleteB = true;
 						w = x;
 					}
@@ -1219,7 +1219,7 @@ void GamePlayScene::Update()
 			if (endTimer > 60)
 			{
 				isAliveB = false;
-				ballDeadEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, { 0,0,0 }, { 0,0,0 }, 1.0f, 5.0f);
+				deleteBlockEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, { 0,0,0 }, { 0,0,0 }, 1.0f, 5.0f);
 				for (int i = 0; i < 13; i++)
 				{
 					enemyStay[i]->alive = false;
@@ -1230,9 +1230,9 @@ void GamePlayScene::Update()
 		}
 		else
 		{
-			if (restoreCameraTimer < 10) {
+			if (restoreCameraTimer < 60) {
 				restoreCameraTimer++;
-				float elapsedTimeRate = static_cast<float>(restoreCameraTimer) / 10.0f;
+				float elapsedTimeRate = static_cast<float>(restoreCameraTimer) / 60.0f;
 				XMFLOAT3 defaultEyePos = camera->GetDefaultEye();
 				XMFLOAT3 defaultTargetPos = camera->GetDefaultTarget();
 				XMFLOAT3 bDeadPos = ball01->GetPosition();
@@ -1571,7 +1571,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	playerJumpEffect->Draw();
 	ballJumpEffect->Draw();
 	ballBounceEffect->Draw();
-	ballDeadEffect->Draw();
+	deleteBlockEffect->Draw();
 	enemyBounceEffect->Draw();
 	enemySpawnEffect->Draw();
 
