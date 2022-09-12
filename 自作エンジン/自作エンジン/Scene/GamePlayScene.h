@@ -263,6 +263,9 @@ private: // ƒƒ“ƒo•Ï”
 	int blinkCount = 0;
 	int restoreCameraTimer = 0;
 
+	bool endToTitle;
+	bool titleToGame;
+
 public: // ƒƒ“ƒoŠÖ”
 	~GamePlayScene() override;
 
