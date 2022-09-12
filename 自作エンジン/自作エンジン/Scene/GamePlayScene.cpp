@@ -606,8 +606,31 @@ void GamePlayScene::Update()
 				// タイマーを1にする
 				comboTimer = 1;
 				// コンボカウンター
-				audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
 				comboNum++;
+				if (comboNum == 1)
+				{
+					audio->PlayWave("Resources/SE/combose_01.wav", false, wavCombo);
+				}
+				else if (comboNum == 2)
+				{
+					audio->PlayWave("Resources/SE/combose_02.wav", false, wavCombo);
+				}
+				else if (comboNum == 3)
+				{
+					audio->PlayWave("Resources/SE/combose_03.wav", false, wavCombo);
+				}
+				else if (comboNum == 4)
+				{
+					audio->PlayWave("Resources/SE/combose_04.wav", false, wavCombo);
+				}
+				else if (comboNum == 5)
+				{
+					audio->PlayWave("Resources/SE/combose_05.wav", false, wavCombo);
+				}
+				else
+				{
+					audio->PlayWave("Resources/SE/combose_06.wav", false, wavCombo);
+				}
 				score += 100 * comboNum * comboNum;
 				// テキストの座標
 				textNum = comboNum - 1;
@@ -695,14 +718,7 @@ void GamePlayScene::Update()
 		{
 			playerJS = 0.05f;
 			isPJ = true;
-			if (stage == TITLE)
-			{
-				audio->PlayWave("Resources/SE/se_13.wav", false, wav13);
-			}
-			else
-			{
-				audio->PlayWave("Resources/SE/se_02.wav", false, wav2);
-			}
+			audio->PlayWave("Resources/SE/se_02.wav", false, wav2);
 		}
 
 		// 移動
@@ -954,7 +970,7 @@ void GamePlayScene::Update()
 								}
 								else if (groundB == false)
 								{
-									audio->PlayWave("Resources/SE/se_15.wav", false, wav15);
+									audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
 								}
 								groundB = true;
 								isBJ = false;
@@ -1195,7 +1211,7 @@ void GamePlayScene::Update()
 											}
 											if (enemy01[i]->groundE == false)
 											{
-												audio->PlayWave("Resources/SE/se_15.wav", false, wav15);
+												audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
 											}
 											enemy01[i]->groundE = true;
 											enemy02[i]->groundE = true;

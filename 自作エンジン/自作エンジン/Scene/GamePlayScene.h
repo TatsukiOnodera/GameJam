@@ -286,7 +286,7 @@ private: // ƒƒ“ƒo•Ï”
 	float wav12 = 1.0f;
 	float wav13 = 1.0f;
 	float wav14 = 1.0f;
-	float wav15 = 1.0f;
+	float wavCombo = 1.0f;
 
 public: // ƒƒ“ƒoŠÖ”
 	~GamePlayScene() override;
