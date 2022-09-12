@@ -1,80 +1,81 @@
-#pragma once
+ï»¿#pragma once
 
 #include <Windows.h>
 #include <xaudio2.h>
 #include <wrl.h>
 
 /// <summary>
-/// ƒI[ƒfƒBƒIƒR[ƒ‹ƒoƒbƒN
+/// ã‚ªãƒ¼ãƒ‡ã‚£ã‚ªã‚³ãƒ¼ãƒ«ãƒãƒƒã‚¯
 /// </summary>
 class XAudio2VoiceCallback : public IXAudio2VoiceCallback
 {
 public:
-	// ƒ{ƒCƒXˆ—ƒpƒX‚ÌŠJn
+	// ãƒœã‚¤ã‚¹å‡¦ç†ãƒ‘ã‚¹ã®é–‹å§‹æ™‚
 	//STDMETHOD_(void, OnVoiceProcessingPassStart) (THIS_ UINT32 BytesRequired) {};
 	void OnVoiceProcessingPassStart(UINT32 BytesRequired) {};
-	// ƒ{ƒCƒXˆ—ƒpƒX‚ÌI—¹
+	// ãƒœã‚¤ã‚¹å‡¦ç†ãƒ‘ã‚¹ã®çµ‚äº†æ™‚
 	STDMETHOD_(void, OnVoiceProcessingPassEnd) (THIS) {};
-	// ƒoƒbƒtƒ@ƒXƒgƒŠ[ƒ€‚ÌÄ¶‚ªI—¹‚µ‚½
+	// ãƒãƒƒãƒ•ã‚¡ã‚¹ãƒˆãƒªãƒ¼ãƒ ã®å†ç”ŸãŒçµ‚äº†ã—ãŸæ™‚
 	STDMETHOD_(void, OnStreamEnd) (THIS) {};
-	// ƒoƒbƒtƒ@‚Ìg—pŠJn
+	// ãƒãƒƒãƒ•ã‚¡ã®ä½¿ç”¨é–‹å§‹æ™‚
 	STDMETHOD_(void, OnBufferStart) (THIS_ void* pBufferContext) {};
-	// ƒoƒbƒtƒ@‚Ì––”ö‚É’B‚µ‚½
+	// ãƒãƒƒãƒ•ã‚¡ã®æœ«å°¾ã«é”ã—ãŸæ™‚
 	STDMETHOD_(void, OnBufferEnd) (THIS_ void* pBufferContext) {
-		// ƒoƒbƒtƒ@‚ğ‰ğ•ú‚·‚é
+		// ãƒãƒƒãƒ•ã‚¡ã‚’è§£æ”¾ã™ã‚‹
 		delete[] pBufferContext;
 	};
-	// Ä¶‚ªƒ‹[ƒvˆÊ’u‚É’B‚µ‚½
+	// å†ç”ŸãŒãƒ«ãƒ¼ãƒ—ä½ç½®ã«é”ã—ãŸæ™‚
 	STDMETHOD_(void, OnLoopEnd) (THIS_ void* pBufferContext) {};
-	// ƒ{ƒCƒX‚ÌÀsƒGƒ‰[
+	// ãƒœã‚¤ã‚¹ã®å®Ÿè¡Œã‚¨ãƒ©ãƒ¼æ™‚
 	STDMETHOD_(void, OnVoiceError) (THIS_ void* pBufferContext, HRESULT Error) {};
 };
 
 /// <summary>
-/// ƒI[ƒfƒBƒI
+/// ã‚ªãƒ¼ãƒ‡ã‚£ã‚ª
 /// </summary>
 class Audio
 {
-private: // ƒGƒCƒŠƒAƒX
-	// Microsoft::WRL::‚ğÈ—ª
+private: // ã‚¨ã‚¤ãƒªã‚¢ã‚¹
+	// Microsoft::WRL::ã‚’çœç•¥
 	template <class T> using ComPtr = Microsoft::WRL::ComPtr<T>;
-public: // ƒTƒuƒNƒ‰ƒX
-	// ƒ`ƒƒƒ“ƒNƒwƒbƒ_
+public: // ã‚µãƒ–ã‚¯ãƒ©ã‚¹
+	// ãƒãƒ£ãƒ³ã‚¯ãƒ˜ãƒƒãƒ€
 	struct Chunk
 	{
-		char	id[4]; // ƒ`ƒƒƒ“ƒN–ˆ‚ÌID
-		int		size;  // ƒ`ƒƒƒ“ƒNƒTƒCƒY
+		char	id[4]; // ãƒãƒ£ãƒ³ã‚¯æ¯ã®ID
+		int		size;  // ãƒãƒ£ãƒ³ã‚¯ã‚µã‚¤ã‚º
 	};
 
-	// RIFFƒwƒbƒ_ƒ`ƒƒƒ“ƒN
+	// RIFFãƒ˜ãƒƒãƒ€ãƒãƒ£ãƒ³ã‚¯
 	struct RiffHeader
 	{
 		Chunk	chunk;   // "RIFF"
 		char	type[4]; // "WAVE"
 	};
 
-	// FMTƒ`ƒƒƒ“ƒN
+	// FMTãƒãƒ£ãƒ³ã‚¯
 	struct FormatChunk
 	{
 		Chunk		chunk; // "fmt "
-		WAVEFORMAT	fmt;   // ”gŒ`ƒtƒH[ƒ}ƒbƒg
+		WAVEFORMAT	fmt;   // æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒãƒƒãƒˆ
 	};
 
-public: //Ã“Iƒƒ“ƒoŠÖ”
+public: // é™çš„ãƒ¡ãƒ³ãƒé–¢æ•°
 	static Audio* GetInstance();
 
-public: // ƒƒ“ƒoŠÖ”
+public: //ãƒ¡ãƒ³ãƒé–¢æ•°
 	/// <summary>
-	/// ‰Šú‰»
+	/// åˆæœŸåŒ–
 	/// </summary>
-	/// <returns>¬”Û</returns>
-	void Initialize();
+	/// <returns>æˆå¦</returns>
+	bool Initialize();
 
-	// ƒTƒEƒ“ƒhƒtƒ@ƒCƒ‹‚Ì“Ç‚İ‚İ‚ÆÄ¶
-	void PlayWave(const char* filename);
+	// ã‚µã‚¦ãƒ³ãƒ‰ãƒ•ã‚¡ã‚¤ãƒ«ã®èª­ã¿è¾¼ã¿ã¨å†ç”Ÿ
+	void PlayWave(const char* filename, bool roop, float volume);
 
-private: // ƒƒ“ƒo•Ï”
+private: // ãƒ¡ãƒ³ãƒå¤‰æ•°
 	ComPtr<IXAudio2> xAudio2;
-	IXAudio2MasteringVoice* masterVoice = nullptr;
+	IXAudio2MasteringVoice* masterVoice;
 	XAudio2VoiceCallback voiceCallback;
 };
+

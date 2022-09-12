@@ -1,4 +1,4 @@
-#include "Audio.h"
+ï»¿#include "Audio.h"
 #include <fstream>
 #include <cassert>
 
@@ -11,58 +11,68 @@ Audio* Audio::GetInstance()
 	return &audio;
 }
 
-void Audio::Initialize()
+bool Audio::Initialize()
 {
 	HRESULT result;
 
-	// XAudioƒGƒ“ƒWƒ“‚ÌƒCƒ“ƒXƒ^ƒ“ƒX‚ð¶¬
+	// XAudioã‚¨ãƒ³ã‚¸ãƒ³ã®ã‚¤ãƒ³ã‚¹ã‚¿ãƒ³ã‚¹ã‚’ç”Ÿæˆ
 	result = XAudio2Create(&xAudio2, 0, XAUDIO2_DEFAULT_PROCESSOR);
+	if FAILED(result) {
+		assert(0);
+		return false;
+	}
 
-	// ƒ}ƒXƒ^[ƒ{ƒCƒX‚ð¶¬
+	// ãƒžã‚¹ã‚¿ãƒ¼ãƒœã‚¤ã‚¹ã‚’ç”Ÿæˆ
 	result = xAudio2->CreateMasteringVoice(&masterVoice);
+	if FAILED(result) {
+		assert(0);
+		return false;
+	}
+
+	return true;
 }
 
-void Audio::PlayWave(const char* filename)
+void Audio::PlayWave(const char * filename, bool roop, float volume)
 {
 	HRESULT result;
-	// ƒtƒ@ƒCƒ‹ƒXƒgƒŠ[ƒ€
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚¹ãƒˆãƒªãƒ¼ãƒ 
 	std::ifstream file;
-	// Waveƒtƒ@ƒCƒ‹‚ðŠJ‚­
+	// Waveãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‹ã
 	file.open(filename, std::ios_base::binary);
-	// ƒtƒ@ƒCƒ‹ƒI[ƒvƒ“Ž¸”s‚ðƒ`ƒFƒbƒN
+	// ãƒ•ã‚¡ã‚¤ãƒ«ã‚ªãƒ¼ãƒ—ãƒ³å¤±æ•—ã‚’ãƒã‚§ãƒƒã‚¯
 	if (file.fail()) {
 		assert(0);
 	}
 
-	// RIFFƒwƒbƒ_[‚Ì“Ç‚Ýž‚Ý
+	// RIFFãƒ˜ãƒƒãƒ€ãƒ¼ã®èª­ã¿è¾¼ã¿
 	RiffHeader riff;
 	file.read((char*)&riff, sizeof(riff));
-	// ƒtƒ@ƒCƒ‹‚ªRIFF‚©ƒ`ƒFƒbƒN
+	// ãƒ•ã‚¡ã‚¤ãƒ«ãŒRIFFã‹ãƒã‚§ãƒƒã‚¯
 	if (strncmp(riff.chunk.id, "RIFF", 4) != 0) {
 		assert(0);
 	}
 
-	// Formatƒ`ƒƒƒ“ƒN‚Ì“Ç‚Ýž‚Ý
+	// Formatãƒãƒ£ãƒ³ã‚¯ã®èª­ã¿è¾¼ã¿
 	FormatChunk format;
 	file.read((char*)&format, sizeof(format));
 
-	// Dataƒ`ƒƒƒ“ƒN‚Ì“Ç‚Ýž‚Ý
+	// Dataãƒãƒ£ãƒ³ã‚¯ã®èª­ã¿è¾¼ã¿
 	Chunk data;
 	file.read((char*)&data, sizeof(data));
 
-	// Dataƒ`ƒƒƒ“ƒN‚Ìƒf[ƒ^•”i”gŒ`ƒf[ƒ^j‚Ì“Ç‚Ýž‚Ý
+	// Dataãƒãƒ£ãƒ³ã‚¯ã®ãƒ‡ãƒ¼ã‚¿éƒ¨ï¼ˆæ³¢å½¢ãƒ‡ãƒ¼ã‚¿ï¼‰ã®èª­ã¿è¾¼ã¿
 	char* pBuffer = new char[data.size];
 	file.read(pBuffer, data.size);
 
-	// Waveƒtƒ@ƒCƒ‹‚ð•Â‚¶‚é
+	// Waveãƒ•ã‚¡ã‚¤ãƒ«ã‚’é–‰ã˜ã‚‹
 	file.close();
 
 	WAVEFORMATEX wfex{};
-	// ”gŒ`ƒtƒH[ƒ}ƒbƒg‚ÌÝ’è
+	// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆã®è¨­å®š
 	memcpy(&wfex, &format.fmt, sizeof(format.fmt));
 	wfex.wBitsPerSample = format.fmt.nBlockAlign * 8 / format.fmt.nChannels;
 
-	// ”gŒ`ƒtƒH[ƒ}ƒbƒg‚ðŒ³‚ÉSourceVoice‚Ì¶¬
+	// æ³¢å½¢ãƒ•ã‚©ãƒ¼ãƒžãƒƒãƒˆã‚’å…ƒã«SourceVoiceã®ç”Ÿæˆ
 	IXAudio2SourceVoice* pSourceVoice = nullptr;
 	result = xAudio2->CreateSourceVoice(&pSourceVoice, &wfex, 0, 2.0f, &voiceCallback);
 	if FAILED(result) {
@@ -71,14 +81,19 @@ void Audio::PlayWave(const char* filename)
 		return;
 	}
 
-	// Ä¶‚·‚é”gŒ`ƒf[ƒ^‚ÌÝ’è
+	// å†ç”Ÿã™ã‚‹æ³¢å½¢ãƒ‡ãƒ¼ã‚¿ã®è¨­å®š
 	XAUDIO2_BUFFER buf{};
 	buf.pAudioData = (BYTE*)pBuffer;
 	buf.pContext = pBuffer;
 	buf.Flags = XAUDIO2_END_OF_STREAM;
 	buf.AudioBytes = data.size;
+	if (roop == true) {
+		buf.LoopCount = XAUDIO2_LOOP_INFINITE;
+	}
 
-	// ”gŒ`ƒf[ƒ^‚ÌÄ¶
+	pSourceVoice->SetVolume(volume);
+
+	// æ³¢å½¢ãƒ‡ãƒ¼ã‚¿ã®å†ç”Ÿ
 	result = pSourceVoice->SubmitSourceBuffer(&buf);
 	if FAILED(result) {
 		delete[] pBuffer;

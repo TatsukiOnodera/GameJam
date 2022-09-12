@@ -37,7 +37,7 @@ private: // メモリ置き場
 	// 操作系
 	Input* input = nullptr;
 	// オーディオ
-	//Audio* audio = nullptr;
+	Audio* audio = nullptr;
 	// カメラ
 	Camera* camera = nullptr;
 	// デバッグテキスト
@@ -77,6 +77,7 @@ private: //サブクラス
 		float enemyS = 0;
 		float enemyR = 0;
 		float enemyG = 0;
+		float groundE = false;
 		ENEMY01(Object3d* obj)
 		{
 			this->enemy01.reset(obj);
@@ -90,6 +91,7 @@ private: //サブクラス
 		float enemyS = 0;
 		float enemyR = 0;
 		float enemyG = 0;
+		float groundE = false;
 		ENEMY02(Object3d* obj)
 		{
 			this->enemy02.reset(obj);
@@ -193,6 +195,8 @@ private: // メンバ変数
 	int blockTimer;
 	// 加速度
 	int timerA;
+	// ウォークSEカウント
+	int workSE;
 
 	int playerWalkEffectTimer = 10;
 	// ボール
@@ -212,6 +216,8 @@ private: // メンバ変数
 	float gravity = 0.1f;
 	// フラグ
 	float isAliveB;
+	// 地面にいるか
+	bool groundB;
 
 	// コンボ
 	// タイマー
@@ -264,6 +270,23 @@ private: // メンバ変数
 
 	bool endToTitle;
 	bool titleToGame;
+
+	//ボリューム
+	float wav1 = 0.5f;
+	float wav2 = 1.0f;
+	float wav3 = 1.0f;
+	float wav4 = 1.0f;
+	float wav5 = 1.0f;
+	float wav6 = 1.0f;
+	float wav7 = 1.0f;
+	float wav8 = 1.0f;
+	float wav9 = 0.3f;
+	float wav10 = 1.0f;
+	float wav11 = 1.0f;
+	float wav12 = 1.0f;
+	float wav13 = 1.0f;
+	float wav14 = 1.0f;
+	float wav15 = 1.0f;
 
 public: // メンバ関数
 	~GamePlayScene() override;
