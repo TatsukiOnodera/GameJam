@@ -42,6 +42,7 @@ void GamePlayScene::Initialize()
 	deleteBlockEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
 	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
+	deadEffect.reset(ParticleManager::Create("deadeffect.png"));
 
 	// �X�v���C�g
 	playerStay.reset(Object3d::Create("PlayerStay"));
@@ -1283,7 +1284,8 @@ void GamePlayScene::Update()
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
-						heartCounter--;
+						//heartCounter--;
+						heartCounter = 0;
 						if (heartCounter <= 0)
 						{
 							heartCounter = 0;
@@ -1291,7 +1293,17 @@ void GamePlayScene::Update()
 						}
 						else
 						{
-							enemySpawnEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+							XMFLOAT3 deadEffectPos = { 0,0,0 };
+							XMFLOAT3 velocity = { 0,0,0 };
+							XMFLOAT3 accel = { 0,0,0 };
+							for (int i = 0; i < 50; i++) {
+								deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
+								deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
+								velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
+								velocity.y = (float)rand() / RAND_MAX * 0.2f;
+								accel.y = (float)rand() / RAND_MAX * -0.03f;
+								deadEffect->Add(60, {ePos.x, ePos.y, ePos.z }, velocity, accel, 0.5f, 2.0f);
+							}
 							enemyStay[i]->alive = false;
 							enemyStay[i]->isEnemyLanding = false;
 							enemy01[i]->alive = false;
@@ -1332,7 +1344,17 @@ void GamePlayScene::Update()
 			if (endTimer > 60)
 			{
 				isAliveB = false;
-				deleteBlockEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, { 0,0,0 }, { 0,0,0 }, 1.0f, 5.0f);
+				XMFLOAT3 deadEffectPos = { 0,0,0 };
+				XMFLOAT3 velocity = { 0,0,0 };
+				XMFLOAT3 accel = { 0,0,0 };
+				for (int i = 0; i < 50; i++) {
+					deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bDeadPos.x;
+					deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bDeadPos.y;
+					velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
+					velocity.y = (float)rand() / RAND_MAX * 0.2f;
+					accel.y = (float)rand() / RAND_MAX * -0.03f;
+					deadEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, velocity, accel, 0.5f, 2.0f);
+				}
 				for (int i = 0; i < 13; i++)
 				{
 					enemyStay[i]->alive = false;
@@ -1688,6 +1710,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 	deleteBlockEffect->Draw();
 	enemyBounceEffect->Draw();
 	enemySpawnEffect->Draw();
+	deadEffect->Draw();
 
 	ParticleManager::PostDraw();
 }
