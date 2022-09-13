@@ -968,13 +968,13 @@ void GamePlayScene::Update()
 								XMFLOAT3 deadEffectPos = { 0,0,0 };
 								XMFLOAT3 velocity = { 0,0,0 };
 								XMFLOAT3 accel = { 0,0,0 };
-								for (int i = 0; i < 50; i++) {
+								for (int i = 0; i < 75; i++) {
 									deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
 									deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
 									velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
-									velocity.y = (float)rand() / RAND_MAX * 1;
+									velocity.y = (float)rand() / RAND_MAX * 0.8f;
 									accel.y =  -0.03f;
-									deadEffect->Add(60, { ePos.x, ePos.y, ePos.z }, velocity, accel, 0.5f, 2.0f);
+									deadEffect->Add(60, { ePos.x, ePos.y, ePos.z }, velocity, accel, 0.25f, 1.0f);
 								}
 								enemyStay[i]->alive = false;
 								enemyStay[i]->isEnemyLanding = false;
@@ -1439,13 +1439,13 @@ void GamePlayScene::Update()
 							XMFLOAT3 deadEffectPos = { 0,0,0 };
 							XMFLOAT3 velocity = { 0,0,0 };
 							XMFLOAT3 accel = { 0,0,0 };
-							for (int i = 0; i < 50; i++) {
+							for (int i = 0; i < 75; i++) {
 								deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
 								deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
 								velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
-								velocity.y = (float)rand() / RAND_MAX * 0.2f;
-								accel.y = (float)rand() / RAND_MAX * -0.03f;
-								deadEffect->Add(60, {ePos.x, ePos.y, ePos.z }, velocity, accel, 0.5f, 2.0f);
+								velocity.y = (float)rand() / RAND_MAX * 0.8f;
+								accel.y = -0.03f;
+								deadEffect->Add(60, {ePos.x, ePos.y, ePos.z }, velocity, accel, 0.25f, 1.0f);
 							}
 							enemyStay[i]->alive = false;
 							enemyStay[i]->isEnemyLanding = false;
@@ -1490,13 +1490,13 @@ void GamePlayScene::Update()
 				XMFLOAT3 deadEffectPos = { 0,0,0 };
 				XMFLOAT3 velocity = { 0,0,0 };
 				XMFLOAT3 accel = { 0,0,0 };
-				for (int i = 0; i < 50; i++) {
+				for (int i = 0; i < 75; i++) {
 					deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bDeadPos.x;
 					deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + bDeadPos.y;
 					velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
-					velocity.y = (float)rand() / RAND_MAX * 0.2f;
-					accel.y = (float)rand() / RAND_MAX * -0.03f;
-					deadEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, velocity, accel, 0.5f, 2.0f);
+					velocity.y = (float)rand() / RAND_MAX * 0.8f;
+					accel.y = -0.03f;
+					deadEffect->Add(120, { bDeadPos.x, bDeadPos.y, bDeadPos.z }, velocity, accel, 0.25f, 1.0f);
 				}
 				for (int i = 0; i < 13; i++)
 				{
