@@ -41,7 +41,7 @@ void GamePlayScene::Initialize()
 	ballBounceEffect.reset(ParticleManager::Create("stareffect_01.png"));
 	deleteBlockEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
-	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
+	enemySpawnEffect.reset(ParticleManager::Create("enemyspowneffect.png"));
 	deadEffect.reset(ParticleManager::Create("deadeffect.png"));
 
 	// スプライト
@@ -905,7 +905,18 @@ void GamePlayScene::Update()
 						{
 							if (isBJ == false && static_cast<int>((enemy01[i]->enemy01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && enemy01[i]->alive == true)
 							{
-								enemySpawnEffect->Add(60, enemy01[i]->enemy01->GetPosition(), { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+								XMFLOAT3 ePos = enemy01[i]->enemy01->GetPosition();
+								XMFLOAT3 deadEffectPos = { 0,0,0 };
+								XMFLOAT3 velocity = { 0,0,0 };
+								XMFLOAT3 accel = { 0,0,0 };
+								for (int i = 0; i < 50; i++) {
+									deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
+									deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
+									velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
+									velocity.y = (float)rand() / RAND_MAX * 1;
+									accel.y =  -0.03f;
+									deadEffect->Add(60, { ePos.x, ePos.y, ePos.z }, velocity, accel, 0.5f, 2.0f);
+								}
 								enemyStay[i]->alive = false;
 								enemyStay[i]->isEnemyLanding = false;
 								enemy01[i]->alive = false;
@@ -1358,8 +1369,7 @@ void GamePlayScene::Update()
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
-						//heartCounter--;
-						heartCounter = 0;
+						heartCounter--;
 						if (heartCounter <= 0)
 						{
 							heartCounter = 0;
