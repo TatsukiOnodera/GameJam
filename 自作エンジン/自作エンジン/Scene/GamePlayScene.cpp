@@ -404,7 +404,7 @@ void GamePlayScene::Update()
 {
 #pragma region ゲームメインシステム
 
-	// タイトル
+	// タイトルaa
 	if (stage == TITLE)
 	{
 		// 既定の大きさでなければ
