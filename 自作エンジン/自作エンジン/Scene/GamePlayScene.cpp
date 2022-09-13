@@ -22,6 +22,29 @@ void GamePlayScene::Initialize()
 	audio->Initialize();
 	camera = Camera::GetInstance();
 
+	// オーディオ
+	audio->LoadSound("Resources/SE/combose_01.wav");
+	audio->LoadSound("Resources/SE/combose_02.wav");
+	audio->LoadSound("Resources/SE/combose_03.wav");
+	audio->LoadSound("Resources/SE/combose_04.wav");
+	audio->LoadSound("Resources/SE/combose_05.wav");
+	audio->LoadSound("Resources/SE/combose_06.wav");
+	audio->LoadSound("Resources/SE/se_01.wav");
+	audio->LoadSound("Resources/SE/se_02.wav");
+	audio->LoadSound("Resources/SE/se_03.wav");
+	audio->LoadSound("Resources/SE/se_04.wav");
+	audio->LoadSound("Resources/SE/se_05.wav");
+	audio->LoadSound("Resources/SE/se_06.wav");
+	audio->LoadSound("Resources/SE/se_07.wav");
+	audio->LoadSound("Resources/SE/se_08.wav");
+	audio->LoadSound("Resources/SE/se_09.wav");
+	audio->LoadSound("Resources/SE/se_10.wav");
+	audio->LoadSound("Resources/SE/se_11.wav");
+	audio->LoadSound("Resources/SE/se_12.wav");
+	audio->LoadSound("Resources/SE/se_13.wav");
+	audio->LoadSound("Resources/SE/se_14.wav");
+	audio->LoadSound("Resources/BGM/BGM.wav");
+
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 	Sprite::LoadTexture(1, L"Resources/Animation.png");
@@ -275,6 +298,7 @@ void GamePlayScene::Initialize()
 	// スプライト
 	animationBack.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));
 	animationBack->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
+	animationBack->SetColor({ 1, 1, 1, 1 });
 	animationLogo.reset(Sprite::Create(2, { 0, 0 }, { 0.5f, 0.5f }));
 	animationLogo->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
 	animationLogo->SetColor({ 1, 1, 1, 0 });
@@ -476,7 +500,7 @@ void GamePlayScene::Update()
 		}
 		else
 		{
-			animationRot += 1;
+			animationRot += 8.0f;
 			if (animationRot >= 360)
 			{
 				animationRot = 0;
@@ -484,17 +508,13 @@ void GamePlayScene::Update()
 			animationBack->SetRotation(animationRot);
 			XMFLOAT2 aScale = animationBack->GetSize();
 			aScale.x -= (float)10 * 1.0f;
-			aScale.y -= (float)8 * 1.0f;
+			aScale.y -= (float)10 * 1.0f;
 			if (aScale.x <= 0)
 			{
 				animation = false;
 			}
 			animationBack->SetSize(aScale);
 		}
-	}
-	else
-	{
-		//audio->PlayWave("Resources/BGM/.wav", true, BGM);
 	}
 
 	// タイトル
@@ -568,6 +588,7 @@ void GamePlayScene::Update()
 				if (tScale.x == 0 && bScale.x == 0)
 				{
 					stage = GAME;
+					audio->PlayWave("Resources/BGM/BGM.wav", true, BGM);
 				}
 				title->SetScale(tScale);
 				title->Update();
@@ -587,9 +608,11 @@ void GamePlayScene::Update()
 			{
 				if (block[y][x]->map == true)
 				{
-					if (stage == TITLE || y == 0)
+					if (stage == TITLE)
 					{
 						block[y][x]->HP = 15;
+						block[y][x]->buff = 0;
+						block[y][x]->buffTimer = 0;
 					}
 					// 0なら一列繰り下げ
 					if (block[y][x]->HP <= 0)
@@ -804,7 +827,7 @@ void GamePlayScene::Update()
 	}
 
 	// プレイヤー
-	if (stage == TITLE || stage == GAME)
+	if (stage == TITLE || stage == GAME && animation == false)
 	{
 		XMFLOAT3 pPos = playerStay->GetPosition();
 		// ジャンプ
@@ -914,10 +937,13 @@ void GamePlayScene::Update()
 									audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
 								}
 							}
-							for (int i = 6; i > 0; i--)
+							for (int i = 7; i > 0; i--)
 							{
-								block[i + 1][x]->HP = block[i][x]->HP;
-								block[i][x]->HP = 15;
+								if (i < 7)
+								{
+									block[i + 1][x]->HP = block[i][x]->HP;
+									block[i][x]->HP = 15;
+								}
 								XMFLOAT3 pos = block[i][x]->block->GetPosition();
 								pos.y -= 5.2f * addBlock;
 								block[i][x]->block->SetPosition(pos);
@@ -926,10 +952,13 @@ void GamePlayScene::Update()
 						else
 						{
 							block[y + 1][x]->map = true;
-							for (int i = 6; i > 0; i--)
+							for (int i = 7; i > 0; i--)
 							{
-								block[i + 1][x]->HP = block[i][x]->HP;
-								block[i][x]->HP = 15;
+								if (i < 7)
+								{
+									block[i + 1][x]->HP = block[i][x]->HP;
+									block[i][x]->HP = 15;
+								}
 								XMFLOAT3 pos = block[i][x]->block->GetPosition();
 								pos.y -= 5.2f;
 								block[i][x]->block->SetPosition(pos);
@@ -1032,7 +1061,7 @@ void GamePlayScene::Update()
 	}
 
 	// ボール
-	if (stage == GAME)
+	if (stage == GAME && animation == false)
 	{
 		// 移動
 		XMFLOAT3 bPos = ball01->GetPosition();
@@ -1201,7 +1230,7 @@ void GamePlayScene::Update()
 	}
 
 	// エネミー
-	if (stage == GAME)
+	if (stage == GAME && animation == false)
 	{
 		// スポーンタイマー
 		if (spawTimer > 0)
@@ -1433,6 +1462,7 @@ void GamePlayScene::Update()
 						{
 							heartCounter = 0;
 							stage = END;
+							audio->StopSound("Resources/BGM/BGM.wav");
 						}
 						else
 						{
@@ -1459,7 +1489,7 @@ void GamePlayScene::Update()
 	}
 
 	// リザルト
-	if (stage == END)
+	if (stage == END && animation == false)
 	{
 		// 終わった瞬間一瞬止まる
 		if (isAliveB == true)

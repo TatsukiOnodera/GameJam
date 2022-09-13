@@ -302,9 +302,11 @@ private: // メンバ変数
 	// アニメーション
 	bool animation = true;
 	float addAlpha = 0.01;
-	int animationRot = 0;
+	float animationRot = 0;
 	bool animationEND = false;
 	int animationTimer = 0;
+
+	// BGMフラグ
 
 public: // メンバ関数
 	~GamePlayScene() override;

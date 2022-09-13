@@ -3,6 +3,9 @@
 #include <Windows.h>
 #include <xaudio2.h>
 #include <wrl.h>
+#include <cstdint>
+#include <map>
+#include <string>
 
 /// <summary>
 /// オーディオコールバック
@@ -60,22 +63,61 @@ public: // サブクラス
 		WAVEFORMAT	fmt;   // 波形フォーマット
 	};
 
+	// サウンドデータ
+	struct SoundData
+	{
+		// 波形フォーマット
+		WAVEFORMATEX wfex;
+		// バッファの先頭アドレス
+		BYTE* buffer;
+		// バッファのサイズ
+		unsigned int bufferSize;
+		// 波形フォーマットを元にSourceVoiceの生成する奴
+		IXAudio2SourceVoice* sourceVoice;
+		// ループ
+		bool loop = false;
+		// 再生状態
+		bool playNow = false;
+	};
+
 public: // 静的メンバ関数
 	static Audio* GetInstance();
 
+private: // メンバ変数
+	ComPtr<IXAudio2> xAudio2;
+	XAudio2VoiceCallback voiceCallback;
+	std::map<std::string, SoundData> soundList;
+	XAUDIO2_BUFFER buf{};
+
 public: //メンバ関数
+	/// <summary>
+	/// コンストラクタ
+	/// </summary>
+	Audio();
+
+	/// <summary>
+	/// デストラクタ
+	/// </summary>
+	~Audio();
+
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
 	bool Initialize();
 
-	// サウンドファイルの読み込みと再生
-	void PlayWave(const char* filename, bool roop, float volume);
+	// サウンドファイルの再生
+	void PlayWave(const std::string& fileName, bool loop, float volume);
 
-private: // メンバ変数
-	ComPtr<IXAudio2> xAudio2;
-	IXAudio2MasteringVoice* masterVoice;
-	XAudio2VoiceCallback voiceCallback;
+	// サウンドファイルの読み込み
+	void LoadSound(const std::string& fileName);
+
+	void StopSound(const std::string& fileName);
+
+	void CreateSoundData(SoundData& soundData);
+
+	void Unload(SoundData* soundList);
+
+	void Finalize();
 };
 
