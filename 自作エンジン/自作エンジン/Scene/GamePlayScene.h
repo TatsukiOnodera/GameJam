@@ -49,6 +49,8 @@ private: //サブクラス
 		std::unique_ptr<Object3d> block = nullptr;
 		bool map = false;
 		int HP = 15;
+		bool buff = false;
+		int buffTimer = 0;
 		BLOCK(Object3d *obj, int HP = 15)
 		{
 			this->block.reset(obj);
@@ -139,6 +141,7 @@ private: // インスタンス
 	std::unique_ptr<Object3d> playerMove04 = nullptr;
 	// ブロック
 	std::unique_ptr<BLOCK> block[8][13] = {};
+	std::unique_ptr<Object3d> buffBlock[8][13] = {};
 	// ボール
 	std::unique_ptr<Object3d> ball01 = nullptr;
 	std::unique_ptr<Object3d> ball02 = nullptr;
@@ -219,6 +222,8 @@ private: // メンバ変数
 	float isAliveB;
 	// 地面にいるか
 	bool groundB;
+	// buff
+	bool isBuff;
 
 	// コンボ
 	// タイマー
@@ -273,22 +278,24 @@ private: // メンバ変数
 	bool endToTitle;
 	bool titleToGame;
 
+	int addBlock;
+
 	//ボリューム
-	float wav1 = 0.5f;
-	float wav2 = 1.0f;
-	float wav3 = 1.0f;
-	float wav4 = 1.0f;
-	float wav5 = 1.0f;
-	float wav6 = 1.0f;
-	float wav7 = 1.0f;
-	float wav8 = 1.0f;
-	float wav9 = 0.3f;
-	float wav10 = 1.0f;
-	float wav11 = 1.0f;
-	float wav12 = 1.0f;
-	float wav13 = 1.0f;
-	float wav14 = 1.0f;
-	float wavCombo = 1.0f;
+	float wav1 = 0.5f; // プレイヤーの動き
+	float wav2 = 1.0f; // プレイヤーのジャンプ
+	float wav3 = 1.0f; // ブロックをたたく
+	float wav4 = 1.0f; // ボールのジャンプ
+	float wav5 = 1.0f; // ボールがジャンプして着地
+	float wav6 = 1.0f; // ボール＆敵が壁やブロックに当たる
+	float wav7 = 1.0f; // ボールが敵に当たる
+	float wav8 = 1.0f; // ブロックが壊れる
+	float wav9 = 0.3f; // ブロックが最大に到達する
+	float wav10 = 1.0f; // ブロックが追加
+	float wav11 = 1.0f; // 敵が倒される
+	float wav12 = 1.0f; // 敵のスポーン
+	float wav13 = 1.0f; // リザルトでSPACE
+	float wav14 = 1.0f; // ボール＆敵が着地したとき
+	float wavCombo = 1.0f; // コンボ
 
 public: // メンバ関数
 	~GamePlayScene() override;

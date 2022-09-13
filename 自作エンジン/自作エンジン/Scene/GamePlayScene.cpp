@@ -22,19 +22,19 @@ void GamePlayScene::Initialize()
 	audio->Initialize();
 	camera = Camera::GetInstance();
 
-	// ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½eï¿½Nï¿½Xï¿½`ï¿½ï¿½ï¿½Ç‚İï¿½ï¿½ï¿½
+	// ƒXƒvƒ‰ƒCƒgƒeƒNƒXƒ`ƒƒ“Ç‚İ‚İ
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
 
-	// ï¿½ï¿½ï¿½Cï¿½gï¿½ï¿½ï¿½ï¿½
+	// ƒ‰ƒCƒg¶¬
 	light.reset(Light::Create());
 	light->SetLightColor({ 1, 1, 1 });
 	light->SetLightDir({ -5, -5, 0, 0 });
 	Object3d::SetLight(light.get());
 
-	// ï¿½Oï¿½iï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½g
+	// ‘OŒiƒXƒvƒ‰ƒCƒg
 	debugText.Initialize(fontNumber);
 
-	// ï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½
+	// ƒp[ƒeƒBƒNƒ‹
 	playerWalkEffect.reset(ParticleManager::Create("star.png"));
 	playerJumpEffect.reset(ParticleManager::Create("stareffect_02.png"));
 	ballJumpEffect.reset(ParticleManager::Create("star.png"));
@@ -44,13 +44,37 @@ void GamePlayScene::Initialize()
 	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 	deadEffect.reset(ParticleManager::Create("deadeffect.png"));
 
-	// ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½g
+	// ƒXƒvƒ‰ƒCƒg
 	playerStay.reset(Object3d::Create("PlayerStay"));
+	playerStay->SetPosition({ 0, 5.2f * (-4.9), 0 });
+	playerStay->SetRotation({ -95, 0, 0 });
+	playerStay->SetScale({ 2.25f, 1, 2.25f });
+	playerStay->Update();
 	playerJump.reset(Object3d::Create("PlayerJump"));
+	playerJump->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerJump->SetRotation({ -95, 0, 0 });
+	playerJump->SetScale({ 2.25f, 1, 2.25f });
+	playerJump->Update();
 	playerMove01.reset(Object3d::Create("PlayerMove_01"));
+	playerMove01->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerMove01->SetRotation({ -95, 0, 0 });
+	playerMove01->SetScale({ 2.25f, 1, 2.25f });
+	playerMove01->Update();
 	playerMove02.reset(Object3d::Create("PlayerMove_02"));
+	playerMove02->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerMove02->SetRotation({ -95, 0, 0 });
+	playerMove02->SetScale({ 2.25f, 1, 2.25f });
+	playerMove02->Update();
 	playerMove03.reset(Object3d::Create("PlayerMove_03"));
+	playerMove03->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerMove03->SetRotation({ -95, 0, 0 });
+	playerMove03->SetScale({ 2.25f, 1, 2.25f });
+	playerMove03->Update();
 	playerMove04.reset(Object3d::Create("PlayerMove_04"));
+	playerMove04->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerMove04->SetRotation({ -95, 0, 0 });
+	playerMove04->SetScale({ 2.25f, 1, 2.25f });
+	playerMove04->Update();
 	ball01.reset(Object3d::Create("BallMove_01"));
 	ball02.reset(Object3d::Create("BallMove_02"));
 	ball03.reset(Object3d::Create("SmileBall_01"));
@@ -132,6 +156,7 @@ void GamePlayScene::Initialize()
 		for (int x = 0; x < 13; x++)
 		{
 			block[y][x].reset(new BLOCK(Object3d::Create("Block")));
+			buffBlock[y][x].reset(Object3d::Create("BuffBlock"));
 			if (y == 0)
 			{
 				block[y][x]->map = true;
@@ -179,6 +204,10 @@ void GamePlayScene::Initialize()
 			block[y][x]->block->SetRotation({ -90, 0, 0 });
 			block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
 			block[y][x]->block->Update();
+			buffBlock[y][x]->SetPosition({ 5.2f * (x - 6), 5.2f * (y - 4) , 0 });
+			buffBlock[y][x]->SetRotation({ -90, 0, 0 });
+			buffBlock[y][x]->SetScale({ 5.2f, 1, 5.2f });
+			buffBlock[y][x]->Update();
 		}
 	}
 	for (int x = 0; x < 6; x++)
@@ -241,19 +270,19 @@ void GamePlayScene::Initialize()
 		backGround[i]->Update();
 	}
 
-	// OBJï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
+	// OBJƒIƒuƒWƒFƒNƒg
 
 
-	// FBXï¿½Iï¿½uï¿½Fï¿½Nï¿½g
+	//FBXƒIƒuƒFƒNƒg
 
 
-	// ï¿½Iï¿½[ï¿½fï¿½Bï¿½I
+	// ƒI[ƒfƒBƒI
 	//audio->Initialize();
 
-	// ï¿½Ïï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	// •Ï”‚Ì‰Šú‰»
 	InitializeVariable();
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+	// —”‰Šú‰»
 	srand(time(NULL));
 }
 
@@ -262,6 +291,8 @@ void GamePlayScene::InitializeVariable()
 	workSE = 0;
 
 	score = 0;
+
+	addBlock = 1;
 
 	stage = TITLE;
 
@@ -285,6 +316,7 @@ void GamePlayScene::InitializeVariable()
 	isBJ = false;
 	isAliveB = true;
 	groundB = false;
+	isBuff = false;
 
 	comboTimer = 0;
 	comboLimit = 60;
@@ -313,33 +345,21 @@ void GamePlayScene::InitializeVariable()
 	titleToGame = false;
 	restoreCameraTimer = 0;
 
-	playerStay->SetPosition({ 0, 5.2f * (-4.9), 0 });
-	playerStay->SetRotation({ -95, 0, 0 });
 	playerStay->SetScale({ 2.25f, 1, 2.25f });
 	playerStay->Update();
 
-	playerJump->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerJump->SetRotation({ -95, 0, 0 });
 	playerJump->SetScale({ 2.25f, 1, 2.25f });
 	playerJump->Update();
 
-	playerMove01->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerMove01->SetRotation({ -95, 0, 0 });
 	playerMove01->SetScale({ 2.25f, 1, 2.25f });
 	playerMove01->Update();
 
-	playerMove02->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerMove02->SetRotation({ -95, 0, 0 });
 	playerMove02->SetScale({ 2.25f, 1, 2.25f });
 	playerMove02->Update();
 
-	playerMove03->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerMove03->SetRotation({ -95, 0, 0 });
 	playerMove03->SetScale({ 2.25f, 1, 2.25f });
 	playerMove03->Update();
 
-	playerMove04->SetPosition({ 0, 5.2f * (-4.9f), 0 });
-	playerMove04->SetRotation({ -95, 0, 0 });
 	playerMove04->SetScale({ 2.25f, 1, 2.25f });
 	playerMove04->Update();
 
@@ -399,16 +419,29 @@ void GamePlayScene::InitializeVariable()
 		enemySpawner[x]->spawner->Update();
 		enemySpawner[x]->active = false;
 	}
+
+	for (int y = 0; y < 8; y++)
+	{
+		for (int x = 0; x < 13; x++)
+		{
+			block[y][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (y - 4) , 0 });
+			block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
+			block[y][x]->block->Update();
+			buffBlock[y][x]->SetPosition({ 5.2f * (x - 6), 5.2f * (y - 4) , 0 });
+			buffBlock[y][x]->SetScale({ 5.2f, 1, 5.2f });
+			buffBlock[y][x]->Update();
+		}
+	}
 }
 
 void GamePlayScene::Update()
 {
-#pragma region ï¿½Qï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Vï¿½Xï¿½eï¿½ï¿½
+#pragma region ?¿½Q?¿½[?¿½?¿½?¿½?¿½?¿½C?¿½?¿½?¿½V?¿½X?¿½e?¿½?¿½
 
-	// ï¿½^ï¿½Cï¿½gï¿½ï¿½
+	// ƒ^ƒCƒgƒ‹
 	if (stage == TITLE)
 	{
-		// ï¿½ï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½Å‚È‚ï¿½ï¿½ï¿½ï¿½
+		// Šù’è‚Ì‘å‚«‚³‚Å‚È‚¯‚ê‚Î
 		if (title->GetScale().x < 30 * 1.7f && titleButton->GetScale().x < 20 && titleToGame == false)
 		{
 			XMFLOAT3 tScale = title->GetScale();
@@ -430,22 +463,22 @@ void GamePlayScene::Update()
 			title->SetScale(tScale);
 			titleButton->SetScale(bScale);
 		}
-		// ï¿½å‚«ï¿½ï¿½ï¿½È‚ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ‘å‚«‚³‚È‚çƒ^ƒCƒ}[‚ğ‚Ş
 		else
 		{
 			if (titleToGame == false)
 			{
-				// ï¿½Cï¿½[ï¿½Wï¿½ï¿½ï¿½O
+				// ƒC[ƒWƒ“ƒO
 				XMFLOAT3 bScale = titleButton->GetScale();
 				float t = powf((float)titleTimer / 40, 2);
 				bScale.x = 20.0f * (1.0f - t) + 23.0f * t;
 				bScale.z = bScale.x;
 				titleButton->SetScale(bScale);
 
-				// ï¿½^ï¿½Cï¿½}ï¿½[
+				// ƒ^ƒCƒ}[
 				titleTimer += titleA;
 
-				// ï¿½ï¿½ï¿½Ìï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+				// ˆê’è‚ÌŠÔ‚·‚¬‚é‚Æ
 				if (titleTimer >= 60)
 				{
 					titleA = -abs(titleA);
@@ -485,21 +518,21 @@ void GamePlayScene::Update()
 		}
 	}
 
-	// ï¿½uï¿½ï¿½ï¿½bï¿½N
+	// ƒuƒƒbƒN
 	if (stage == TITLE || stage == GAME)
 	{
-		// HPï¿½Xï¿½V
+		// HPXV
 		for (int y = 0; y < 8; y++)
 		{
 			for (int x = 0; x < 13; x++)
 			{
 				if (block[y][x]->map == true)
 				{
-					if (stage == TITLE)
+					if (stage == TITLE || y == 0)
 					{
 						block[y][x]->HP = 15;
 					}
-					// 0ï¿½È‚ï¿½ï¿½ï¿½Jï¿½è‰ºï¿½ï¿½
+					// 0‚È‚çˆê—ñŒJ‚è‰º‚°
 					if (block[y][x]->HP <= 0)
 					{
 						for (int h = 1; h < 7; h++)
@@ -520,17 +553,17 @@ void GamePlayScene::Update()
 							}
 						}
 					}
-					// 5ï¿½È‰ï¿½ï¿½ï¿½
+					// 5ˆÈ‰º‚Å
 					else if (block[y][x]->HP <= 5)
 					{
 						block[y][x]->block->SetColor({ 1, 0.5f, 0.4f, 1 });
 					}
-					// 10ï¿½È‰ï¿½ï¿½ï¿½
+					// 10ˆÈ‰º‚Å
 					else if (block[y][x]->HP <= 10)
 					{
 						block[y][x]->block->SetColor({ 1, 1, 0.45f, 1 });
 					}
-					// 15ï¿½È‰ï¿½ï¿½ï¿½
+					// 15ˆÈ‰º‚Å
 					else
 					{
 						block[y][x]->block->SetColor({ 1, 1, 1, 1 });
@@ -539,7 +572,7 @@ void GamePlayScene::Update()
 			}
 		}
 
-		// ï¿½ï¿½ñ‚»‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+		// ˆê—ñ‚»‚ë‚Á‚½‚©
 		bool deleteB = false;
 		int w = 0;
 		for (int x = 0; x < 13; x++)
@@ -551,17 +584,17 @@ void GamePlayScene::Update()
 			bool isComplete = true;
 			for (int y = 0; y < 8; y++)
 			{
-				// ï¿½cï¿½ï¿½ñ‚¸‚Â’ï¿½ï¿½×‚ï¿½
+				// cˆê—ñ‚¸‚Â’²‚×‚é
 				if (block[y][x]->map == false)
 				{
 					isComplete = false;
 				}
 			}
-			// ï¿½ï¿½ñ‚»‚ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½
+			// ˆê—ñ‚»‚ë‚Á‚Ä‚¢‚½‚ç
 			if (isComplete == true)
 			{
 				camera->SetShakeFlag(true, 10);
-				// ï¿½ï¿½ï¿½×‚Äï¿½ï¿½ï¿½
+				// ‚·‚×‚ÄÁ‚·
 				for (int y = 1; y < 8; y++)
 				{
 					XMFLOAT3 bScale = block[y][x]->block->GetScale();
@@ -605,9 +638,9 @@ void GamePlayScene::Update()
 			if (stage == GAME)
 			{
 				isActiveCT = true;
-				// ï¿½^ï¿½Cï¿½}ï¿½[ï¿½ï¿½1ï¿½É‚ï¿½ï¿½ï¿½
+				// ƒ^ƒCƒ}[‚ğ1‚É‚·‚é
 				comboTimer = 1;
-				// ï¿½Rï¿½ï¿½ï¿½{ï¿½Jï¿½Eï¿½ï¿½ï¿½^ï¿½[
+				// ƒRƒ“ƒ{ƒJƒEƒ“ƒ^[
 				comboNum++;
 				if (comboNum == 1)
 				{
@@ -634,7 +667,7 @@ void GamePlayScene::Update()
 					audio->PlayWave("Resources/SE/combose_06.wav", false, wavCombo);
 				}
 				score += 100 * comboNum * comboNum;
-				// ï¿½eï¿½Lï¿½Xï¿½gï¿½Ìï¿½ï¿½W
+				// ƒeƒLƒXƒg‚ÌÀ•W
 				textNum = comboNum - 1;
 				if (comboNum > 5)
 				{
@@ -657,21 +690,21 @@ void GamePlayScene::Update()
 			}
 		}
 
-		// ï¿½Rï¿½ï¿½ï¿½{ï¿½ï¿½ï¿½ï¿½
+		// ƒRƒ“ƒ{ˆ—
 		if (comboTimer > 0 && stage == GAME)
 		{
-			// ï¿½Rï¿½ï¿½ï¿½{ï¿½Ì—Pï¿½\ï¿½ï¿½ï¿½ï¿½
+			// ƒRƒ“ƒ{‚Ì—P—\ŠÔ
 			comboTimer++;
-			// ï¿½Pï¿½\ï¿½ï¿½ï¿½ß‚ï¿½ï¿½ï¿½ï¿½ï¿½
+			// —P—\‚ğ‰ß‚¬‚½‚©
 			if (comboTimer > comboLimit)
 			{
-				// ï¿½ï¿½ï¿½Zï¿½bï¿½g
+				// ƒŠƒZƒbƒg
 				comboTimer = 0;
 				comboNum = 0;
 			}
 		}
 
-		// ï¿½Rï¿½ï¿½ï¿½{ï¿½eï¿½Lï¿½Xï¿½g
+		// ƒRƒ“ƒ{ƒeƒLƒXƒg
 		if (isActiveCT == true)
 		{
 			XMFLOAT3 pos = comboText[textNum]->GetPosition();
@@ -684,7 +717,7 @@ void GamePlayScene::Update()
 				}
 				comboText[textNum]->SetPosition(pos);
 
-				// ï¿½gï¿½k
+				// Šgk
 				if (effectTimer < 60)
 				{
 					effectTimer++;
@@ -711,11 +744,11 @@ void GamePlayScene::Update()
 		}
 	}
 
-	// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[
+	// ƒvƒŒƒCƒ„[
 	if (stage == TITLE || stage == GAME)
 	{
 		XMFLOAT3 pPos = playerStay->GetPosition();
-		// ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½v
+		// ƒWƒƒƒ“ƒv
 		if (input->TriggerKey(DIK_SPACE) && isPJ == false)
 		{
 			playerJS = 0.05f;
@@ -723,7 +756,7 @@ void GamePlayScene::Update()
 			audio->PlayWave("Resources/SE/se_02.wav", false, wav2);
 		}
 
-		// ï¿½Ú“ï¿½
+		// ˆÚ“®
 		//XMFLOAT3 pPos = player->GetPosition();
 		XMFLOAT3 walkParticlePos = playerStay->GetPosition();
 		XMFLOAT3 jumpParticlePos = playerStay->GetPosition();
@@ -743,7 +776,7 @@ void GamePlayScene::Update()
 			}
 
 			workSE++;
-			// ï¿½Cï¿½ï¿½ï¿½^ï¿½[ï¿½oï¿½ï¿½
+			// ƒCƒ“ƒ^[ƒoƒ‹
 			if (workSE > 7)
 			{
 				audio->PlayWave("Resources/SE/se_01.wav", false, wav1);
@@ -778,14 +811,14 @@ void GamePlayScene::Update()
 			workSE = 7;
 		}
 
-		// ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½
+		// ƒWƒƒƒ“ƒvˆ—
 		if (isPJ == true)
 		{
-			// ï¿½ï¿½ï¿½Z
+			// ‰ÁZ
 			pPos.y += playerJS;
-			// ï¿½ï¿½ï¿½ï¿½
+			// ‰Á‘¬
 			playerJS *= 2;
-			//ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½É‚Ô‚Â‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			//ƒuƒƒbƒN‚É‚Ô‚Â‚©‚Á‚½‚©
 			if (-23.4f < pPos.y + 0.5f * playerStay->GetScale().x - 0.7f)
 			{
 				audio->PlayWave("Resources/SE/se_03.wav", false, wav3);
@@ -794,9 +827,9 @@ void GamePlayScene::Update()
 				playerJS = -playerJS;
 				jumpParticleAccel.y = -0.005f;
 				playerJumpEffect->Add(30, { jumpParticlePos.x,jumpParticlePos.y - 0.5f,jumpParticlePos.z - 1.0f }, { 0,0,0 }, jumpParticleAccel, 4.0f, 6.0f, { 1,1,1,1 }, { 1,1,1,1 });
-				// Xï¿½ï¿½ï¿½ï¿½ï¿½Ç‚ï¿½ï¿½Ì‰ï¿½ï¿½ï¿½
+				// X‚ª¡‚Ç‚±‚Ì‰¡—ñ‚©
 				int x = static_cast<int>((pPos.x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x);
-				//ï¿½ï¿½Âï¿½É‹ó‚«‚ï¿½ï¿½ï¿½ï¿½é‚©
+				//ˆê‚Âã‚É‹ó‚«‚ª‚ ‚é‚©
 				for (int y = 6; 0 <= y; y--)
 				{
 					if (addB == true)
@@ -805,31 +838,58 @@ void GamePlayScene::Update()
 					}
 					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false && block[1][x]->HP > 0)
 					{
-						audio->PlayWave("Resources/SE/se_10.wav", false, wav10);
-						block[y + 1][x]->map = true;
-						if (y + 1 == 7)
+						if (block[0][x]->buff == true)
 						{
-							audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
-						}
-						for (int i = 1; i < 8; i++)
-						{
-							if (i < 7)
+							block[0][x]->buffTimer = 0;
+							block[0][x]->buff = false;
+							addBlock = 3;
+							for (int i = 0; i < addBlock; i++)
+							{
+								if (y + 1 + i > 7)
+								{
+									break;
+								}
+								block[y + 1 + i][x]->map = true;
+								if (y + 1 + i == 7)
+								{
+									audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
+								}
+							}
+							for (int i = 6; i > 0; i--)
 							{
 								block[i + 1][x]->HP = block[i][x]->HP;
 								block[i][x]->HP = 15;
+								XMFLOAT3 pos = block[i][x]->block->GetPosition();
+								pos.y -= 5.2f * addBlock;
+								block[i][x]->block->SetPosition(pos);
 							}
-							XMFLOAT3 pos = block[i][x]->block->GetPosition();
-							pos.y -= 5.2f;
-							block[i][x]->block->SetPosition(pos);
 						}
+						else
+						{
+							block[y + 1][x]->map = true;
+							for (int i = 6; i > 0; i--)
+							{
+								block[i + 1][x]->HP = block[i][x]->HP;
+								block[i][x]->HP = 15;
+								XMFLOAT3 pos = block[i][x]->block->GetPosition();
+								pos.y -= 5.2f;
+								block[i][x]->block->SetPosition(pos);
+							}
+							if (y + 1 == 7)
+							{
+								audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
+							}
+						}
+						audio->PlayWave("Resources/SE/se_10.wav", false, wav10);
 						addB = true;
 						addX = x;
-						if (isBJ == false && static_cast<int>((ball01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x)
+						if (isBJ == false && static_cast<int>((ball01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && stage == GAME)
 						{
 							audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
 							block[y + 1][x]->map = true;
 							isBJ = true;
 							ballJS = 1.5f;
+							isBuff = true;
 							XMFLOAT3 bPos = ball01->GetPosition();
 							bPos.y += 4.5f;
 							ball01->SetPosition(bPos);
@@ -857,7 +917,7 @@ void GamePlayScene::Update()
 					}
 				}
 			}
-			//ï¿½ï¿½ï¿½É‚Â‚ï¿½ï¿½ï¿½ï¿½ï¿½
+			//°‚É‚Â‚¢‚½‚©
 			else if (pPos.y < -25.48f)
 			{
 				pPos.y = -25.48f;
@@ -870,7 +930,7 @@ void GamePlayScene::Update()
 			for (int y = 1; y < 8; y++)
 			{
 				XMFLOAT3 pos = block[y][addX]->block->GetPosition();
-				pos.y += 0.52f;
+				pos.y += 0.52f * 3;
 				if (5.2f * (y - 4) <= pos.y)
 				{
 					pos.y = 5.2f * (y - 4);
@@ -901,10 +961,10 @@ void GamePlayScene::Update()
 		playerStay->Update();
 	}
 
-	// ï¿½{ï¿½[ï¿½ï¿½
+	// ƒ{[ƒ‹
 	if (stage == GAME)
 	{
-		// ï¿½Ú“ï¿½
+		// ˆÚ“®
 		XMFLOAT3 bPos = ball01->GetPosition();
 		bPos.x += ballS;
 		blinkCount++;
@@ -932,13 +992,13 @@ void GamePlayScene::Update()
 			ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 			audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 		}
-		// ï¿½dï¿½ï¿½
+		// d—Í
 		if (isBJ == false)
 		{
 			bPos.y -= ballG;
 			ballG += gravity;
 		}
-		// ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½v
+		// ƒWƒƒƒ“ƒv
 		else
 		{
 			ballJumpEffect->Add(30, bPos, { 0,0,0 }, { 0,0,0 }, 1.0f, 3.0f);
@@ -950,14 +1010,23 @@ void GamePlayScene::Update()
 				ballJS = 0;
 			}
 		}
-		//ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
+		//“–‚½‚è”»’è
 		for (int y = 0; y < 7; y++)
 		{
 			for (int x = 0; x < 13; x++)
 			{
+				if (block[y][x]->buff == true)
+				{
+					block[y][x]->buffTimer++;
+					if (block[y][x]->buffTimer > 240)
+					{
+						block[y][x]->buffTimer = 0;
+						block[y][x]->buff = false;
+					}
+				}
 				if (block[y][x]->map == true)
 				{
-					// ï¿½c
+					// c
 					if (block[y + 1][x]->map == false)
 					{
 						if (block[y][x]->block->GetPosition().x - 0.5f * block[y][x]->block->GetScale().x <= bPos.x && bPos.x <= block[y][x]->block->GetPosition().x + 0.5f * block[y][x]->block->GetScale().x)
@@ -974,9 +1043,14 @@ void GamePlayScene::Update()
 								{
 									audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
 								}
+								if (isBuff == true && isBJ == true)
+								{
+									isBuff = false;
+									block[0][x]->buff = true;
+								}
 								groundB = true;
 								isBJ = false;
-								// ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½
+								// ‘¬“xŒˆ’è
 								if (ballS == 0)
 								{
 									ballS = 0.2f;
@@ -988,7 +1062,7 @@ void GamePlayScene::Update()
 							}
 						}
 					}
-					// ï¿½ï¿½
+					// ‰¡
 					if (fabsf(bPos.x - block[y][x]->block->GetPosition().x) < 0.5f * ball01->GetScale().x + 0.5f * block[y][x]->block->GetScale().x)
 					{
 						if (block[y][x]->block->GetPosition().y - 0.5f * block[y][x]->block->GetScale().x < bPos.y && bPos.y < block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x)
@@ -1043,7 +1117,7 @@ void GamePlayScene::Update()
 		ball02->SetPosition(bPos);
 		ball03->SetPosition(bPos);
 		ball04->SetPosition(bPos);
-		// ï¿½ï¿½]
+		// ‰ñ“]
 		XMFLOAT3 bRot = ball01->GetRotation();
 		bRot.z += ballR;
 		if (bRot.z >= 360 || bRot.z <= -360)
@@ -1056,15 +1130,15 @@ void GamePlayScene::Update()
 		ball04->SetRotation(bRot);
 	}
 
-	// ï¿½Gï¿½lï¿½~ï¿½[
+	// ƒGƒlƒ~[
 	if (stage == GAME)
 	{
-		// ï¿½Xï¿½|ï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½}ï¿½[
+		// ƒXƒ|[ƒ“ƒ^ƒCƒ}[
 		if (spawTimer > 0)
 		{
 			spawTimer++;
 		}
-		// ï¿½ï¿½èï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ç¶ï¿½ï¿½
+		// ˆê’èŠÔ‚½‚Á‚½‚ç¶¬
 		if (spawTimer > 600)
 		{
 			spawTimer = 1;
@@ -1096,14 +1170,14 @@ void GamePlayScene::Update()
 		}
 		for (int i = 0; i < 13; i++)
 		{
-			// ï¿½Xï¿½|ï¿½iï¿½[
+			// ƒXƒ|ƒi[
 			if (enemySpawner[i]->active == true)
 			{
-				// ï¿½gï¿½ï¿½
+				// Šg‘å
 				XMFLOAT3 scale = enemySpawner[i]->spawner->GetScale();
 				scale.x += spawnerSA;
 				scale.z += spawnerSA;
-				// ï¿½Gï¿½lï¿½~ï¿½[ï¿½Ìï¿½ï¿½ï¿½
+				// ƒGƒlƒ~[‚Ì¶¬
 				if (scale.x > 2.25f && enemy01[i]->alive == false)
 				{
 					enemyStay[i]->alive = true;
@@ -1127,14 +1201,14 @@ void GamePlayScene::Update()
 					enemy02[i]->enemy02->Update();
 					enemy02[i]->enemyG = 0.5f;
 				}
-				// ï¿½Å‘ï¿½È‚ï¿½kï¿½ï¿½
+				// Å‘å‚È‚çk¬
 				else if (scale.x > 4.5f)
 				{
 					scale.x = 4.5f;
 					scale.z = 4.5f;
 					spawnerSA = -spawnerSA;
 				}
-				// 0ï¿½È‚ï¿½ï¿½ï¿½ï¿½
+				// 0‚È‚çÁ¸
 				else if (scale.x <= 0)
 				{
 					scale.x = 0;
@@ -1145,10 +1219,10 @@ void GamePlayScene::Update()
 				}
 				enemySpawner[i]->spawner->SetScale(scale);
 			}
-			// ï¿½Gï¿½lï¿½~ï¿½[
+			// ƒGƒlƒ~[
 			if (enemy01[i]->alive == true)
 			{
-				// ï¿½Xï¿½|ï¿½iï¿½[ï¿½Éï¿½ï¿½í‚¹ï¿½ÄŠgï¿½ï¿½
+				// ƒXƒ|ƒi[‚É‡‚í‚¹‚ÄŠg‘å
 				if (enemySpawner[i]->spawner->GetScale().x != 0)
 				{
 					XMFLOAT3 scale = enemy01[i]->enemy01->GetScale();
@@ -1163,10 +1237,10 @@ void GamePlayScene::Update()
 					enemy01[i]->enemy01->SetScale(scale);
 					enemy02[i]->enemy02->SetScale(scale);
 				}
-				// ï¿½Xï¿½V
+				// XV
 				else
 				{
-					// ï¿½Ú“ï¿½
+					// ˆÚ“®
 					XMFLOAT3 ePos = enemy01[i]->enemy01->GetPosition();
 					ePos.x += enemy01[i]->enemyS;
 					if (32.75f < ePos.x)
@@ -1185,17 +1259,17 @@ void GamePlayScene::Update()
 						enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 						audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 					}
-					// ï¿½dï¿½ï¿½
+					// d—Í
 					ePos.y -= enemy01[i]->enemyG;
 					enemy01[i]->enemyG += gravity;
-					//ï¿½ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
+					//“–‚½‚è”»’è
 					for (int y = 0; y < 7; y++)
 					{
 						for (int x = 0; x < 13; x++)
 						{
 							if (block[y][x]->map == true)
 							{
-								// ï¿½c
+								// c
 								if (y < 7 && block[y + 1][x]->map == false)
 								{
 									if (block[y][x]->block->GetPosition().x - 0.5f * block[y][x]->block->GetScale().x <= ePos.x && ePos.x <= block[y][x]->block->GetPosition().x + 0.5f * block[y][x]->block->GetScale().x)
@@ -1205,7 +1279,7 @@ void GamePlayScene::Update()
 											ePos.y = block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x + 0.5f * ball01->GetScale().x;
 											enemy01[i]->enemyG = gravity;
 											enemyStay[i]->isEnemyLanding = true;
-											// ï¿½ï¿½ï¿½xï¿½ï¿½ï¿½ï¿½
+											// ‘¬“xŒˆ’è
 											if (enemy01[i]->enemyS == 0)
 											{
 												enemy01[i]->enemyS = 0.2f;
@@ -1225,7 +1299,7 @@ void GamePlayScene::Update()
 										}
 									}
 								}
-								// ï¿½ï¿½
+								// ‰¡
 								if (fabsf(ePos.x - block[y][x]->block->GetPosition().x) < 0.5f * ball01->GetScale().x + 0.5f * block[y][x]->block->GetScale().x)
 								{
 									if (block[y][x]->block->GetPosition().y - 0.5f * block[y][x]->block->GetScale().x < ePos.y && ePos.y < block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x)
@@ -1270,7 +1344,7 @@ void GamePlayScene::Update()
 					enemyStay[i]->enemyStay->SetPosition(ePos);
 					enemy01[i]->enemy01->SetPosition(ePos);
 					enemy02[i]->enemy02->SetPosition(ePos);
-					// ï¿½ï¿½]
+					// ‰ñ“]
 					XMFLOAT3 eRot = enemy01[i]->enemy01->GetRotation();
 					eRot.z += enemy01[i]->enemyR;
 					if (eRot.z >= 360 || eRot.z <= -360)
@@ -1280,7 +1354,7 @@ void GamePlayScene::Update()
 					enemyStay[i]->enemyStay->SetRotation(eRot);
 					enemy01[i]->enemy01->SetRotation(eRot);
 					enemy02[i]->enemy02->SetRotation(eRot);
-					// ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìƒ{ï¿½[ï¿½ï¿½ï¿½Æ‚Ì“ï¿½ï¿½ï¿½ï¿½è”»ï¿½ï¿½
+					// ƒvƒŒƒCƒ„[‚Ìƒ{[ƒ‹‚Æ‚Ì“–‚½‚è”»’è
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
@@ -1315,10 +1389,10 @@ void GamePlayScene::Update()
 		}
 	}
 
-	// ï¿½ï¿½ï¿½Uï¿½ï¿½ï¿½g
+	// ƒŠƒUƒ‹ƒg
 	if (stage == END)
 	{
-		// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½uï¿½Ôˆï¿½uï¿½~ï¿½Ü‚ï¿½
+		// I‚í‚Á‚½uŠÔˆêu~‚Ü‚é
 		if (isAliveB == true)
 		{
 			endTimer++;
@@ -1380,7 +1454,7 @@ void GamePlayScene::Update()
 					static_cast<float>((defaultTargetPos.y - bDeadPos.y) * (1 - pow(1 - elapsedTimeRate,3)) + bDeadPos.y),
 					0 });
 			}
-			// ï¿½ï¿½ï¿½Ì‘å‚«ï¿½ï¿½ï¿½É–ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½
+			// ˆê’è‚Ì‘å‚«‚³‚É–‚½‚È‚¯‚ê‚Î
 			if (end->GetScale().x < 20 * 1.5f && endButton->GetScale().x < 25 && gameover->GetScale().x < 30 * 1.7f && endToTitle == false)
 			{
 				XMFLOAT3 a = end->GetScale();
@@ -1419,7 +1493,7 @@ void GamePlayScene::Update()
 			{
 				if (endToTitle == false)
 				{
-					// ï¿½Cï¿½[ï¿½Wï¿½ï¿½ï¿½O
+					// ƒC[ƒWƒ“ƒO
 					XMFLOAT3 bScale = endButton->GetScale();
 					float t = powf((float)buttonTimer / 40, 2);
 					bScale.x = 25.0f * (1.0f - t) + 28.0f * t;
@@ -1427,10 +1501,10 @@ void GamePlayScene::Update()
 					endButton->SetScale(bScale);
 					endButton->Update();
 
-					// ï¿½^ï¿½Cï¿½}ï¿½[
+					// ƒ^ƒCƒ}[
 					buttonTimer += buttonA;
 
-					// ï¿½ï¿½ï¿½Ìï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+					// ˆê’è‚ÌŠÔ‚·‚¬‚é‚Æ
 					if (buttonTimer >= 60)
 					{
 						buttonA = -abs(buttonA);
@@ -1487,7 +1561,7 @@ void GamePlayScene::Update()
 					gameover->Update();
 				}
 
-				// TITLEï¿½É–ß‚ï¿½
+				// TITLE‚É–ß‚é
 				if (input->TriggerKey(DIK_SPACE) && endToTitle == false)
 				{
 					endToTitle = true;
@@ -1499,7 +1573,7 @@ void GamePlayScene::Update()
 
 #pragma endregion
 
-#pragma region ï¿½Jï¿½ï¿½ï¿½ï¿½ï¿½Æƒï¿½ï¿½Cï¿½gï¿½ÌXï¿½V
+#pragma region ?¿½J?¿½?¿½?¿½?¿½?¿½Æ??¿½?¿½C?¿½g?¿½ÌX?¿½V
 	if (stage == TITLE || stage == GAME) {
 		camera->CameraShake();
 	}
@@ -1511,10 +1585,10 @@ void GamePlayScene::Update()
 
 void GamePlayScene::Draw()
 {
-	// ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Xï¿½gï¿½Ìæ“¾
+	// ƒRƒ}ƒ“ƒhƒŠƒXƒg‚Ìæ“¾
 	ID3D12GraphicsCommandList* cmdList = dx_cmd->GetCmdList();
 
-	// ï¿½eï¿½`ï¿½ï¿½
+	// Še•`‰æ
 	//DrawBackSprite(cmdList);
 	DrawObjects(cmdList);
 	DrawEffect(cmdList);
@@ -1524,7 +1598,7 @@ void GamePlayScene::Draw()
 
 void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 {
-	// ï¿½Oï¿½iï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½`ï¿½ï¿½
+	// ‘OŒiƒXƒvƒ‰ƒCƒg•`‰æ
 	Sprite::PreDraw(cmdList);
 
 
@@ -1535,7 +1609,7 @@ void GamePlayScene::DrawBackSprite(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 {
-	// OBJï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½`ï¿½ï¿½
+	// OBJƒIƒuƒWƒFƒNƒg•`‰æ
 	Object3d::PreDraw(cmdList);
 
 	for (int i = 0; i < 2; i++)
@@ -1548,7 +1622,21 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 		{
 			if (block[y][x]->map == true)
 			{
-				block[y][x]->block->Draw();
+				if (block[y][x]->block->GetPosition().y >= 5.2f * -4)
+				{
+					if (block[y][x]->buff == false)
+					{
+						block[y][x]->block->Draw();
+					}
+					else
+					{
+						block[y][x]->block->Update();
+						buffBlock[y][x]->SetPosition(block[y][x]->block->GetPosition());
+						buffBlock[y][x]->SetScale(block[y][x]->block->GetScale());
+						buffBlock[y][x]->SetColor(block[y][x]->block->GetColor());
+						buffBlock[y][x]->Draw();
+					}
+				}
 			}
 		}
 	}
@@ -1620,7 +1708,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 		}
 	}
 	frame->Draw();
-	if (isActiveCT == true)
+	if (isActiveCT == true && stage == GAME)
 	{
 		comboText[textNum]->Draw();
 	}
@@ -1671,14 +1759,14 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 	Object3d::PostDraw();
 
-	// FBXï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½g
+	// FBXƒIƒuƒWƒFƒNƒg
 	/*FbxObject3d::PreDraw(cmdList);
 
 
 
 	FbxObject3d::PostDraw();*/
 
-	// ï¿½Xï¿½vï¿½ï¿½ï¿½Cï¿½gï¿½`ï¿½ï¿½
+	// ƒXƒvƒ‰ƒCƒg•`‰æ
 	Sprite::PreDraw(cmdList);
 
 
@@ -1688,7 +1776,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 {
-	// UIï¿½`ï¿½ï¿½
+	// UI•`‰æ
 	Sprite::PreDraw(cmdList);
 
 
@@ -1698,7 +1786,7 @@ void GamePlayScene::DrawUI(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 {
-	// ï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½ï¿½`ï¿½ï¿½
+	// ƒp[ƒeƒBƒNƒ‹•`‰æ
 	ParticleManager::PreDraw(cmdList);
 	//particle->Draw();
 	if (!isPJ) {
@@ -1717,7 +1805,7 @@ void GamePlayScene::DrawEffect(ID3D12GraphicsCommandList* cmdList)
 
 void GamePlayScene::DrawDebugText(ID3D12GraphicsCommandList* cmdList)
 {
-	// ï¿½fï¿½oï¿½bï¿½Oï¿½eï¿½Lï¿½Xï¿½gï¿½`ï¿½ï¿½
+	// ƒfƒoƒbƒOƒeƒLƒXƒg•`‰æ
 	debugText.Draw(cmdList);
 }
 
