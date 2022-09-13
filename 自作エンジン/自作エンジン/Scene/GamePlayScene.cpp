@@ -11,14 +11,15 @@ using namespace DirectX;
 
 GamePlayScene::~GamePlayScene()
 {
-
+	
 }
 
 void GamePlayScene::Initialize()
 {
 	dx_cmd = DirectXCommon::GetInstance();
 	input = Input::GetInstance();
-	//audio = Audio::GetInstance();
+	audio = Audio::GetInstance();
+	audio->Initialize();
 	camera = Camera::GetInstance();
 
 	// スプライトテクスチャ読み込み
@@ -257,6 +258,8 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
+	workSE = 0;
+
 	score = 0;
 
 	stage = TITLE;
@@ -280,6 +283,7 @@ void GamePlayScene::InitializeVariable()
 	ballG = 0.5f;
 	isBJ = false;
 	isAliveB = true;
+	groundB = false;
 
 	comboTimer = 0;
 	comboLimit = 60;
@@ -308,7 +312,7 @@ void GamePlayScene::InitializeVariable()
 	titleToGame = false;
 	restoreCameraTimer = 0;
 
-	playerStay->SetPosition({ 0, 5.2f * (-4.9f), 0 });
+	playerStay->SetPosition({ 0, 5.2f * (-4.9), 0 });
 	playerStay->SetRotation({ -95, 0, 0 });
 	playerStay->SetScale({ 2.25f, 1, 2.25f });
 	playerStay->Update();
@@ -338,22 +342,22 @@ void GamePlayScene::InitializeVariable()
 	playerMove04->SetScale({ 2.25f, 1, 2.25f });
 	playerMove04->Update();
 
-	ball01->SetPosition({ 0, 5.2f * 2, 0 });
+	ball01->SetPosition({ 0, 5.2f * 3, 0 });
 	ball01->SetRotation({ -90, 0, 0 });
 	ball01->SetScale({ 2.25f, 1, 2.25f });
 	ball01->Update();
 
-	ball02->SetPosition({ 0, 5.2f * 2, 0 });
+	ball02->SetPosition({ 0, 5.2f * 3, 0 });
 	ball02->SetRotation({ -90, 0, 0 });
 	ball02->SetScale({ 2.25f, 1, 2.25f });
 	ball02->Update();
 
-	ball03->SetPosition({ 0, 5.2f * 2, 0 });
+	ball03->SetPosition({ 0, 5.2f * 3, 0 });
 	ball03->SetRotation({ -90, 0, 0 });
 	ball03->SetScale({ 2.25f, 1, 2.25f });
 	ball03->Update();
 
-	ball04->SetPosition({ 0, 5.2f * 2, 0 });
+	ball04->SetPosition({ 0, 5.2f * 3, 0 });
 	ball04->SetRotation({ -90, 0, 0 });
 	ball04->SetScale({ 2.25f, 1, 2.25f });
 	ball04->Update();
@@ -369,24 +373,6 @@ void GamePlayScene::InitializeVariable()
 		enemyStay[x]->enemyG = 0.5f;
 		enemyStay[x]->alive = false;
 		enemyStay[x]->isEnemyLanding = false;
-
-		enemy01[x]->enemy01->SetPosition({ 0, 0, 0 });
-		enemy01[x]->enemy01->SetRotation({ -90, 0, 0 });
-		enemy01[x]->enemy01->SetScale({ 0, 1, 0 });
-		enemy01[x]->enemy01->Update();
-		enemy01[x]->enemyS = 0;
-		enemy01[x]->enemyR = -5;
-		enemy01[x]->enemyG = 0.5f;
-		enemy01[x]->alive = false;
-
-		enemy02[x]->enemy02->SetPosition({ 0, 0, 0 });
-		enemy02[x]->enemy02->SetRotation({ -90, 0, 0 });
-		enemy02[x]->enemy02->SetScale({ 0, 1, 0 });
-		enemy02[x]->enemy02->Update();
-		enemy02[x]->enemyS = 0;
-		enemy02[x]->enemyR = -5;
-		enemy02[x]->enemyG = 0.5f;
-		enemy02[x]->alive = false;
 
 		enemy01[x]->enemy01->SetPosition({ 0, 0, 0 });
 		enemy01[x]->enemy01->SetRotation({ -90, 0, 0 });
@@ -579,7 +565,6 @@ void GamePlayScene::Update()
 				{
 					XMFLOAT3 bScale = block[y][x]->block->GetScale();
 					bScale.x -= 0.52f;
-					//bScale.x -= 5.2f;
 					bScale.z = bScale.x;
 					block[y][x]->block->SetScale(bScale);
 					if (bScale.x <= 0)
@@ -590,6 +575,26 @@ void GamePlayScene::Update()
 						deleteBlockEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
 						deleteB = true;
 						w = x;
+					}
+					if (stage == TITLE)
+					{
+						for (int i = 0; i < 13; i++)
+						{
+							if (i != x && block[y][i]->map == true)
+							{
+								XMFLOAT3 bScale = block[y][i]->block->GetScale();
+								bScale.x -= 0.52f;
+								if (bScale.x <= 0)
+								{
+									bScale.x = 5.2f;
+									block[y][i]->map = false;
+									block[y][i]->HP = 15;
+								}
+								bScale.z = bScale.x;
+								block[y][i]->block->SetScale(bScale);
+								block[y][i]->block->Update();
+							}
+						}
 					}
 				}
 			}
@@ -603,6 +608,30 @@ void GamePlayScene::Update()
 				comboTimer = 1;
 				// コンボカウンター
 				comboNum++;
+				if (comboNum == 1)
+				{
+					audio->PlayWave("Resources/SE/combose_01.wav", false, wavCombo);
+				}
+				else if (comboNum == 2)
+				{
+					audio->PlayWave("Resources/SE/combose_02.wav", false, wavCombo);
+				}
+				else if (comboNum == 3)
+				{
+					audio->PlayWave("Resources/SE/combose_03.wav", false, wavCombo);
+				}
+				else if (comboNum == 4)
+				{
+					audio->PlayWave("Resources/SE/combose_04.wav", false, wavCombo);
+				}
+				else if (comboNum == 5)
+				{
+					audio->PlayWave("Resources/SE/combose_05.wav", false, wavCombo);
+				}
+				else
+				{
+					audio->PlayWave("Resources/SE/combose_06.wav", false, wavCombo);
+				}
 				score += 100 * comboNum * comboNum;
 				// テキストの座標
 				textNum = comboNum - 1;
@@ -616,18 +645,12 @@ void GamePlayScene::Update()
 			}
 			else if (stage == TITLE)
 			{
-				titleToGame = true;
-				for (int y = 0; y < 8; y++)
+				for (int y = 1; y < 8; y++)
 				{
 					for (int x = 0; x < 13; x++)
 					{
-						if (y == 0)
-						{
-							block[y][x]->map = true;
-						} else
-						{
-							block[y][x]->map = false;
-						}
+						block[y][x]->map = false;
+						titleToGame = true;
 					}
 				}
 			}
@@ -696,6 +719,7 @@ void GamePlayScene::Update()
 		{
 			playerJS = 0.05f;
 			isPJ = true;
+			audio->PlayWave("Resources/SE/se_02.wav", false, wav2);
 		}
 
 		// 移動
@@ -715,6 +739,14 @@ void GamePlayScene::Update()
 			else if (moveCount >= 5 && !switchingMove) {
 				switchingMove = true;
 				moveCount = 0;
+			}
+
+			workSE++;
+			// インターバル
+			if (workSE > 7)
+			{
+				audio->PlayWave("Resources/SE/se_01.wav", false, wav1);
+				workSE = 0;
 			}
 
 			pPos.x += (input->PushKey(DIK_D) - input->PushKey(DIK_A)) * playerS;
@@ -740,6 +772,10 @@ void GamePlayScene::Update()
 				playerWalkEffect->Update();
 			}
 		}
+		else
+		{
+			workSE = 7;
+		}
 
 		// ジャンプ処理
 		if (isPJ == true)
@@ -751,6 +787,7 @@ void GamePlayScene::Update()
 			//ブロックにぶつかったか
 			if (-23.4f < pPos.y + 0.5f * playerStay->GetScale().x - 0.7f)
 			{
+				audio->PlayWave("Resources/SE/se_03.wav", false, wav3);
 				pPos.y = -23.4f - 0.5f * playerStay->GetScale().x + 0.7f;
 				playerJS = 0.05f;
 				playerJS = -playerJS;
@@ -767,7 +804,12 @@ void GamePlayScene::Update()
 					}
 					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false && block[1][x]->HP > 0)
 					{
+						audio->PlayWave("Resources/SE/se_10.wav", false, wav10);
 						block[y + 1][x]->map = true;
+						if (y + 1 == 7)
+						{
+							audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
+						}
 						for (int i = 1; i < 8; i++)
 						{
 							if (i < 7)
@@ -783,6 +825,7 @@ void GamePlayScene::Update()
 						addX = x;
 						if (isBJ == false && static_cast<int>((ball01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x)
 						{
+							audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
 							block[y + 1][x]->map = true;
 							isBJ = true;
 							ballJS = 1.5f;
@@ -806,6 +849,7 @@ void GamePlayScene::Update()
 								enemyStay[i]->isEnemyLanding = false;
 								enemy01[i]->alive = false;
 								enemy02[i]->alive = false;
+								audio->PlayWave("Resources/SE/se_11.wav", false, wav11);
 							}
 						}
 						break;
@@ -877,6 +921,7 @@ void GamePlayScene::Update()
 			ballS = -ballS;
 			ballR = -ballR;
 			ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+			audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 		}
 		else if (bPos.x < -32.75f)
 		{
@@ -884,6 +929,7 @@ void GamePlayScene::Update()
 			ballS = -ballS;
 			ballR = -ballR;
 			ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+			audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 		}
 		// 重力
 		if (isBJ == false)
@@ -897,6 +943,11 @@ void GamePlayScene::Update()
 			ballJumpEffect->Add(30, bPos, { 0,0,0 }, { 0,0,0 }, 1.0f, 3.0f);
 			bPos.y += ballJS;
 			ballJS += ballJA;
+			if (15.6f + 0.5f * 5.2f < bPos.y)
+			{
+				bPos.y = 15.6f + 0.5f * 5.2f;
+				ballJS = 0;
+			}
 		}
 		//当たり判定
 		for (int y = 0; y < 7; y++)
@@ -906,7 +957,7 @@ void GamePlayScene::Update()
 				if (block[y][x]->map == true)
 				{
 					// 縦
-					if (y < 7 && block[y + 1][x]->map == false)
+					if (block[y + 1][x]->map == false)
 					{
 						if (block[y][x]->block->GetPosition().x - 0.5f * block[y][x]->block->GetScale().x <= bPos.x && bPos.x <= block[y][x]->block->GetPosition().x + 0.5f * block[y][x]->block->GetScale().x)
 						{
@@ -914,12 +965,25 @@ void GamePlayScene::Update()
 							{
 								bPos.y = block[y][x]->block->GetPosition().y + 0.5f * block[y][x]->block->GetScale().x + 0.5f * ball01->GetScale().x;
 								ballG = gravity;
+								if (isBJ == true)
+								{
+									audio->PlayWave("Resources/SE/se_05.wav", false, wav5);
+								}
+								else if (groundB == false)
+								{
+									audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
+								}
+								groundB = true;
 								isBJ = false;
 								// 速度決定
 								if (ballS == 0)
 								{
 									ballS = 0.2f;
 								}
+							}
+							else
+							{
+								groundB = false;
 							}
 						}
 					}
@@ -931,18 +995,37 @@ void GamePlayScene::Update()
 							if (bPos.x - block[y][x]->block->GetPosition().x < 0)
 							{
 								bPos.x = block[y][x]->block->GetPosition().x - 0.5f * ball01->GetScale().x - 0.5f * block[y][x]->block->GetScale().x;
-								block[y][x]->HP--;
-								if (isBJ == false)
+								if (groundB == true)
 								{
-									ballS = -abs(ballS);
-									ballR = abs(ballR);
-									ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+									block[y][x]->HP--;
 								}
+								if (block[y][x]->HP <= 0)
+								{
+									audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
+								}
+								else if (groundB == true)
+								{
+									audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
+								}
+								ballS = -abs(ballS);
+								ballR = abs(ballR);
+								ballBounceEffect->Add(60, bPos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 							}
 							else
 							{
 								bPos.x = block[y][x]->block->GetPosition().x + 0.5f * ball01->GetScale().x + 0.5f * block[y][x]->block->GetScale().x;
-								block[y][x]->HP--;
+								if (groundB == true)
+								{
+									block[y][x]->HP--;
+								}
+								if (block[y][x]->HP <= 0)
+								{
+									audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
+								}
+								else if (groundB == true)
+								{
+									audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
+								}
 								if (isBJ == false)
 								{
 									ballS = abs(ballS);
@@ -989,6 +1072,7 @@ void GamePlayScene::Update()
 				int n = rand() % 13;
 				if (enemy01[n]->alive == false)
 				{
+					audio->PlayWave("Resources/SE/se_12.wav", false, wav12);
 					enemySpawner[n]->active = true;
 					break;
 				}
@@ -1090,6 +1174,7 @@ void GamePlayScene::Update()
 						enemy01[i]->enemyS = -abs(enemy01[i]->enemyS);
 						enemy01[i]->enemyR = abs(enemy01[i]->enemyR);
 						enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+						audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 					}
 					else if (ePos.x < -32.75f)
 					{
@@ -1097,6 +1182,7 @@ void GamePlayScene::Update()
 						enemy01[i]->enemyS = abs(enemy01[i]->enemyS);
 						enemy01[i]->enemyR = -abs(enemy01[i]->enemyR);
 						enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
+						audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
 					}
 					// 重力
 					ePos.y -= enemy01[i]->enemyG;
@@ -1124,6 +1210,17 @@ void GamePlayScene::Update()
 												enemy01[i]->enemyS = 0.2f;
 												enemy02[i]->enemyS = 0.2f;
 											}
+											if (enemy01[i]->groundE == false)
+											{
+												audio->PlayWave("Resources/SE/se_14.wav", false, wav14);
+											}
+											enemy01[i]->groundE = true;
+											enemy02[i]->groundE = true;
+										}
+										else
+										{
+											enemy01[i]->groundE = false;
+											enemy02[i]->groundE = false;
 										}
 									}
 								}
@@ -1138,6 +1235,14 @@ void GamePlayScene::Update()
 											enemy01[i]->enemyS = -enemy01[i]->enemyS;
 											enemy01[i]->enemyR = -enemy01[i]->enemyR;
 											block[y][x]->HP--;
+											if (block[y][x]->HP <= 0)
+											{
+												audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
+											} 
+											else if (enemy01[i]->groundE == true)
+											{
+												audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
+											}
 											enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 										}
 										else
@@ -1147,6 +1252,14 @@ void GamePlayScene::Update()
 											enemy01[i]->enemyR = -enemy01[i]->enemyR;
 											enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
 											block[y][x]->HP--;
+											if (block[y][x]->HP <= 0)
+											{
+												audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
+											}
+											else if (enemy01[i]->groundE == true)
+											{
+												audio->PlayWave("Resources/SE/se_06.wav", false, wav6);
+											}
 										}
 									}
 								}
@@ -1169,8 +1282,8 @@ void GamePlayScene::Update()
 					// プレイヤーのボールとの当たり判定
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
-						//heartCounter--;
-						heartCounter = 0;
+						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
+						heartCounter--;
 						if (heartCounter <= 0)
 						{
 							heartCounter = 0;
@@ -1356,6 +1469,7 @@ void GamePlayScene::Update()
 				if (input->TriggerKey(DIK_SPACE) && endToTitle == false)
 				{
 					endToTitle = true;
+					audio->PlayWave("Resources/SE/se_13.wav", false, wav13);
 				}
 			}
 		}
