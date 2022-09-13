@@ -123,6 +123,8 @@ public: //アクセッサ
 	/// <param name="position">座標</param>
 	void SetPosition(XMFLOAT2 position);
 
+	float GetRotation() { return rotation; };
+
 	/// <summary>
 	/// 色を取得
 	/// </summary>
@@ -134,6 +136,8 @@ public: //アクセッサ
 	/// </summary>
 	/// <param name="color">色</param>
 	void SetColor(XMFLOAT4 color);
+
+	XMFLOAT2 GetSize() { return size; }
 
 	/// <summary>
 	/// サイズをセット

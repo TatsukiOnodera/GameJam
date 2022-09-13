@@ -24,6 +24,8 @@ void GamePlayScene::Initialize()
 
 	// スプライトテクスチャ読み込み
 	Sprite::LoadTexture(fontNumber, L"Resources/DebugFont/DebugFont.png");
+	Sprite::LoadTexture(1, L"Resources/Animation.png");
+	Sprite::LoadTexture(2, L"Resources/TeamLogo.png");
 
 	// ライト生成
 	light.reset(Light::Create());
@@ -43,7 +45,7 @@ void GamePlayScene::Initialize()
 	enemyBounceEffect.reset(ParticleManager::Create("stareffect_03.png"));
 	enemySpawnEffect.reset(ParticleManager::Create("balldeadeffect.png"));
 
-	// スプライト
+	// OBJオブジェクト
 	playerStay.reset(Object3d::Create("PlayerStay"));
 	playerStay->SetPosition({ 0, 5.2f * (-4.9), 0 });
 	playerStay->SetRotation({ -95, 0, 0 });
@@ -251,7 +253,7 @@ void GamePlayScene::Initialize()
 	comboText[2].reset(Object3d::Create("Combo_03"));
 	comboText[3].reset(Object3d::Create("Combo_04"));
 	comboText[4].reset(Object3d::Create("Combo_05"));
-	comboText[5].reset(Object3d::Create("Combo_05"));
+	comboText[5].reset(Object3d::Create("Combo_06"));
 	for (int i = 0; i < 6; i++)
 	{
 		comboText[i]->SetScale({ 0, 1, 0 });
@@ -269,8 +271,12 @@ void GamePlayScene::Initialize()
 		backGround[i]->Update();
 	}
 
-	// OBJオブジェクト
-
+	// スプライト
+	animationBack.reset(Sprite::Create(1, { 0, 0 }, { 0.5f, 0.5f }));
+	animationBack->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
+	animationLogo.reset(Sprite::Create(2, { 0, 0 }, { 0.5f, 0.5f }));
+	animationLogo->SetPosition({ WinApp::window_width / 2, WinApp::window_height / 2 });
+	animationLogo->SetColor({ 1, 1, 1, 0 });
 
 	//FBXオブェクト
 
@@ -437,8 +443,61 @@ void GamePlayScene::Update()
 {
 #pragma region ?ｿｽQ?ｿｽ[?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽC?ｿｽ?ｿｽ?ｿｽV?ｿｽX?ｿｽe?ｿｽ?ｿｽ
 
+	if (animation == true)
+	{
+		if (animationEND == false)
+		{
+			if (animationTimer == 0)
+			{
+				XMFLOAT4 color = animationLogo->GetColor();
+				color.w += addAlpha;
+				if (color.w <= 0)
+				{
+					color.w = 0;
+					animationEND = true;
+				}
+				else if (color.w >= 1)
+				{
+					color.w = 1;
+					animationTimer = 1;
+				}
+				animationLogo->SetColor(color);
+			}
+			else
+			{
+				animationTimer++;
+				if (animationTimer > 60)
+				{
+					animationTimer = 0;
+					addAlpha = -abs(addAlpha);
+				}
+			}
+		}
+		else
+		{
+			animationRot += 1;
+			if (animationRot >= 360)
+			{
+				animationRot = 0;
+			}
+			animationBack->SetRotation(animationRot);
+			XMFLOAT2 aScale = animationBack->GetSize();
+			aScale.x -= (float)10 * 1.0f;
+			aScale.y -= (float)8 * 1.0f;
+			if (aScale.x <= 0)
+			{
+				animation = false;
+			}
+			animationBack->SetSize(aScale);
+		}
+	}
+	else
+	{
+		//audio->PlayWave("Resources/BGM/.wav", true, BGM);
+	}
+
 	// タイトル
-	if (stage == TITLE)
+	if (stage == TITLE && animation == false)
 	{
 		// 既定の大きさでなければ
 		if (title->GetScale().x < 30 * 1.7f && titleButton->GetScale().x < 20 && titleToGame == false)
@@ -518,7 +577,7 @@ void GamePlayScene::Update()
 	}
 
 	// ブロック
-	if (stage == TITLE || stage == GAME)
+	if ((stage == TITLE || stage == GAME) && animation == false)
 	{
 		// HP更新
 		for (int y = 0; y < 8; y++)
@@ -1747,7 +1806,11 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	// スプライト描画
 	Sprite::PreDraw(cmdList);
 
-
+	if (animation == true)
+	{
+		animationBack->Draw();
+		animationLogo->Draw();
+	}
 
 	Sprite::PostDraw();
 }

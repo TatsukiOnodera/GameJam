@@ -129,7 +129,8 @@ private: // インスタンス
 	std::unique_ptr<ParticleManager> enemySpawnEffect;
 	std::unique_ptr<ParticleManager> deadEffect;
 	// スプライト
-
+	std::unique_ptr<Sprite> animationBack = nullptr;
+	std::unique_ptr<Sprite> animationLogo = nullptr;
 	
 	// OBJオブジェクト
 	// プレイヤー
@@ -296,6 +297,14 @@ private: // メンバ変数
 	float wav13 = 1.0f; // リザルトでSPACE
 	float wav14 = 1.0f; // ボール＆敵が着地したとき
 	float wavCombo = 1.0f; // コンボ
+	float BGM = 1.0f;
+
+	// アニメーション
+	bool animation = true;
+	float addAlpha = 0.01;
+	int animationRot = 0;
+	bool animationEND = false;
+	int animationTimer = 0;
 
 public: // メンバ関数
 	~GamePlayScene() override;
