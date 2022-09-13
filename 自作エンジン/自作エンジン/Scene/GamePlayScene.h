@@ -226,6 +226,9 @@ private: // メンバ変数
 	// buff
 	bool isBuff;
 
+	// ブロック
+	int blockHP = 15; // TODO ブロックのHP
+
 	// コンボ
 	// タイマー
 	int comboTimer;

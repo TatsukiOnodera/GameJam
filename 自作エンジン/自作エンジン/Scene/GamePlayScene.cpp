@@ -330,7 +330,7 @@ void GamePlayScene::InitializeVariable()
 
 	addX = 0;
 
-	playerS = 0.18f;
+	playerS = 0.18f; // TODO プレイヤーの移動速度
 	playerJS = 0;
 	isPJ = false;
 
@@ -341,7 +341,7 @@ void GamePlayScene::InitializeVariable()
 	ballS = 0;
 	ballR = -5;
 	ballJS = 0;
-	ballJA = -0.1f;
+	ballJA = -0.1f; // TODO ボールのジャンプの加速度
 	ballG = 0.5f;
 	isBJ = false;
 	isAliveB = true;
@@ -349,7 +349,7 @@ void GamePlayScene::InitializeVariable()
 	isBuff = false;
 
 	comboTimer = 0;
-	comboLimit = 60;
+	comboLimit = 60; // TODO コンボ時間
 	comboNum = 0;
 	isActiveCT = false;
 
@@ -468,6 +468,7 @@ void GamePlayScene::Update()
 {
 #pragma region ?ｿｽQ?ｿｽ[?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽC?ｿｽ?ｿｽ?ｿｽV?ｿｽX?ｿｽe?ｿｽ?ｿｽ
 
+	// スプラッシュアニメーション
 	if (animation == true)
 	{
 		if (animationEND == false)
@@ -475,7 +476,7 @@ void GamePlayScene::Update()
 			if (animationTimer == 0)
 			{
 				XMFLOAT4 color = animationLogo->GetColor();
-				color.w += addAlpha;
+				color.w += addAlpha; // TODO アルファ値の加算
 				if (color.w <= 0)
 				{
 					color.w = 0;
@@ -491,7 +492,7 @@ void GamePlayScene::Update()
 			else
 			{
 				animationTimer++;
-				if (animationTimer > 60)
+				if (animationTimer > 60) // TODO ロゴの表示時間
 				{
 					animationTimer = 0;
 					addAlpha = -abs(addAlpha);
@@ -507,7 +508,7 @@ void GamePlayScene::Update()
 			}
 			animationBack->SetRotation(animationRot);
 			XMFLOAT2 aScale = animationBack->GetSize();
-			aScale.x -= (float)10 * 1.0f;
+			aScale.x -= (float)10 * 1.0f; // TODO 縮小速度
 			aScale.y -= (float)10 * 1.0f;
 			if (aScale.x <= 0)
 			{
@@ -610,7 +611,7 @@ void GamePlayScene::Update()
 				{
 					if (stage == TITLE)
 					{
-						block[y][x]->HP = 15;
+						block[y][x]->HP = blockHP;
 						block[y][x]->buff = 0;
 						block[y][x]->buffTimer = 0;
 					}
@@ -624,7 +625,7 @@ void GamePlayScene::Update()
 							block[h + 1][x]->block->SetPosition(bPos);
 							if (5.2f < 5.2f * (h - 3) - bPos.y && h < 7)
 							{
-								block[y][x]->HP = 15;
+								block[y][x]->HP = blockHP;
 								block[h][x]->map = block[h + 1][x]->map;
 								block[h + 1][x]->map = false;
 								block[h][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (h - 4) , 0 });
@@ -636,7 +637,7 @@ void GamePlayScene::Update()
 						}
 					}
 					// 5以下で
-					else if (block[y][x]->HP <= 5)
+					else if (block[y][x]->HP <= 5) // TODO ブロックのHP更新
 					{
 						block[y][x]->block->SetColor({ 1, 0.5f, 0.4f, 1 });
 					}
@@ -680,18 +681,19 @@ void GamePlayScene::Update()
 				for (int y = 1; y < 8; y++)
 				{
 					XMFLOAT3 bScale = block[y][x]->block->GetScale();
-					bScale.x -= 0.52f;
-					bScale.z = bScale.x;
-					block[y][x]->block->SetScale(bScale);
+					bScale.x -= 0.52f; // TODO ブロックの消える速度
 					if (bScale.x <= 0)
 					{
+						bScale.x = 0;
 						block[y][x]->map = false;
-						block[y][x]->HP = 15;
+						block[y][x]->HP = blockHP;
 						block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
 						deleteBlockEffect->Add(60, block[y][x]->block->GetPosition(), { 0,0,0 }, { 0,-0.005f,0 }, 3.0f, 7.0f);
 						deleteB = true;
 						w = x;
 					}
+					bScale.z = bScale.x;
+					block[y][x]->block->SetScale(bScale);
 					if (stage == TITLE)
 					{
 						for (int i = 0; i < 13; i++)
@@ -699,12 +701,12 @@ void GamePlayScene::Update()
 							if (i != x && block[y][i]->map == true)
 							{
 								XMFLOAT3 bScale = block[y][i]->block->GetScale();
-								bScale.x -= 0.52f;
+								bScale.x -= 0.52f; // TODO ブロックの消える速度
 								if (bScale.x <= 0)
 								{
 									bScale.x = 5.2f;
 									block[y][i]->map = false;
-									block[y][i]->HP = 15;
+									block[y][i]->HP = blockHP;
 								}
 								bScale.z = bScale.x;
 								block[y][i]->block->SetScale(bScale);
@@ -748,7 +750,7 @@ void GamePlayScene::Update()
 				{
 					audio->PlayWave("Resources/SE/combose_06.wav", false, wavCombo);
 				}
-				score += 100 * comboNum * comboNum;
+				score += 100 * comboNum * comboNum; // TODO 点数
 				// テキストの座標
 				textNum = comboNum - 1;
 				if (comboNum > 5)
@@ -942,7 +944,7 @@ void GamePlayScene::Update()
 								if (i < 7)
 								{
 									block[i + 1][x]->HP = block[i][x]->HP;
-									block[i][x]->HP = 15;
+									block[i][x]->HP = blockHP;
 								}
 								XMFLOAT3 pos = block[i][x]->block->GetPosition();
 								pos.y -= 5.2f * addBlock;
@@ -957,7 +959,7 @@ void GamePlayScene::Update()
 								if (i < 7)
 								{
 									block[i + 1][x]->HP = block[i][x]->HP;
-									block[i][x]->HP = 15;
+									block[i][x]->HP = blockHP;
 								}
 								XMFLOAT3 pos = block[i][x]->block->GetPosition();
 								pos.y -= 5.2f;
@@ -976,7 +978,7 @@ void GamePlayScene::Update()
 							audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
 							block[y + 1][x]->map = true;
 							isBJ = true;
-							ballJS = 1.5f;
+							ballJS = 1.5f;  // TODO ボールのジャンプ初期速度
 							isBuff = true;
 							XMFLOAT3 bPos = ball01->GetPosition();
 							bPos.y += 4.5f;
@@ -1009,6 +1011,7 @@ void GamePlayScene::Update()
 								enemyStay[i]->isEnemyLanding = false;
 								enemy01[i]->alive = false;
 								enemy02[i]->alive = false;
+								score += 100 * comboNum * comboNum; // TODO 点数
 								audio->PlayWave("Resources/SE/se_11.wav", false, wav11);
 							}
 						}
@@ -1029,7 +1032,7 @@ void GamePlayScene::Update()
 			for (int y = 1; y < 8; y++)
 			{
 				XMFLOAT3 pos = block[y][addX]->block->GetPosition();
-				pos.y += 0.52f * 3;
+				pos.y += 0.52f * 3; // TODO ブロックの上がる速度
 				if (5.2f * (y - 4) <= pos.y)
 				{
 					pos.y = 5.2f * (y - 4);
@@ -1152,7 +1155,7 @@ void GamePlayScene::Update()
 								// 速度決定
 								if (ballS == 0)
 								{
-									ballS = 0.2f;
+									ballS = 0.2f;  // TODO ボールの移動速度
 								}
 							}
 							else
@@ -1171,7 +1174,7 @@ void GamePlayScene::Update()
 								bPos.x = block[y][x]->block->GetPosition().x - 0.5f * ball01->GetScale().x - 0.5f * block[y][x]->block->GetScale().x;
 								if (groundB == true)
 								{
-									block[y][x]->HP--;
+									block[y][x]->HP--; // TODO ボールの攻撃力
 								}
 								if (block[y][x]->HP <= 0)
 								{
@@ -1190,7 +1193,7 @@ void GamePlayScene::Update()
 								bPos.x = block[y][x]->block->GetPosition().x + 0.5f * ball01->GetScale().x + 0.5f * block[y][x]->block->GetScale().x;
 								if (groundB == true)
 								{
-									block[y][x]->HP--;
+									block[y][x]->HP--; // TODO ボールの攻撃力
 								}
 								if (block[y][x]->HP <= 0)
 								{
@@ -1238,7 +1241,7 @@ void GamePlayScene::Update()
 			spawTimer++;
 		}
 		// 一定時間たったら生成
-		if (spawTimer > 600)
+		if (spawTimer > 600) // TODO エネミーの出現頻度
 		{
 			spawTimer = 1;
 			while (true)
@@ -1381,8 +1384,7 @@ void GamePlayScene::Update()
 											// 速度決定
 											if (enemy01[i]->enemyS == 0)
 											{
-												enemy01[i]->enemyS = 0.2f;
-												enemy02[i]->enemyS = 0.2f;
+												enemy01[i]->enemyS = 0.2f; // TODO エネミーの速度
 											}
 											if (enemy01[i]->groundE == false)
 											{
@@ -1408,7 +1410,7 @@ void GamePlayScene::Update()
 											ePos.x = block[y][x]->block->GetPosition().x - 0.5f * ball01->GetScale().x - 0.5f * block[y][x]->block->GetScale().x;
 											enemy01[i]->enemyS = -enemy01[i]->enemyS;
 											enemy01[i]->enemyR = -enemy01[i]->enemyR;
-											block[y][x]->HP--;
+											block[y][x]->HP--; // TODO エネミーの攻撃力
 											if (block[y][x]->HP <= 0)
 											{
 												audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
@@ -1425,7 +1427,7 @@ void GamePlayScene::Update()
 											enemy01[i]->enemyS = -enemy01[i]->enemyS;
 											enemy01[i]->enemyR = -enemy01[i]->enemyR;
 											enemyBounceEffect->Add(60, ePos, { 0,0,0 }, { 0,0,0 }, 6.0f, 0.0f);
-											block[y][x]->HP--;
+											block[y][x]->HP--; // TODO エネミーの攻撃力
 											if (block[y][x]->HP <= 0)
 											{
 												audio->PlayWave("Resources/SE/se_08.wav", false, wav8);
