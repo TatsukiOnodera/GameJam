@@ -318,6 +318,8 @@ void GamePlayScene::Initialize()
 
 void GamePlayScene::InitializeVariable()
 {
+	damageTimer = 0;
+
 	workSE = 0;
 
 	score = 0;
@@ -1460,6 +1462,7 @@ void GamePlayScene::Update()
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
 						heartCounter--;
+						damageTimer = 1;
 						if (heartCounter <= 0)
 						{
 							heartCounter = 0;
@@ -1790,20 +1793,29 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	{
 		if (isAliveB == true)
 		{
-			if (!isBlink) {
-				if (!isBJ) {
-					ball01->Draw();
-				}
-				else if (isBJ) {
-					ball03->Draw();
+			if (damageTimer > 0)
+			{
+				damageTimer++;
+				if (damageTimer > 60)
+				{
+					damageTimer = 0;
 				}
 			}
-			if (isBlink) {
-				if (!isBJ) {
-					ball02->Draw();
+			if (damageTimer % 10 == 0 || damageTimer == 0)
+			{
+				if (!isBlink) {
+					if (!isBJ) {
+						ball01->Draw();
+					} else if (isBJ) {
+						ball03->Draw();
+					}
 				}
-				else if (isBJ) {
-					ball04->Draw();
+				if (isBlink) {
+					if (!isBJ) {
+						ball02->Draw();
+					} else if (isBJ) {
+						ball04->Draw();
+					}
 				}
 			}
 		}

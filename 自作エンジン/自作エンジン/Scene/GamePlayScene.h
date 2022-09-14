@@ -202,6 +202,8 @@ private: // メンバ変数
 	int timerA;
 	// ウォークSEカウント
 	int workSE;
+	// ダメージタイマー
+	int damageTimer;
 
 	int playerWalkEffectTimer = 10;
 	// ボール
