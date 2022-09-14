@@ -1488,7 +1488,7 @@ void GamePlayScene::Update()
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
-						//heartCounter--;
+						heartCounter--;
 						damageTimer = 1;
 						if (heartCounter <= 0)
 						{
