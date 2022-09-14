@@ -291,22 +291,22 @@ private: // メンバ変数
 	int heartA;
 
 	//ボリューム
-	float wav1 = 0.4f; // プレイヤーの動き
+	float wav1 = 0.3f; // プレイヤーの動き
 	float wav2 = 0.5f; // プレイヤーのジャンプ
 	float wav3 = 0.5f; // ブロックをたたく
 	float wav4 = 0.5f; // ボールのジャンプ
-	float wav5 = 0.5f; // ボールがジャンプして着地
-	float wav6 = 0.5f; // ボール＆敵が壁やブロックに当たる
-	float wav7 = 0.5f; // ボールが敵に当たる
-	float wav8 = 0.5f; // ブロックが壊れる
+	float wav5 = 0.6f; // ボールがジャンプして着地
+	float wav6 = 0.3f; // ボール＆敵が壁やブロックに当たる
+	float wav7 = 0.7f; // ボールが敵に当たる
+	float wav8 = 0.7f; // ブロックが壊れる
 	float wav9 = 0.5f; // ブロックが最大に到達する
 	float wav10 = 0.5f; // ブロックが追加
-	float wav11 = 0.5f; // 敵が倒される
-	float wav12 = 0.5f; // 敵のスポーン
+	float wav11 = 0.7f; // 敵が倒される
+	float wav12 = 0.7f; // 敵のスポーン
 	float wav13 = 0.5f; // リザルトでSPACE
 	float wav14 = 0.5f; // ボール＆敵が着地したとき
-	float wavCombo = 0.5f; // コンボ
-	float BGM = 0.75f;
+	float wavCombo = 0.7f; // コンボ
+	float BGM = 0.8f;
 
 	// アニメーション
 	bool animation = true;
