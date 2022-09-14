@@ -288,21 +288,21 @@ private: // メンバ変数
 	int addBlock;
 
 	//ボリューム
-	float wav1 = 0.5f; // プレイヤーの動き
-	float wav2 = 1.0f; // プレイヤーのジャンプ
-	float wav3 = 1.0f; // ブロックをたたく
-	float wav4 = 1.0f; // ボールのジャンプ
-	float wav5 = 1.0f; // ボールがジャンプして着地
-	float wav6 = 1.0f; // ボール＆敵が壁やブロックに当たる
-	float wav7 = 1.0f; // ボールが敵に当たる
-	float wav8 = 1.0f; // ブロックが壊れる
-	float wav9 = 0.3f; // ブロックが最大に到達する
-	float wav10 = 1.0f; // ブロックが追加
-	float wav11 = 1.0f; // 敵が倒される
-	float wav12 = 1.0f; // 敵のスポーン
-	float wav13 = 1.0f; // リザルトでSPACE
-	float wav14 = 1.0f; // ボール＆敵が着地したとき
-	float wavCombo = 1.0f; // コンボ
+	float wav1 = 0.0f; // プレイヤーの動き
+	float wav2 = 0.0f; // プレイヤーのジャンプ
+	float wav3 = 0.0f; // ブロックをたたく
+	float wav4 = 0.0f; // ボールのジャンプ
+	float wav5 = 0.0f; // ボールがジャンプして着地
+	float wav6 = 0.0f; // ボール＆敵が壁やブロックに当たる
+	float wav7 = 0.0f; // ボールが敵に当たる
+	float wav8 = 0.0f; // ブロックが壊れる
+	float wav9 = 0.0f; // ブロックが最大に到達する
+	float wav10 = 0.0f; // ブロックが追加
+	float wav11 = 0.0f; // 敵が倒される
+	float wav12 = 0.0f; // 敵のスポーン
+	float wav13 = 0.0f; // リザルトでSPACE
+	float wav14 = 0.0f; // ボール＆敵が着地したとき
+	float wavCombo = 0.0f; // コンボ
 	float BGM = 1.0f;
 
 	// アニメーション

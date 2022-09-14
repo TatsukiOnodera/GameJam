@@ -1,6 +1,6 @@
 ﻿#include "WinApp.h"
 
-const wchar_t WinApp::window_title[] = L"スタッカボー";
+const wchar_t WinApp::window_title[] = L"3006_スタッカボー";
 
 //ウィンドウプロシージャの定義
 LRESULT WinApp::WindowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
