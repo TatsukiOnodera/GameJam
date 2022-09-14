@@ -50,7 +50,6 @@ private: //サブクラス
 		bool map = false;
 		int HP = 15;
 		bool buff = false;
-		int buffTimer = 0;
 		BLOCK(Object3d *obj, int HP = 15)
 		{
 			this->block.reset(obj);
@@ -229,7 +228,7 @@ private: // メンバ変数
 	bool isBuff;
 
 	// ブロック
-	int blockHP = 15; // TODO ブロックのHP
+	int blockHP = 9; // TODO ブロックのHP
 
 	// コンボ
 	// タイマー
@@ -250,6 +249,8 @@ private: // メンバ変数
 	float spawnerScale;
 	// 加速度
 	float spawnerSA;
+	// インターバル
+	int spawnInterval;
 
 	// ハート
 	// ハートカウンター

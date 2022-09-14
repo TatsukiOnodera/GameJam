@@ -332,7 +332,7 @@ void GamePlayScene::InitializeVariable()
 
 	addX = 0;
 
-	playerS = 0.18f; // TODO プレイヤーの移動速度
+	playerS = 0.28f; // TODO プレイヤーの移動速度
 	playerJS = 0;
 	isPJ = false;
 
@@ -351,7 +351,7 @@ void GamePlayScene::InitializeVariable()
 	isBuff = false;
 
 	comboTimer = 0;
-	comboLimit = 60; // TODO コンボ時間
+	comboLimit = 100; // TODO コンボ時間
 	comboNum = 0;
 	isActiveCT = false;
 
@@ -371,7 +371,8 @@ void GamePlayScene::InitializeVariable()
 
 	spawTimer = 1;
 	spawnerScale = 0;
-	spawnerSA = 0.05;
+	spawnerSA = 0.05 * 1.5f;
+	spawnInterval = 600;
 
 	endToTitle = false;
 	titleToGame = false;
@@ -468,7 +469,7 @@ void GamePlayScene::InitializeVariable()
 
 void GamePlayScene::Update()
 {
-#pragma region ?ｿｽQ?ｿｽ[?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽC?ｿｽ?ｿｽ?ｿｽV?ｿｽX?ｿｽe?ｿｽ?ｿｽ
+#pragma region ゲーム処理
 
 	// スプラッシュアニメーション
 	if (animation == true)
@@ -615,7 +616,6 @@ void GamePlayScene::Update()
 					{
 						block[y][x]->HP = blockHP;
 						block[y][x]->buff = 0;
-						block[y][x]->buffTimer = 0;
 					}
 					// 0なら一列繰り下げ
 					if (block[y][x]->HP <= 0)
@@ -639,12 +639,12 @@ void GamePlayScene::Update()
 						}
 					}
 					// 5以下で
-					else if (block[y][x]->HP <= 5) // TODO ブロックのHP更新
+					else if (block[y][x]->HP <= (blockHP / 3)) // TODO ブロックのHP更新
 					{
 						block[y][x]->block->SetColor({ 1, 0.5f, 0.4f, 1 });
 					}
 					// 10以下で
-					else if (block[y][x]->HP <= 10)
+					else if (block[y][x]->HP <= (blockHP / 3) * 2)
 					{
 						block[y][x]->block->SetColor({ 1, 1, 0.45f, 1 });
 					}
@@ -687,6 +687,12 @@ void GamePlayScene::Update()
 					if (bScale.x <= 0)
 					{
 						bScale.x = 0;
+					}
+					bScale.z = bScale.x;
+					block[y][x]->block->SetScale(bScale);
+					if (bScale.x <= 0)
+					{
+						bScale.x = 0;
 						block[y][x]->map = false;
 						block[y][x]->HP = blockHP;
 						block[y][x]->block->SetScale({ 5.2f, 1, 5.2f });
@@ -694,8 +700,6 @@ void GamePlayScene::Update()
 						deleteB = true;
 						w = x;
 					}
-					bScale.z = bScale.x;
-					block[y][x]->block->SetScale(bScale);
 					if (stage == TITLE)
 					{
 						for (int i = 0; i < 13; i++)
@@ -752,7 +756,11 @@ void GamePlayScene::Update()
 				{
 					audio->PlayWave("Resources/SE/combose_06.wav", false, wavCombo);
 				}
-				score += 100 * comboNum * comboNum; // TODO 点数
+				score += 50 * (comboNum * comboNum); // TODO 点数
+				if (score > 999999)
+				{
+					score = 999999;
+				}
 				// テキストの座標
 				textNum = comboNum - 1;
 				if (comboNum > 5)
@@ -831,7 +839,7 @@ void GamePlayScene::Update()
 	}
 
 	// プレイヤー
-	if (stage == TITLE || stage == GAME && animation == false)
+	if ((stage == TITLE || stage == GAME) && animation == false)
 	{
 		XMFLOAT3 pPos = playerStay->GetPosition();
 		// ジャンプ
@@ -924,9 +932,13 @@ void GamePlayScene::Update()
 					}
 					if (y < 7 && block[y][x]->map == true && block[y + 1][x]->map == false && block[1][x]->HP > 0)
 					{
+						bool buffHit = false;
 						if (block[0][x]->buff == true)
 						{
-							block[0][x]->buffTimer = 0;
+							if (buffHit == false)
+							{
+								buffHit = true;
+							}
 							block[0][x]->buff = false;
 							addBlock = 3;
 							for (int i = 0; i < addBlock; i++)
@@ -980,10 +992,18 @@ void GamePlayScene::Update()
 							audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
 							block[y + 1][x]->map = true;
 							isBJ = true;
-							ballJS = 1.5f;  // TODO ボールのジャンプ初期速度
+							ballJS = 1.2f;  // TODO ボールのジャンプ初期速度
 							isBuff = true;
 							XMFLOAT3 bPos = ball01->GetPosition();
-							bPos.y += 4.5f;
+							if (buffHit == true)
+							{
+								bPos.y += 4.5f * 3;
+							}
+							else
+							{
+								bPos.y += 4.5f;
+
+							}
 							ball01->SetPosition(bPos);
 							ball02->SetPosition(bPos);
 							ball03->SetPosition(bPos);
@@ -997,24 +1017,31 @@ void GamePlayScene::Update()
 						{
 							if (isBJ == false && static_cast<int>((enemy01[i]->enemy01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && enemy01[i]->alive == true)
 							{
-								XMFLOAT3 ePos = enemy01[i]->enemy01->GetPosition();
-								XMFLOAT3 deadEffectPos = { 0,0,0 };
-								XMFLOAT3 velocity = { 0,0,0 };
-								XMFLOAT3 accel = { 0,0,0 };
-								for (int i = 0; i < 75; i++) {
-									deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
-									deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
-									velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
-									velocity.y = (float)rand() / RAND_MAX * 0.8f;
-									accel.y =  -0.03f;
-									deadEffect->Add(60, { ePos.x, ePos.y, ePos.z }, velocity, accel, 0.25f, 1.0f);
+								if (static_cast<int>((enemy01[i]->enemy01->GetPosition().y + block[0][0]->block->GetScale().z * 4 + 0.5f * block[0][0]->block->GetScale().z) / block[0][0]->block->GetScale().z) == y + 1 && y < 7)
+								{
+									XMFLOAT3 ePos = enemy01[i]->enemy01->GetPosition();
+									XMFLOAT3 deadEffectPos = { 0,0,0 };
+									XMFLOAT3 velocity = { 0,0,0 };
+									XMFLOAT3 accel = { 0,0,0 };
+									for (int i = 0; i < 75; i++) {
+										deadEffectPos.x = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.x;
+										deadEffectPos.y = ((float)rand() / RAND_MAX * 1 - 1 / 2.0f) + ePos.y;
+										velocity.x = ((float)rand() / RAND_MAX * 0.5f - 0.5f / 2.0f);
+										velocity.y = (float)rand() / RAND_MAX * 0.8f;
+										accel.y = -0.03f;
+										deadEffect->Add(60, { ePos.x, ePos.y, ePos.z }, velocity, accel, 0.25f, 1.0f);
+									}
+									enemyStay[i]->alive = false;
+									enemyStay[i]->isEnemyLanding = false;
+									enemy01[i]->alive = false;
+									enemy02[i]->alive = false;
+									score += 25; // TODO 点数
+									if (score > 999999)
+									{
+										score = 999999;
+									}
+									audio->PlayWave("Resources/SE/se_11.wav", false, wav11);
 								}
-								enemyStay[i]->alive = false;
-								enemyStay[i]->isEnemyLanding = false;
-								enemy01[i]->alive = false;
-								enemy02[i]->alive = false;
-								score += 100 * comboNum * comboNum; // TODO 点数
-								audio->PlayWave("Resources/SE/se_11.wav", false, wav11);
 							}
 						}
 						break;
@@ -1119,15 +1146,6 @@ void GamePlayScene::Update()
 		{
 			for (int x = 0; x < 13; x++)
 			{
-				if (block[y][x]->buff == true)
-				{
-					block[y][x]->buffTimer++;
-					if (block[y][x]->buffTimer > 240)
-					{
-						block[y][x]->buffTimer = 0;
-						block[y][x]->buff = false;
-					}
-				}
 				if (block[y][x]->map == true)
 				{
 					// 縦
@@ -1243,7 +1261,7 @@ void GamePlayScene::Update()
 			spawTimer++;
 		}
 		// 一定時間たったら生成
-		if (spawTimer > 600) // TODO エネミーの出現頻度
+		if (spawTimer > spawnInterval) // TODO エネミーの出現頻度
 		{
 			spawTimer = 1;
 			while (true)
@@ -1253,6 +1271,11 @@ void GamePlayScene::Update()
 				{
 					audio->PlayWave("Resources/SE/se_12.wav", false, wav12);
 					enemySpawner[n]->active = true;
+					spawnInterval -= 20;
+					if (spawnInterval < 300)
+					{
+						spawnInterval = 300;
+					}
 					break;
 				}
 				else
@@ -1277,6 +1300,10 @@ void GamePlayScene::Update()
 			// スポナー
 			if (enemySpawner[i]->active == true)
 			{
+				// 回転
+				XMFLOAT3 rotE = enemySpawner[i]->spawner->GetRotation();
+				rotE.z += 5;
+				enemySpawner[i]->spawner->SetRotation(rotE);
 				// 拡大
 				XMFLOAT3 scale = enemySpawner[i]->spawner->GetScale();
 				scale.x += spawnerSA;
@@ -1306,10 +1333,10 @@ void GamePlayScene::Update()
 					enemy02[i]->enemyG = 0.5f;
 				}
 				// 最大なら縮小
-				else if (scale.x > 4.5f)
+				else if (scale.x > 4.5f * 1.5f)
 				{
-					scale.x = 4.5f;
-					scale.z = 4.5f;
+					scale.x = 4.5f * 1.5f;
+					scale.z = 4.5f * 1.5f;
 					spawnerSA = -spawnerSA;
 				}
 				// 0なら消失
@@ -1461,7 +1488,7 @@ void GamePlayScene::Update()
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
 						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
-						heartCounter--;
+						//heartCounter--;
 						damageTimer = 1;
 						if (heartCounter <= 0)
 						{
@@ -1677,7 +1704,7 @@ void GamePlayScene::Update()
 
 #pragma endregion
 
-#pragma region ?ｿｽJ?ｿｽ?ｿｽ?ｿｽ?ｿｽ?ｿｽﾆ??ｿｽ?ｿｽC?ｿｽg?ｿｽﾌ更?ｿｽV
+#pragma region カメラとライトの更新
 	if (stage == TITLE || stage == GAME) {
 		camera->CameraShake();
 	}
@@ -1720,10 +1747,39 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	{
 		backGround[i]->Draw();
 	}
+	for (auto& m : needle)
+	{
+		m->Draw();
+	}
+	for (int x = 0; x < 13; x++)
+	{
+		if (block[1][x]->map == true)
+		{
+			if (block[1][x]->block->GetPosition().y >= 5.2f * -4)
+			{
+				if (block[1][x]->buff == false)
+				{
+					block[1][x]->block->Draw();
+				} 
+				else
+				{
+					block[1][x]->block->Update();
+					buffBlock[1][x]->SetPosition(block[1][x]->block->GetPosition());
+					buffBlock[1][x]->SetScale(block[1][x]->block->GetScale());
+					buffBlock[1][x]->SetColor(block[1][x]->block->GetColor());
+					buffBlock[1][x]->Draw();
+				}
+			}
+		}
+	}
 	for (int y = 7; y >= 0; y--)
 	{
 		for (int x = 0; x < 13; x++)
 		{
+			if (y == 1)
+			{
+				continue;
+			}
 			if (block[y][x]->map == true)
 			{
 				if (block[y][x]->block->GetPosition().y >= 5.2f * -4)
@@ -1744,10 +1800,6 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 			}
 		}
 	}
-	for (auto& m : needle)
-	{
-		m->Draw();
-	}
 	for (int i = 0; i < 13; i++)
 	{
 		if (enemySpawner[i]->active == true)
@@ -1767,7 +1819,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 		}
 	}
 
-	if (input->PushKey(DIK_D)) {
+	if (input->PushKey(DIK_D) && (stage == TITLE || stage == GAME)) {
 		if (switchingMove) {
 			playerMove01->Draw();
 		}
@@ -1775,7 +1827,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 			playerMove02->Draw();
 		}
 	}
-	else if (input->PushKey(DIK_A)) {
+	else if (input->PushKey(DIK_A) && (stage == TITLE || stage == GAME)) {
 		if (switchingMove) {
 			playerMove03->Draw();
 		}
@@ -1801,7 +1853,7 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 					damageTimer = 0;
 				}
 			}
-			if (damageTimer % 10 == 0 || damageTimer == 0)
+			if (damageTimer % 5 == 0 || damageTimer == 0)
 			{
 				if (!isBlink) {
 					if (!isBJ) {
