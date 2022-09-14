@@ -650,16 +650,15 @@ void GamePlayScene::Update()
 					// 0‚È‚çˆê—ñŒJ‚è‰º‚°
 					if (block[y][x]->HP <= 0)
 					{
-						for (int h = 1; h < 7; h++)
+						for (int h = y; h < 7; h++)
 						{
-							XMFLOAT3 bPos = block[h + 1][x]->block->GetPosition();
-							bPos.y -= 0.45f;
-							block[h + 1][x]->block->SetPosition(bPos);
-							if (5.2f < 5.2f * (h - 3) - bPos.y && h < 7)
+							XMFLOAT3 bPos = block[h][x]->block->GetPosition();
+							bPos.y -= 0.52f;
+							block[h][x]->block->SetPosition(bPos);
+							if (5.2f * (h - 5) >= bPos.y)
 							{
-								block[y][x]->HP = blockHP;
+								block[h][x]->HP = block[h + 1][x]->HP;
 								block[h][x]->map = block[h + 1][x]->map;
-								block[h + 1][x]->map = false;
 								block[h][x]->block->SetPosition({ 5.2f * (x - 6), 5.2f * (h - 4) , 0 });
 								if (h == 6)
 								{
@@ -1794,35 +1793,10 @@ void GamePlayScene::DrawObjects(ID3D12GraphicsCommandList* cmdList)
 	{
 		m->Draw();
 	}
-	for (int x = 0; x < 13; x++)
-	{
-		if (block[1][x]->map == true)
-		{
-			if (block[1][x]->block->GetPosition().y >= 5.2f * -4)
-			{
-				if (block[1][x]->buff == false)
-				{
-					block[1][x]->block->Draw();
-				} 
-				else
-				{
-					block[1][x]->block->Update();
-					buffBlock[1][x]->SetPosition(block[1][x]->block->GetPosition());
-					buffBlock[1][x]->SetScale(block[1][x]->block->GetScale());
-					buffBlock[1][x]->SetColor(block[1][x]->block->GetColor());
-					buffBlock[1][x]->Draw();
-				}
-			}
-		}
-	}
 	for (int y = 7; y >= 0; y--)
 	{
 		for (int x = 0; x < 13; x++)
 		{
-			if (y == 1)
-			{
-				continue;
-			}
 			if (block[y][x]->map == true)
 			{
 				if (block[y][x]->block->GetPosition().y >= 5.2f * -4)
