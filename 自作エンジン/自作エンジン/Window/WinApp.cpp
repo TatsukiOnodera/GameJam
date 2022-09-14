@@ -30,6 +30,8 @@ void WinApp::CreateGameWindow()
 	w.lpszClassName = window_title; // ウィンドウクラス名
 	w.hInstance = GetModuleHandle(nullptr); // ウィンドウハンドル
 	w.hCursor = LoadCursor(NULL, IDC_ARROW); // カーソル指定
+	w.hIcon = (HICON)LoadImage(NULL, L"Resources/game.ico", IMAGE_ICON, 0, 0, LR_LOADFROMFILE);
+	SendMessage(hwnd, STM_SETIMAGE, IMAGE_ICON, (LPARAM)(UINT)w.hIcon);
 
 	// ウィンドウクラスをOSに登録
 	RegisterClassEx(&w);

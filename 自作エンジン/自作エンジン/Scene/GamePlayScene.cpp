@@ -322,6 +322,12 @@ void GamePlayScene::InitializeVariable()
 
 	workSE = 0;
 
+	playWav15 = true;
+
+	heartBeat = 0;
+
+	heartA = 2;
+
 	score = 0;
 
 	addBlock = 1;
@@ -474,6 +480,10 @@ void GamePlayScene::Update()
 	// スプラッシュアニメーション
 	if (animation == true)
 	{
+		XMFLOAT2 lSize = animationLogo->GetSize();
+		lSize.x += 0.3f;
+		lSize.y = lSize.x;
+		animationLogo->SetSize(lSize);
 		if (animationEND == false)
 		{
 			if (animationTimer == 0)
@@ -518,6 +528,26 @@ void GamePlayScene::Update()
 				animation = false;
 			}
 			animationBack->SetSize(aScale);
+		}
+	}
+	else
+	{
+		heartBeat += heartA;
+		for (int i = 0; i < heartCounter; i++)
+		{
+			XMFLOAT3 hScale = heart[i]->GetScale();
+			float t = powf((float)heartBeat / 60, 2);
+			hScale.x = 3.5f * (1.0f - t) + 4.0f * t;
+			hScale.z = hScale.x;
+			heart[i]->SetScale(hScale);
+		}
+		if (heartBeat >= 60)
+		{
+			heartA = -abs(heartA);
+		}
+		else if (heartBeat <= 0)
+		{
+			heartA = abs(heartA);
 		}
 	}
 
@@ -953,13 +983,16 @@ void GamePlayScene::Update()
 									audio->PlayWave("Resources/SE/se_09.wav", false, wav9);
 								}
 							}
-							for (int i = 7; i > 0; i--)
+							for (int j = 0; j < 3; j++)
 							{
-								if (i < 7)
+								for (int i = 6; i >= 0; i--)
 								{
 									block[i + 1][x]->HP = block[i][x]->HP;
 									block[i][x]->HP = blockHP;
 								}
+							}
+							for (int i = 7; i > 0; i--)
+							{
 								XMFLOAT3 pos = block[i][x]->block->GetPosition();
 								pos.y -= 5.2f * addBlock;
 								block[i][x]->block->SetPosition(pos);
@@ -989,29 +1022,31 @@ void GamePlayScene::Update()
 						addX = x;
 						if (isBJ == false && static_cast<int>((ball01->GetPosition().x + block[0][0]->block->GetScale().x * 6 + 0.5f * block[0][0]->block->GetScale().x) / block[0][0]->block->GetScale().x) == x && stage == GAME)
 						{
-							audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
-							block[y + 1][x]->map = true;
-							isBJ = true;
-							ballJS = 1.2f;  // TODO ボールのジャンプ初期速度
-							isBuff = true;
-							XMFLOAT3 bPos = ball01->GetPosition();
-							if (buffHit == true)
+							if (static_cast<int>((ball01->GetPosition().y + block[0][0]->block->GetScale().z * 4 + 0.5f * block[0][0]->block->GetScale().z) / block[0][0]->block->GetScale().z) == y + 1)
 							{
-								bPos.y += 4.5f * 3;
-							}
-							else
-							{
-								bPos.y += 4.5f;
+								audio->PlayWave("Resources/SE/se_04.wav", false, wav4);
+								block[y + 1][x]->map = true;
+								isBJ = true;
+								ballJS = 1.2f;  // TODO ボールのジャンプ初期速度
+								isBuff = true;
+								XMFLOAT3 bPos = ball01->GetPosition();
+								if (buffHit == true)
+								{
+									bPos.y += 4.5f * 3;
+								} else
+								{
+									bPos.y += 4.5f;
 
+								}
+								ball01->SetPosition(bPos);
+								ball02->SetPosition(bPos);
+								ball03->SetPosition(bPos);
+								ball04->SetPosition(bPos);
+								ball01->Update();
+								ball02->Update();
+								ball03->Update();
+								ball04->Update();
 							}
-							ball01->SetPosition(bPos);
-							ball02->SetPosition(bPos);
-							ball03->SetPosition(bPos);
-							ball04->SetPosition(bPos);
-							ball01->Update();
-							ball02->Update();
-							ball03->Update();
-							ball04->Update();
 						}
 						for (int i = 0; i < 13; i++)
 						{
@@ -1487,8 +1522,11 @@ void GamePlayScene::Update()
 					// プレイヤーのボールとの当たり判定
 					if (LenAB(ball01->GetPosition(), ePos) < ball01->GetScale().x * 0.5f + 0.5f * enemy01[i]->enemy01->GetScale().x)
 					{
-						audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
 						heartCounter--;
+						if (heartCounter > 0)
+						{
+							audio->PlayWave("Resources/SE/se_07.wav", false, wav7);
+						}
 						damageTimer = 1;
 						if (heartCounter <= 0)
 						{
@@ -1570,6 +1608,11 @@ void GamePlayScene::Update()
 		}
 		else
 		{
+			if (playWav15 == true)
+			{
+				playWav15 = false;
+				audio->PlayWave("Resources/SE/se_11.wav", false, wav11);
+			}
 			if (restoreCameraTimer < 60) {
 				restoreCameraTimer++;
 				float elapsedTimeRate = static_cast<float>(restoreCameraTimer) / 60.0f;
